@@ -32,7 +32,7 @@ const ACCOUNT = process.env.AWS_ACCOUNT_ID ?? "587308451740";
 // here creates a DataStack<->FunctionStack circular dependency (custom-op
 // datasources already point Data->Function). Bucket name is stable per
 // sandbox; refresh it if the storage stack is ever replaced.
-const STORAGE_BUCKET = "amplify-tontinepilot-tont-tontinefilesbucket763269-fdzpatp6onuk";
+const STORAGE_BUCKET = "amplify-tontinepilot-tont-tontinefilesbucket763269-y2kcqdz2gtzg";
 for (const fn of [backend.parseReceipt, backend.digestAudio]) {
   fn.addEnvironment("STORAGE_BUCKET", STORAGE_BUCKET);
 }
