@@ -2402,19 +2402,19 @@
   }
  },
  "Outputs": {
-  "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl": {
-   "Value": {
-    "Fn::GetAtt": [
-     "amplifyDataGraphQLAPI42A6FA33",
-     "GraphQLUrl"
-    ]
-   }
-  },
   "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId": {
    "Value": {
     "Fn::GetAtt": [
      "amplifyDataGraphQLAPI42A6FA33",
      "ApiId"
+    ]
+   }
+  },
+  "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl": {
+   "Value": {
+    "Fn::GetAtt": [
+     "amplifyDataGraphQLAPI42A6FA33",
+     "GraphQLUrl"
     ]
    }
   },

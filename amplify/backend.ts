@@ -28,16 +28,13 @@ const backend = defineBackend({
 const ACCOUNT = process.env.AWS_ACCOUNT_ID ?? "587308451740";
 
 // Explicit AppSync endpoint for all functions (no $amplify/env magic).
-const endpoint = backend.data.resources.cfnResources.cfnGraphqlApi.attrGraphQlUrl;
-for (const fn of [
-  backend.parseDeclaration,
-  backend.parseReceipt,
-  backend.mediate,
-  backend.recommendRotation,
-  backend.digestAudio,
-  backend.remindersWorker,
-]) {
-  fn.addEnvironment("AMPLIFY_DATA_GRAPHQL_ENDPOINT", endpoint);
+// NOTE: must be a STATIC string — referencing cfnGraphqlApi.attrGraphQlUrl
+// here creates a DataStack<->FunctionStack circular dependency (custom-op
+// datasources already point Data->Function). Bucket name is stable per
+// sandbox; refresh it if the storage stack is ever replaced.
+const STORAGE_BUCKET = "amplify-tontinepilot-tont-tontinefilesbucket763269-fdzpatp6onuk";
+for (const fn of [backend.parseReceipt, backend.digestAudio]) {
+  fn.addEnvironment("STORAGE_BUCKET", STORAGE_BUCKET);
 }
 
 // Bedrock invoke on inference profiles (dual-ARN least privilege, skill: amazon-bedrock).

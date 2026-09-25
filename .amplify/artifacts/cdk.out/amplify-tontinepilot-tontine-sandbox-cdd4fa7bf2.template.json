@@ -475,7 +475,7 @@
        {
         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
        },
-       "/4c3e26bb7d40e73e444471e99afb528effb8f186e3e7ef5b1a5670c68310643b.json"
+       "/34fba1f1983dad05d5df9432c945b8ee2d65029d348271afb3ccd9ce507c5293.json"
       ]
      ]
     }
@@ -492,12 +492,6 @@
    "Type": "AWS::CloudFormation::Stack",
    "Properties": {
     "Parameters": {
-     "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2dataNestedStackdataNestedStackResource04F7B487Outputsamplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl": {
-      "Fn::GetAtt": [
-       "data7552DF31",
-       "Outputs.amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl"
-      ]
-     },
      "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2storageNestedStackstorageNestedStackResource6CA77362Outputsamplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Arn": {
       "Fn::GetAtt": [
        "storage0EC3F24A",
@@ -531,7 +525,7 @@
        {
         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
        },
-       "/8b14d15e67ccfcaa150ef97aadd8528507178129e2887822be2d6c2600a58e04.json"
+       "/4badb9cc0dd403829bb1e41f928c3c7429fd426a039e7ca651992ba353e9f253.json"
       ]
      ]
     }
