@@ -4,6 +4,8 @@
 _Pending first green hosting build — fill after 5.3:_
 
 - Public URL: https://main.dhnfua5oyahpy.amplifyapp.com (Amplify Hosting, us-east-1)
+- Verified: `curl` returns `200` (2026-09-25).
+- Mode: demo data (backend outputs not in hosting build yet — see "Backend live" below).
 - Check: `curl -s -o /dev/null -w "%{http_code}" <URL>` must print `200`
 
 ## Agent connection proof
@@ -15,6 +17,13 @@ _Pending first green hosting build — fill after 5.3:_
   (ENABLED), AppSync API, Cognito pool, S3 buckets — all created via agent-run commands.
 - Live Bedrock verification: `scripts/verify.ts` 9/9 green against us-east-1
   (`us.anthropic.claude-haiku-4-5-20251001-v1:0`).
+
+## Backend live (sandbox, us-east-1)
+- AppSync + Cognito + 6 Lambdas + Scheduler `tontine-daily-reminders` (ENABLED).
+- End-to-end proof: `scripts/verify.ts` 9/9 PASS against real Bedrock Haiku 4.5
+  (ran 2026-09-25, zero FALLBACK lines in CloudWatch).
+- Remaining upgrade: connect this backend to the hosting branch (one console
+  click OR prod pipeline) so the public URL talks to live data instead of demo.
 
 ## AWS services used
 Cognito (email+password+code auth) · AppSync + DynamoDB (Amplify Data) ·
