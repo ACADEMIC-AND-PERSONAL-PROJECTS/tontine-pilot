@@ -6,8 +6,8 @@ export const parseReceipt = defineFunction({
   timeoutSeconds: 180,
   memoryMB: 1024,
   environment: {
-    USE_MOCK: "true",
-    BEDROCK_VISION_PROFILE: "eu.anthropic.claude-sonnet-4-5-20250929-v1:0",
-    OCR_ENGINE: "textract", // "textract" (no quota needed) or "bedrock" (when quotas granted)
+    USE_MOCK: "false",
+    BEDROCK_VISION_PROFILE: "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    OCR_ENGINE: "bedrock", // "textract" (no quota needed) or "bedrock" (when quotas granted)
   },
 });

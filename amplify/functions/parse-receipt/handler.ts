@@ -12,9 +12,10 @@ import { textractParse } from "../_shared/receipt";
 const client = dataClient();
 
 const region = process.env.AWS_REGION ?? "eu-west-1";
+const bedrockRegion = process.env.BEDROCK_REGION ?? "us-east-1";
 const s3 = new S3Client({ region });
 const textract = new TextractClient({ region });
-const bedrock = new BedrockRuntimeClient({ region, maxAttempts: 5, retryMode: "adaptive" });
+const bedrock = new BedrockRuntimeClient({ region: bedrockRegion, maxAttempts: 5, retryMode: "adaptive" });
 
 async function readBytes(bucket: string, key: string): Promise<{ bytes: Uint8Array; format: "jpeg" | "png" }> {
   const out = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));

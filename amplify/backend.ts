@@ -41,18 +41,20 @@ for (const fn of [
 }
 
 // Bedrock invoke on inference profiles (dual-ARN least privilege, skill: amazon-bedrock).
+// Quotas granted in us-east-1 -> us.* profiles.
 for (const fn of [
   backend.parseDeclaration,
   backend.parseReceipt,
   backend.mediate,
   backend.recommendRotation,
 ]) {
+  fn.addEnvironment("BEDROCK_REGION", "us-east-1");
   fn.resources.lambda.addToRolePolicy(
     new PolicyStatement({
       actions: ["bedrock:InvokeModel"],
       resources: [
-        `arn:aws:bedrock:eu-west-1:${ACCOUNT}:inference-profile/eu.anthropic.*`,
-        `arn:aws:bedrock:eu-west-1:${ACCOUNT}:application-inference-profile/*`,
+        `arn:aws:bedrock:us-east-1:${ACCOUNT}:inference-profile/us.anthropic.*`,
+        `arn:aws:bedrock:us-east-1:${ACCOUNT}:application-inference-profile/*`,
         `arn:aws:bedrock:*::foundation-model/anthropic.claude-*`,
       ],
     })

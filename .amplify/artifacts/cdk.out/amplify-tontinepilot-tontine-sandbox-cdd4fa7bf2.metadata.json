@@ -525,7 +525,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...Object.createStack in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:96:28)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:98:28)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
@@ -1379,7 +1379,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:106:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:108:1)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib, @aws-amplify/backend-deployer..."
       ]
     }
@@ -1406,7 +1406,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...aws-cdk-lib, Object.createStack in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:96:28)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:98:28)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
@@ -2025,7 +2025,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Role2 in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:97:19)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:99:19)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
@@ -5839,7 +5839,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:100:11)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:102:11)",
         "...node internals..."
       ]
     }
@@ -10452,7 +10452,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:52:23)",
         "...node internals, @aws-amplify/backend-deployer..."
       ]
     }
@@ -10466,7 +10466,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:52:23)",
         "...node internals, @aws-amplify/backend-deployer..."
       ]
     }
@@ -10480,7 +10480,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:52:23)",
         "...node internals, @aws-amplify/backend-deployer..."
       ]
     }
@@ -10494,7 +10494,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:52:23)",
         "...node internals, @aws-amplify/backend-deployer..."
       ]
     }
@@ -10508,7 +10508,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:70:38)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:72:38)",
         "...node internals, @aws-amplify/backend-deployer..."
       ]
     }
@@ -10522,7 +10522,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:85:42)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:87:42)",
         "...node internals, @aws-amplify/backend-deployer..."
       ]
     }

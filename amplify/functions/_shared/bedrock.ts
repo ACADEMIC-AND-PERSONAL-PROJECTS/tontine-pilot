@@ -6,16 +6,16 @@ import {
 
 // Adaptive retry (skill: amazon-bedrock). maxTokens ALWAYS explicit at call sites.
 export const bedrock = new BedrockRuntimeClient({
-  region: process.env.AWS_REGION ?? "eu-west-1",
+  region: process.env.BEDROCK_REGION ?? "us-east-1",
   maxAttempts: 5,
   retryMode: "adaptive",
 });
 
 export const USE_MOCK = (process.env.USE_MOCK ?? "true").toLowerCase() !== "false";
 export const NLU_PROFILE =
-  process.env.BEDROCK_NLU_PROFILE ?? "eu.anthropic.claude-haiku-4-5-20251001-v1:0";
+  process.env.BEDROCK_NLU_PROFILE ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0";
 export const VISION_PROFILE =
-  process.env.BEDROCK_VISION_PROFILE ?? "eu.anthropic.claude-sonnet-4-5-20250929-v1:0";
+  process.env.BEDROCK_VISION_PROFILE ?? "us.anthropic.claude-sonnet-4-5-20250929-v1:0";
 
 export function log(...args: unknown[]) {
   console.log(...args);
