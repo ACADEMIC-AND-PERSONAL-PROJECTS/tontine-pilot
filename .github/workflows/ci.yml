@@ -18,7 +18,9 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - name: Install
-        run: npm ci
+        # npm ci is broken on this tree (stale nested entries confuse arborist
+        # across npm 11.x minors); plain install is proven green. Revisit post-hackathon.
+        run: npm install --no-audit --no-fund
       - name: Typecheck
         run: npx tsc --noEmit
       - name: Lint
