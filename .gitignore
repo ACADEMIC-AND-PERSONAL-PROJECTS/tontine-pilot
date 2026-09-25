@@ -33,6 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# amplify (generated backend outputs — never commit)
+amplify_outputs.json
+amplify_outputs.*.json
+.amplify/
+
 # vercel
 .vercel
 
