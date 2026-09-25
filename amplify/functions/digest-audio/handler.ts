@@ -69,7 +69,7 @@ export const handler: Handler = async (event) => {
     new SynthesizeSpeechCommand({
       Engine: "neural",
       LanguageCode: locale === "fr" ? "fr-FR" : "en-US",
-      VoiceId: locale === "fr" ? "Léa" : "Joanna",
+      VoiceId: locale === "fr" ? "Lea" : "Joanna",
       OutputFormat: "mp3",
       Text: script,
     })
