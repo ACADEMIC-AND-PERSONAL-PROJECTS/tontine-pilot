@@ -37,6 +37,9 @@ yarn-error.log*
 amplify_outputs.json
 amplify_outputs.*.json
 .amplify/
+amplify/node_modules/
+amplify/dist/
+amplify/cdk.out/
 
 # vercel
 .vercel
