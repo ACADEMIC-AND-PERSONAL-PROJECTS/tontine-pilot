@@ -49,6 +49,7 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const saved = load();
     if (saved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage hydration on mount
       setGroups(saved.groups);
       if (saved.groups.some((g) => g.id === saved.activeId)) {
         setActiveId(saved.activeId);

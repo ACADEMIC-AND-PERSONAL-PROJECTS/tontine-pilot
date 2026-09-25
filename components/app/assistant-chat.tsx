@@ -104,6 +104,7 @@ export function AssistantChat() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- re-localize greeting on language switch
     setMsgs((prev) =>
       prev.length === 1 && prev[0].id === 0
         ? [

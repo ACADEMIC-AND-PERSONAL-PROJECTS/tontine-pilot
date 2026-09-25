@@ -8,15 +8,26 @@ import { BrandMark } from "@/components/landing/brand-mark";
 import { LangToggle } from "@/components/i18n/language-gate";
 import { useLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { isBackendEnabled } from "@/lib/backend";
+import { getCurrentUser } from "aws-amplify/auth";
 
 export function LandingNav() {
   const { t } = useLocale();
   const [scrolled, setScrolled] = useState(false);
+  const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!isBackendEnabled()) return;
+    getCurrentUser().then(
+      () => setAuthed(true),
+      () => setAuthed(false)
+    );
   }, []);
 
   return (
@@ -50,12 +61,12 @@ export function LandingNav() {
 
         <div className="flex items-center gap-2.5">
           <LangToggle />
-          <Link href="/dashboard" className="hidden sm:block">
+          <Link href="/login" className="hidden sm:block">
             <Button variant="ghost" size="sm">
               {t("nav.login")}
             </Button>
           </Link>
-          <Link href="/dashboard">
+          <Link href={authed ? "/dashboard" : "/login"}>
             <Button size="sm" className="gap-1.5">
               {t("nav.open")}
               <ArrowRight className="h-3.5 w-3.5" />

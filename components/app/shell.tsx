@@ -23,13 +23,56 @@ import { LangToggle } from "@/components/i18n/language-gate";
 import { BrandMark } from "@/components/landing/brand-mark";
 import { AssistantChat } from "@/components/app/assistant-chat";
 
+type NavLink = { href: string; label: string; icon: typeof LayoutDashboard };
+
+function NavLinksView({
+  links,
+  pathname,
+  onNavigate,
+}: {
+  links: NavLink[];
+  pathname: string;
+  onNavigate?: () => void;
+}) {
+  return (
+    <nav className="flex flex-col gap-0.5">
+      {links.map((l) => {
+        const isActive = pathname === l.href;
+        return (
+          <Link
+            key={l.href}
+            href={l.href}
+            onClick={onNavigate}
+            className={cn(
+              "relative flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium transition-colors",
+              isActive
+                ? "text-accent-hover"
+                : "text-muted hover:bg-bg-subtle hover:text-foreground"
+            )}
+          >
+            {isActive && (
+              <motion.span
+                layoutId="nav-active"
+                className="absolute inset-0 rounded-[10px] bg-accent-glow border border-accent/25"
+                transition={{ type: "spring", stiffness: 400, damping: 32 }}
+              />
+            )}
+            <l.icon className="relative z-10 h-4 w-4 shrink-0" strokeWidth={1.7} />
+            <span className="relative z-10">{l.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const { t } = useLocale();
   const { active } = useGroups();
   const pathname = usePathname();
 
-  const links = [
+  const links: NavLink[] = [
     { href: "/dashboard", label: t("app.dashboard"), icon: LayoutDashboard },
     { href: "/groups", label: t("app.groups"), icon: LayoutGrid },
     { href: "/declare", label: t("app.declare"), icon: MessageSquareText },
@@ -39,38 +82,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { href: "/group/new", label: t("app.newGroup"), icon: PlusCircle },
   ];
 
-  function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
-    return (
-      <nav className="flex flex-col gap-0.5">
-        {links.map((l) => {
-          const active = pathname === l.href;
-          return (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onNavigate}
-              className={cn(
-                "relative flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium transition-colors",
-                active
-                  ? "text-accent-hover"
-                  : "text-muted hover:bg-bg-subtle hover:text-foreground"
-              )}
-            >
-              {active && (
-                <motion.span
-                  layoutId="nav-active"
-                  className="absolute inset-0 rounded-[10px] bg-accent-glow border border-accent/25"
-                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                />
-              )}
-              <l.icon className="relative z-10 h-4 w-4 shrink-0" strokeWidth={1.7} />
-              <span className="relative z-10">{l.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
-    );
-  }
+
 
   return (
     <div className="relative min-h-screen bg-background">
@@ -84,7 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <p className="mb-2 truncate px-3 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-dim">
             {active.name}
           </p>
-          <NavLinks />
+          <NavLinksView links={links} pathname={pathname} />
         </div>
         <div className="space-y-2 border-t border-border p-3">
           <LangToggle className="w-full justify-center" />
@@ -149,7 +161,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-2 py-4">
-                <NavLinks onNavigate={() => setOpen(false)} />
+                <NavLinksView links={links} pathname={pathname} onNavigate={() => setOpen(false)} />
               </div>
             </motion.aside>
           </>
