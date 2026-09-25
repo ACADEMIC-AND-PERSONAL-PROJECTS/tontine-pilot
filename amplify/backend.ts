@@ -27,6 +27,19 @@ const backend = defineBackend({
 
 const ACCOUNT = process.env.AWS_ACCOUNT_ID ?? "587308451740";
 
+// Explicit AppSync endpoint for all functions (no $amplify/env magic).
+const endpoint = backend.data.resources.cfnResources.cfnGraphqlApi.attrGraphQlUrl;
+for (const fn of [
+  backend.parseDeclaration,
+  backend.parseReceipt,
+  backend.mediate,
+  backend.recommendRotation,
+  backend.digestAudio,
+  backend.remindersWorker,
+]) {
+  fn.addEnvironment("AMPLIFY_DATA_GRAPHQL_ENDPOINT", endpoint);
+}
+
 // Bedrock invoke on inference profiles (dual-ARN least privilege, skill: amazon-bedrock).
 for (const fn of [
   backend.parseDeclaration,

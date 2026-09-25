@@ -1,9 +1,5 @@
 import type { Handler } from "aws-lambda";
-import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/data";
-import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
-import { env } from "$amplify/env/digest-audio";
-import type { Schema } from "../../data/resource";
+import { dataClient } from "../_shared/data-client";
 import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -11,9 +7,7 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { log } from "../_shared/bedrock";
 import { scriptFor } from "../_shared/digest";
 
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
-Amplify.configure(resourceConfig, libraryOptions);
-const client = generateClient<Schema>();
+const client = dataClient();
 
 const region = process.env.AWS_REGION ?? "eu-west-1";
 const polly = new PollyClient({ region });

@@ -661,16 +661,24 @@
    ]
   }
  },
- "Parameters": {
-  "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputsamplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthauthenticatedUserRole99268124Ref": {
-   "Type": "String"
-  }
- },
  "Outputs": {
+  "amplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Arn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "tontineFilesBucket763269E6",
+     "Arn"
+    ]
+   }
+  },
   "amplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Ref": {
    "Value": {
     "Ref": "tontineFilesBucket763269E6"
    }
+  }
+ },
+ "Parameters": {
+  "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputsamplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthauthenticatedUserRole99268124Ref": {
+   "Type": "String"
   }
  }
 }

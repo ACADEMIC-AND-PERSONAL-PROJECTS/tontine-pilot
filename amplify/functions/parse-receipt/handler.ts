@@ -1,9 +1,5 @@
 import type { Handler } from "aws-lambda";
-import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/data";
-import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
-import { env } from "$amplify/env/parse-receipt";
-import type { Schema } from "../../data/resource";
+import { dataClient } from "../_shared/data-client";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import {
   TextractClient,
@@ -13,9 +9,7 @@ import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-r
 import { VISION_PROFILE, extractJson, log } from "../_shared/bedrock";
 import { textractParse } from "../_shared/receipt";
 
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
-Amplify.configure(resourceConfig, libraryOptions);
-const client = generateClient<Schema>();
+const client = dataClient();
 
 const region = process.env.AWS_REGION ?? "eu-west-1";
 const s3 = new S3Client({ region });

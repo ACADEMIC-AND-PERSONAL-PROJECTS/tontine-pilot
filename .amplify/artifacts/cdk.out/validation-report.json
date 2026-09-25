@@ -1,5 +1,53 @@
 {
   "version": "54.0.0",
   "title": "Validation Report",
-  "pluginReports": []
+  "pluginReports": [
+    {
+      "pluginName": "CloudFormation Validate",
+      "pluginVersion": "1.12.1",
+      "conclusion": "success",
+      "violations": [
+        {
+          "ruleName": "F3004",
+          "description": "Resources/data7552DF31: Circular Dependencies for resource data7552DF31. Circular dependency with [data7552DF31 -> function1351588B -> data7552DF31]",
+          "severity": "warning",
+          "ruleMetadata": {
+            "category": "Reference"
+          },
+          "violatingConstructs": [
+            {
+              "constructPath": "amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data.NestedStack/data.NestedStackResource",
+              "constructFqn": "aws-cdk-lib.CfnStack",
+              "libraryVersion": "2.271.0",
+              "cloudFormationResource": {
+                "templatePath": "amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2.template.json",
+                "logicalId": "data7552DF31",
+                "propertyPaths": [
+                  "Resources/data7552DF31"
+                ]
+              },
+              "stackTraces": [
+                "...aws-cdk-lib, <anonymous> in @aws-amplify/backend...\nArray.forEach (:)\n...defineBackend in @aws-amplify/backend...\n<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)\n...node internals..."
+              ]
+            },
+            {
+              "constructPath": "amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function.NestedStack/function.NestedStackResource",
+              "constructFqn": "aws-cdk-lib.CfnStack",
+              "libraryVersion": "2.271.0",
+              "cloudFormationResource": {
+                "templatePath": "amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2.template.json",
+                "logicalId": "function1351588B",
+                "propertyPaths": [
+                  "Resources/function1351588B"
+                ]
+              },
+              "stackTraces": [
+                "...aws-cdk-lib, <anonymous> in @aws-amplify/backend...\nArray.map (:)\n...@aws-amplify/backend-data, @aws-amplify/backend..."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

@@ -4,7 +4,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     },
@@ -33,7 +33,7 @@
         "...<anonymous> in @aws-amplify/backend-output-storage...",
         "Array.forEach (:)",
         "...@aws-amplify/backend-output-storage, defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
@@ -49,7 +49,7 @@
         "...<anonymous> in @aws-amplify/backend-output-storage...",
         "Array.forEach (:)",
         "...@aws-amplify/backend-output-storage, defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
@@ -61,7 +61,7 @@
         "...<anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals..."
       ]
     }
@@ -388,8 +388,33 @@
         "...<anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/definedFunctions": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "definedFunctions"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/backend-output-storage...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-output-storage, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)"
       ]
     }
   ],
@@ -490,8 +515,18 @@
         "...<anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...Object.createStack in @aws-amplify/backend...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:96:28)",
+        "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
   ],
@@ -639,7 +674,7 @@
         "...aws-cdk-lib, <anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals..."
       ]
     }
@@ -790,10 +825,166 @@
       ]
     }
   ],
-  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId": [
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId"
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambdaServiceRole45738AB3Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambdaServiceRole45738AB3Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambdaServiceRoleF76534CBRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambdaServiceRoleF76534CBRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambdaServiceRoleE7AA40B3Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambdaServiceRoleE7AA40B3Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaServiceRole547D5BBBRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaServiceRole547D5BBBRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambdaServiceRoleB8E8DE08Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambdaServiceRoleB8E8DE08Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambdaServiceRoleD148270CRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambdaServiceRoleD148270CRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -803,10 +994,10 @@
       ]
     }
   ],
-  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl": [
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl"
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -840,8 +1031,282 @@
         "...aws-cdk-lib, <anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambdaServiceRole45738AB3Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambdaServiceRole45738AB3Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambdaServiceRoleF76534CBRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambdaServiceRoleF76534CBRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambdaServiceRoleE7AA40B3Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambdaServiceRoleE7AA40B3Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaServiceRole547D5BBBRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaServiceRole547D5BBBRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambdaServiceRoleB8E8DE08Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambdaServiceRoleB8E8DE08Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambdaServiceRoleD148270CRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambdaServiceRoleD148270CRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2dataNestedStackdataNestedStackResource04F7B487Outputs.amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2dataNestedStackdataNestedStackResource04F7B487Outputsamplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328GraphQLUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2storageNestedStackstorageNestedStackResource6CA77362Outputs.amplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2storageNestedStackstorageNestedStackResource6CA77362Outputsamplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCRef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCRef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81ARef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81ARef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function.NestedStack/function.NestedStackResource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "function1351588B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
       ]
     }
   ],
@@ -849,6 +1314,19 @@
     {
       "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
       "data": true
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/storage/amplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifytontinepilottontinesandboxcdd4fa7bf2storagetontineFilesBucket580B2E38Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/storage/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputs.amplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthauthenticatedUserRole99268124Ref": [
@@ -888,8 +1366,48 @@
         "...aws-cdk-lib, <anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)",
         "...node internals..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule/DailyReminders": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyReminders"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:106:1)",
+        "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib, @aws-amplify/backend-deployer..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule.NestedStack/ReminderSchedule.NestedStackResource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReminderScheduleBC1AB5A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, Object.createStack in @aws-amplify/backend...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:96:28)",
+        "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
       ]
     }
   ],
@@ -930,7 +1448,7 @@
         "...@aws-amplify/auth-construct, @aws-amplify/backend-auth, <anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)"
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)"
       ]
     }
   ],
@@ -945,7 +1463,7 @@
         "...@aws-amplify/auth-construct, @aws-amplify/backend-auth, <anonymous> in @aws-amplify/backend...",
         "Array.forEach (:)",
         "...defineBackend in @aws-amplify/backend...",
-        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:8:1)"
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:16:17)"
       ]
     }
   ],
@@ -1069,6 +1587,15 @@
       ]
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...@aws-amplify/graphql-api-construct, @aws-amplify/backend-data, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
     {
       "type": "aws:cdk:logicalId",
@@ -1188,6 +1715,90 @@
       ]
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/GraphqlAccessPolicy1/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "GraphqlAccessPolicy11EF5618C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend-data...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/GraphqlAccessPolicy2/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "GraphqlAccessPolicy2990D371F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend-data...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/GraphqlAccessPolicy3/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "GraphqlAccessPolicy3BD16E2F4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend-data...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/GraphqlAccessPolicy4/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "GraphqlAccessPolicy4F8621382"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend-data...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/GraphqlAccessPolicy5/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "GraphqlAccessPolicy5A6E9D2F2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend-data...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/GraphqlAccessPolicy6/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "GraphqlAccessPolicy62259CAE8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/backend-data...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend-data, @aws-amplify/backend..."
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/CDKMetadata/Default": [
     {
       "type": "aws:cdk:logicalId",
@@ -1202,6 +1813,116 @@
     }
   ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/CDKMetadata/Condition": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadataAvailable"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/parse-declaration-lambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "parsedeclarationlambda04CAB473"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/parse-receipt-lambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "parsereceiptlambda04767D76"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/mediate-lambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "mediatelambdaA012B68C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/recommend-rotation-lambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "recommendrotationlambda5AC990C2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/digest-audio-lambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "digestaudiolambda85FE2A41"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/reminders-worker-lambda/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "remindersworkerlambda2EE97E98"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, <anonymous> in @aws-amplify/backend...",
+        "Array.map (:)",
+        "...@aws-amplify/backend-data..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/CDKMetadata/Condition": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CDKMetadataAvailable"
@@ -1283,6 +2004,46 @@
     }
   ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/storage/CDKMetadata/Condition": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadataAvailable"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule/SchedulerRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SchedulerRole59E73443"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:97:19)",
+        "...node internals, @aws-amplify/backend-deployer, @aws-cdk/toolkit-lib..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule/CDKMetadata/Condition": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CDKMetadataAvailable"
@@ -4574,6 +5335,332 @@
       ]
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/HasEnvironmentParameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HasEnvironmentParameter"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...@aws-amplify/graphql-api-construct, @aws-amplify/backend-data, <anonymous> in @aws-amplify/backend...",
+        "Array.forEach (:)",
+        "...@aws-amplify/backend..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnSendNudgeLambdaDataSource": [
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnSendNudgeLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/mutationSendNudgeResolver": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MutationsendNudgeResolver"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "Mutation.sendNudge"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseDeclarationLambdaDataSource": [
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnParseDeclarationLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/queryParseDeclarationResolver": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryparseDeclarationResolver"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "Query.parseDeclaration"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseReceiptLambdaDataSource": [
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnParseReceiptLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/queryParseReceiptResolver": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryparseReceiptResolver"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "Query.parseReceipt"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnDraftNudgeLambdaDataSource": [
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnDraftNudgeLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/queryDraftNudgeResolver": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QuerydraftNudgeResolver"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "Query.draftNudge"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnRecommendRotationOpLambdaDataSource": [
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnRecommendRotationOpLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/queryRecommendRotationOpResolver": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryrecommendRotationOpResolver"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "Query.recommendRotationOp"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnBuildDigestLambdaDataSource": [
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnBuildDigestLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/queryBuildDigestResolver": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QuerybuildDigestResolver"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "Query.buildDigest"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionremindersworkerlambda8CB1A81AArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPI23D16328ApiId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputs.amplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthauthenticatedUserRole99268124Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputsamplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthauthenticatedUserRole99268124Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputs.amplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthunauthenticatedUserRole28D58145Ref": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputsamplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthunauthenticatedUserRole28D58145Ref"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputs.amplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthIdentityPool5834F28ARef": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2authNestedStackauthNestedStackResourceB772C20AOutputsamplifytontinepilottontinesandboxcdd4fa7bf2authamplifyAuthIdentityPool5834F28ARef"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionparsedeclarationlambda0D9D54E4Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionparsereceiptlambda692DEF02Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionmediatelambda1BB68A73Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Arn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functionrecommendrotationlambdaBE664F71Arn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputs.amplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2functionNestedStackfunctionNestedStackResourceE1A8B06COutputsamplifytontinepilottontinesandboxcdd4fa7bf2functiondigestaudiolambda414E67CCArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/reference-to-amplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPINONEDS078CDC9AName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "referencetoamplifytontinepilottontinesandboxcdd4fa7bf2dataamplifyDataGraphQLAPINONEDS078CDC9AName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack.NestedStack/FunctionDirectiveStack.NestedStackResource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "amplifyDataFunctionDirectiveStackNestedStackFunctionDirectiveStackNestedStackResource1246A302"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/graphql-api-construct, @aws-amplify/backend-data, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -4645,6 +5732,84 @@
       ]
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/parse-declaration-lambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "parsedeclarationlambdaServiceRoleEF965CBF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/parse-receipt-lambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "parsereceiptlambdaServiceRole29C86918"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/mediate-lambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "mediatelambdaServiceRole18DF9B47"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/recommend-rotation-lambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "recommendrotationlambdaServiceRoleB97C8730"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/digest-audio-lambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "digestaudiolambdaServiceRole62EC5BB0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/reminders-worker-lambda/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "remindersworkerlambdaServiceRoleA2536D74"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, @aws-amplify/backend-function, @aws-amplify/backend...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/storage/tontineFiles/Bucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -4665,6 +5830,20 @@
       }
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/ReminderSchedule/SchedulerRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SchedulerRoleDefaultPolicy66F774B8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:100:11)",
+        "...node internals..."
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/GraphQLAPI/NONE_DS/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -4673,8 +5852,9 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "...aws-cdk-lib, @aws-amplify/graphql-api-construct...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
       ]
     },
     {
@@ -8863,6 +10043,374 @@
       ]
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnSendNudgeLambdaDataSource/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnSendNudgeLambdaDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)"
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnSendNudgeLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/InvokeFnSendNudgeLambdaDataSource/InvokeFnSendNudgeLambdaDataSource.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InvokeFnSendNudgeLambdaDataSourceInvokeFnSendNudgeLambdaDataSourceAppSyncFunction36B79FAC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "InvokeFnSendNudgeLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseDeclarationLambdaDataSource/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnParseDeclarationLambdaDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)"
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnParseDeclarationLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/InvokeFnParseDeclarationLambdaDataSource/InvokeFnParseDeclarationLambdaDataSource.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InvokeFnParseDeclarationLambdaDataSourceInvokeFnParseDeclarationLambdaDataSourceAppSyncFunction449C4E94"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "InvokeFnParseDeclarationLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseReceiptLambdaDataSource/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnParseReceiptLambdaDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)"
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnParseReceiptLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/InvokeFnParseReceiptLambdaDataSource/InvokeFnParseReceiptLambdaDataSource.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InvokeFnParseReceiptLambdaDataSourceInvokeFnParseReceiptLambdaDataSourceAppSyncFunctionFC327DFE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "InvokeFnParseReceiptLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnDraftNudgeLambdaDataSource/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnDraftNudgeLambdaDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)"
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnDraftNudgeLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/InvokeFnDraftNudgeLambdaDataSource/InvokeFnDraftNudgeLambdaDataSource.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InvokeFnDraftNudgeLambdaDataSourceInvokeFnDraftNudgeLambdaDataSourceAppSyncFunction37556922"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "InvokeFnDraftNudgeLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnRecommendRotationOpLambdaDataSource/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnRecommendRotationOpLambdaDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)"
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnRecommendRotationOpLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/InvokeFnRecommendRotationOpLambdaDataSource/InvokeFnRecommendRotationOpLambdaDataSource.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InvokeFnRecommendRotationOpLambdaDataSourceInvokeFnRecommendRotationOpLambdaDataSourceAppSyncFunctionCA44938F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "InvokeFnRecommendRotationOpLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnBuildDigestLambdaDataSource/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnBuildDigestLambdaDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)"
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "FnBuildDigestLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/InvokeFnBuildDigestLambdaDataSource/InvokeFnBuildDigestLambdaDataSource.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InvokeFnBuildDigestLambdaDataSourceInvokeFnBuildDigestLambdaDataSourceAppSyncFunction9D6A2BE9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)",
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "InvokeFnBuildDigestLambdaDataSource"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/MutationSendNudgeAuthFN/MutationSendNudgeAuthFN.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MutationSendNudgeAuthFNMutationSendNudgeAuthFNAppSyncFunctionC5D61D8C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "MutationSendNudgeAuthFN"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/QueryParseDeclarationAuthFN/QueryParseDeclarationAuthFN.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryParseDeclarationAuthFNQueryParseDeclarationAuthFNAppSyncFunctionCFEB5721"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "QueryParseDeclarationAuthFN"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/QueryParseReceiptAuthFN/QueryParseReceiptAuthFN.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryParseReceiptAuthFNQueryParseReceiptAuthFNAppSyncFunction319FF430"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "QueryParseReceiptAuthFN"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/QueryDraftNudgeAuthFN/QueryDraftNudgeAuthFN.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryDraftNudgeAuthFNQueryDraftNudgeAuthFNAppSyncFunction80DD7833"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "QueryDraftNudgeAuthFN"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/QueryRecommendRotationOpAuthFN/QueryRecommendRotationOpAuthFN.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryRecommendRotationOpAuthFNQueryRecommendRotationOpAuthFNAppSyncFunction9BCE99BC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "QueryRecommendRotationOpAuthFN"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/QueryBuildDigestAuthFN/QueryBuildDigestAuthFN.AppSyncFunction": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "QueryBuildDigestAuthFNQueryBuildDigestAuthFNAppSyncFunctionDAA0AF06"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...<anonymous> in @aws-amplify/graphql-api-construct...",
+        "Map.forEach (:)",
+        "...@aws-amplify/graphql-api-construct..."
+      ]
+    },
+    {
+      "type": "graphqltransformer:resourceName",
+      "data": "QueryBuildDigestAuthFN"
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/CDKMetadata/Condition": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadataAvailable"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -8892,6 +10440,90 @@
       "data": [
         "...aws-cdk-lib...",
         "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/parse-declaration-lambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "parsedeclarationlambdaServiceRoleDefaultPolicy06E309B7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "...node internals, @aws-amplify/backend-deployer..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/parse-receipt-lambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "parsereceiptlambdaServiceRoleDefaultPolicy937846B0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "...node internals, @aws-amplify/backend-deployer..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/mediate-lambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "mediatelambdaServiceRoleDefaultPolicy31575BB3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "...node internals, @aws-amplify/backend-deployer..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/recommend-rotation-lambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "recommendrotationlambdaServiceRoleDefaultPolicyB62C0D66"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:50:23)",
+        "...node internals, @aws-amplify/backend-deployer..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/digest-audio-lambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "digestaudiolambdaServiceRoleDefaultPolicyD436C5CE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:70:38)",
+        "...node internals, @aws-amplify/backend-deployer..."
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/function/reminders-worker-lambda/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "remindersworkerlambdaServiceRoleDefaultPolicy490F1BE0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addToRolePolicy in aws-cdk-lib...",
+        "<anonymous> (/home/khadim/Desktop/PROJECTS/HACKATHONS/AWS/ZERO-TO-SHIPPED/TONTINE-PILOT/tontine-pilot/amplify/backend.ts:85:42)",
+        "...node internals, @aws-amplify/backend-deployer..."
       ]
     }
   ],
@@ -9115,6 +10747,84 @@
       "data": "Digest"
     }
   ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnSendNudgeLambdaDataSource/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnSendNudgeLambdaDataSourceServiceRole3A646D06"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseDeclarationLambdaDataSource/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnParseDeclarationLambdaDataSourceServiceRoleD3440809"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseReceiptLambdaDataSource/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnParseReceiptLambdaDataSourceServiceRoleE34B524E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnDraftNudgeLambdaDataSource/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnDraftNudgeLambdaDataSourceServiceRoleAD385BC5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnRecommendRotationOpLambdaDataSource/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnRecommendRotationOpLambdaDataSourceServiceRole605B75B2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnBuildDigestLambdaDataSource/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnBuildDigestLambdaDataSourceServiceRole07F98145"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, <anonymous> in @aws-amplify/graphql-api-construct...",
+        "Array.forEach (:)"
+      ]
+    }
+  ],
   "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
@@ -9182,6 +10892,84 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...aws-cdk-lib, @aws-amplify/graphql-api-construct...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnSendNudgeLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnSendNudgeLambdaDataSourceServiceRoleDefaultPolicy7FD737AE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseDeclarationLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnParseDeclarationLambdaDataSourceServiceRoleDefaultPolicyEC7F3286"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnParseReceiptLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnParseReceiptLambdaDataSourceServiceRoleDefaultPolicy121CBACC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnDraftNudgeLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnDraftNudgeLambdaDataSourceServiceRoleDefaultPolicy7687E9F5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnRecommendRotationOpLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnRecommendRotationOpLambdaDataSourceServiceRoleDefaultPolicy66F958DD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/amplify-tontinepilot-tontine-sandbox-cdd4fa7bf2/data/amplifyData/FunctionDirectiveStack/FnBuildDigestLambdaDataSource/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "FnBuildDigestLambdaDataSourceServiceRoleDefaultPolicy55F7F57D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
         "(no user code in 10 frames, use --stack-trace-limit to capture more)"
       ]
     }

@@ -1,15 +1,9 @@
 import type { Handler } from "aws-lambda";
-import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/data";
-import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
-import { env } from "$amplify/env/mediate";
-import type { Schema } from "../../data/resource";
+import { dataClient } from "../_shared/data-client";
 import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_shared/bedrock";
 import { templateNudge } from "../_shared/fallbacks";
 
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
-Amplify.configure(resourceConfig, libraryOptions);
-const client = generateClient<Schema>();
+const client = dataClient();
 
 const SYSTEM = `You are an empathic mediator for a Senegalese community savings group. Warm, respectful, never shaming, max 40 words per language.
 Given the alert JSON, write message_fr, message_en (both always), and when the type allows a proposal: proposal_kind (swap|installment|emergency|null) + proposal_fr + proposal_en.

@@ -1,9 +1,5 @@
 import type { Handler } from "aws-lambda";
-import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/data";
-import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
-import { env } from "$amplify/env/parse-declaration";
-import type { Schema } from "../../data/resource";
+import { dataClient } from "../_shared/data-client";
 import {
   NLU_PROFILE,
   USE_MOCK,
@@ -13,9 +9,7 @@ import {
 } from "../_shared/bedrock";
 import { heuristicParse } from "../_shared/fallbacks";
 
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
-Amplify.configure(resourceConfig, libraryOptions);
-const client = generateClient<Schema>();
+const client = dataClient();
 
 const SYSTEM = `You parse informal tontine payment declarations (French, English, Wolof-inflected French).
 Return ONLY valid JSON, no markdown: {"memberId": "<best match id or null>", "memberName": "<as written or matched>", "amount": <integer FCFA>, "recipientName": "<matched or current recipient>", "confidence": <0..1>, "rawTextEn": "<English translation of the raw declaration>"}

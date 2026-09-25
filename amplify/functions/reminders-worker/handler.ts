@@ -1,17 +1,11 @@
 import type { Handler } from "aws-lambda";
-import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/data";
-import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
-import { env } from "$amplify/env/reminders-worker";
-import type { Schema } from "../../data/resource";
+import { dataClient } from "../_shared/data-client";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_shared/bedrock";
 import { dedupeKey, templateNudge } from "../_shared/fallbacks";
 
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
-Amplify.configure(resourceConfig, libraryOptions);
-const client = generateClient<Schema>();
+const client = dataClient();
 
 const region = process.env.AWS_REGION ?? "eu-west-1";
 const ses = new SESClient({ region });
