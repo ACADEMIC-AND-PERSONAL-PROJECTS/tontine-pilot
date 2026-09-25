@@ -19,6 +19,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
+import { useRemoteCycleData, useRemoteGroup } from "@/lib/use-remote";
 import {
   ArrowRight,
   AlertTriangle,
@@ -32,12 +33,23 @@ import { useState } from "react";
 export default function DashboardPage() {
   const { t, locale } = useLocale();
   const fr = locale === "fr";
-  const { active } = useGroups();
+  const { active: localActive } = useGroups();
+  const remoteGroup = useRemoteGroup(localActive.id);
+  const active = remoteGroup ?? localActive;
+  const remote = useRemoteCycleData(localActive.id);
+  const contributions = remote.contributions.length > 0 ? remote.contributions : fakeContributions;
+  const allAlerts = remote.alerts.length > 0 ? remote.alerts : fakeAlerts;
+  const cycle = {
+    cycleNumber: remote.cycle?.cycleNumber ?? currentCycle.cycleNumber,
+    recipientName: remote.cycle?.recipientName ?? currentCycle.recipientName,
+    startDate: remote.cycle?.startDate ?? currentCycle.startDate,
+    endDate: remote.cycle?.endDate ?? currentCycle.endDate,
+  };
   const collected = active.cycleCollected ?? currentCycle.totalCollected;
   const expected = active.cycleExpected ?? currentCycle.totalExpected;
   const pct = Math.round((collected / expected) * 100);
-  const unpaid = fakeContributions.filter((c) => c.status !== "CONFIRMED");
-  const openAlerts = fakeAlerts.filter((a) => !a.resolved);
+  const unpaid = contributions.filter((c) => c.status !== "CONFIRMED");
+  const openAlerts = allAlerts.filter((a) => !a.resolved);
   const fundPct = Math.round(
     (active.emergencyFundBalance / active.emergencyFundTarget) * 100
   );
@@ -69,8 +81,8 @@ export default function DashboardPage() {
             {t("dash.title")}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Cycle {currentCycle.cycleNumber} · {currentCycle.recipientName} ·{" "}
-            {formatDate(currentCycle.startDate, locale)} → {formatDate(currentCycle.endDate, locale)}
+            Cycle {cycle.cycleNumber} · {cycle.recipientName} ·{" "}
+            {formatDate(cycle.startDate, locale)} → {formatDate(cycle.endDate, locale)}
           </p>
         </div>
         <div className="flex gap-2">
@@ -206,7 +218,7 @@ export default function DashboardPage() {
               <h2 className="text-base font-semibold tracking-tight">
                 {t("dash.contributions")}
               </h2>
-              <p className="text-xs text-muted">Cycle {currentCycle.cycleNumber}</p>
+              <p className="text-xs text-muted">Cycle {cycle.cycleNumber}</p>
             </div>
             <Badge tone="accent">{pct}%</Badge>
           </div>
@@ -221,7 +233,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-2 max-h-[420px] divide-y divide-border overflow-y-auto scrollbar-thin">
-            {fakeContributions.map((c, i) => (
+            {contributions.map((c, i) => (
               <motion.div
                 key={c.id}
                 initial={{ opacity: 0, x: -4 }}

@@ -25,27 +25,25 @@ const remap = (email: string) => {
   return `${user}+${local}@${domain}`;
 };
 
-async function upsertModel<K extends keyof Schema>(
-  model: K,
+type AnyModel = {
+  get: (a: { id: string }) => Promise<{ data: unknown }>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  create: (a: any) => Promise<unknown>;
+};
+
+async function upsertModel(
+  model: string,
   id: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   values: any
 ) {
-  const existing = await (
-    client.models[model] as unknown as {
-      get: (a: { id: string }) => Promise<{ data: unknown }>;
-    }
-  ).get({ id });
+  const m = (client.models as unknown as Record<string, AnyModel>)[model];
+  const existing = await m.get({ id });
   if (existing.data) {
     console.log(`  keep ${String(model)} ${id}`);
     return;
   }
-  await (
-    client.models[model] as unknown as {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      create: (a: any) => Promise<unknown>;
-    }
-  ).create({ id, ...values });
+  await m.create({ id, ...values });
   console.log(`  + ${String(model)} ${id}`);
 }
 
