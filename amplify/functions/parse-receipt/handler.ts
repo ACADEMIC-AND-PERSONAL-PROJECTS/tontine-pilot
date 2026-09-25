@@ -1,0 +1,124 @@
+import type { Handler } from "aws-lambda";
+import { Amplify } from "aws-amplify";
+import { generateClient } from "aws-amplify/data";
+import { getAmplifyDataClientConfig } from "@aws-amplify/backend/function/runtime";
+import { env } from "$amplify/env/parse-receipt";
+import type { Schema } from "../../data/resource";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  TextractClient,
+  DetectDocumentTextCommand,
+} from "@aws-sdk/client-textract";
+import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
+import { VISION_PROFILE, extractJson, log } from "../_shared/bedrock";
+
+const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
+Amplify.configure(resourceConfig, libraryOptions);
+const client = generateClient<Schema>();
+
+const region = process.env.AWS_REGION ?? "eu-west-1";
+const s3 = new S3Client({ region });
+const textract = new TextractClient({ region });
+const bedrock = new BedrockRuntimeClient({ region, maxAttempts: 5, retryMode: "adaptive" });
+
+async function readBytes(bucket: string, key: string): Promise<{ bytes: Uint8Array; format: "jpeg" | "png" }> {
+  const out = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+  const chunks: Uint8Array[] = [];
+  for await (const c of out.Body as AsyncIterable<Uint8Array>) chunks.push(c);
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const bytes = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) {
+    bytes.set(c, off);
+    off += c.length;
+  }
+  const format = bytes[0] === 0x89 && bytes[1] === 0x50 ? "png" : "jpeg";
+  return { bytes, format };
+}
+
+function textractParse(lines: string[], standardAmount: number, recipient: string) {
+  const joined = lines.join("\n");
+  const amounts = [...joined.matchAll(/(\d[\d\s]*)\s*(?:FCFA|F\s?CFA|F|CFA)?/gi)]
+    .map((m) => parseInt(m[1].replace(/\s/g, ""), 10))
+    .filter((n) => n >= 1000 && n <= 10000000);
+  const txn = joined.match(/(?:WV|OM|TRX|TXN|ID)[-\s:]?([A-Z0-9-]{4,})/i)?.[1] ?? null;
+  const provider = /wave/i.test(joined) ? "Wave" : /orange/i.test(joined) ? "Orange Money" : /mtn/i.test(joined) ? "MTN" : "Unknown";
+  return {
+    amount: amounts[0] ?? standardAmount,
+    transactionId: txn,
+    recipientName: recipient,
+    date: new Date().toISOString().slice(0, 10),
+    provider,
+    confidence: amounts[0] ? 0.75 : 0.4,
+  };
+}
+
+export const handler: Handler = async (event) => {
+  const args = (event as { arguments?: { s3Key?: string; groupId?: string; bucket?: string } }).arguments ?? {};
+  if (!args.s3Key || !args.groupId) throw new Error("VALIDATION: s3Key and groupId required");
+  const bucket =
+    args.bucket ?? process.env.STORAGE_BUCKET ?? (() => { throw new Error("CONFIG: bucket unknown"); })();
+
+  const group = (await client.models.Group.get({ id: args.groupId })).data;
+  if (!group) throw new Error("VALIDATION: unknown group");
+  const openCycle = (
+    await client.models.Cycle.list({ filter: { groupId: { eq: args.groupId }, status: { eq: "OPEN" } } })
+  ).data[0];
+
+  const engine = process.env.OCR_ENGINE ?? "textract";
+  if (engine === "bedrock" && (process.env.USE_MOCK ?? "true").toLowerCase() === "false") {
+    try {
+      const { bytes, format } = await readBytes(bucket, args.s3Key);
+      const res = await bedrock.send(
+        new ConverseCommand({
+          modelId: VISION_PROFILE,
+          messages: [{
+            role: "user",
+            content: [
+              { image: { format, source: { bytes } } },
+              { text: "You read West-African Mobile Money receipts (Wave, Orange Money, MTN). Return ONLY JSON: {\"amount\": <int FCFA>, \"transactionId\": \"<as printed or null>\", \"recipientName\": \"<or null>\", \"date\": \"<YYYY-MM-DD or null>\", \"provider\": \"<Wave|Orange Money|MTN|Unknown>\", \"confidence\": <0..1>}" },
+            ],
+          }],
+          inferenceConfig: { maxTokens: 800, temperature: 0.2 },
+        })
+      );
+      const first = res.output?.message?.content?.[0];
+      const text = first && "text" in first ? (first.text ?? "") : "";
+      const p = extractJson(text) as Record<string, unknown>;
+      log("CONVERSE_OK vision receipt");
+      return {
+        amount: typeof p.amount === "number" ? Math.round(p.amount) : group.contributionAmount,
+        transactionId: (p.transactionId as string) ?? null,
+        recipientName: (p.recipientName as string) ?? openCycle?.recipientName ?? "",
+        date: (p.date as string) ?? new Date().toISOString().slice(0, 10),
+        provider: (p.provider as string) ?? "Unknown",
+        confidence: typeof p.confidence === "number" ? p.confidence : 0.5,
+      };
+    } catch (err) {
+      log(`FALLBACK: Bedrock vision failed (${(err as Error)?.message}), Textract next`);
+    }
+  }
+
+  // Primary offline-capable path: Textract (no Bedrock quota needed).
+  try {
+    const { bytes } = await readBytes(bucket, args.s3Key);
+    const det = await textract.send(
+      new DetectDocumentTextCommand({ Document: { Bytes: bytes } })
+    );
+    const lines = (det.Blocks ?? [])
+      .filter((b) => b.BlockType === "LINE" && b.Text)
+      .map((b) => b.Text as string);
+    log(`TEXTRACT_OK lines=${lines.length}`);
+    return textractParse(lines, group.contributionAmount, openCycle?.recipientName ?? "");
+  } catch (err) {
+    log(`FALLBACK: Textract failed (${(err as Error)?.message}), defaults`);
+    return {
+      amount: group.contributionAmount,
+      transactionId: null,
+      recipientName: openCycle?.recipientName ?? "",
+      date: new Date().toISOString().slice(0, 10),
+      provider: "Unknown",
+      confidence: 0.4,
+    };
+  }
+};

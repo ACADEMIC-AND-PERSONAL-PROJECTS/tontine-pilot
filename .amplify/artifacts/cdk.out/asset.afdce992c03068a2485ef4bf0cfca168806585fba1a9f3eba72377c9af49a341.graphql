@@ -1,0 +1,1097 @@
+type Group @aws_iam @aws_cognito_user_pools {
+  name: String!
+  description: String
+  descriptionEn: String
+  currency: String
+  contributionAmount: Int!
+  frequency: GroupFrequency
+  memberCount: Int!
+  currentCycleIndex: Int!
+  emergencyFundBalance: Int!
+  emergencyFundTarget: Int!
+  role: GroupRole
+  cycleCollected: Int
+  cycleExpected: Int
+  openAlerts: Int
+  archived: Boolean
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Member @aws_iam @aws_cognito_user_pools {
+  groupId: ID!
+  name: String!
+  email: String!
+  phone: String
+  trustScore: Int!
+  lateCount: Int
+  cyclesCompleted: Int
+  notifySms: Boolean
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Cycle @aws_iam @aws_cognito_user_pools {
+  groupId: ID!
+  cycleNumber: Int!
+  recipientMemberId: ID
+  recipientName: String
+  startDate: AWSDate!
+  endDate: AWSDate!
+  status: CycleStatus
+  totalExpected: Int!
+  totalCollected: Int!
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Contribution @aws_iam @aws_cognito_user_pools {
+  groupId: ID!
+  cycleId: ID!
+  memberId: ID!
+  memberName: String!
+  amount: Int!
+  status: ContributionStatus
+  dateDeclared: AWSDate
+  rawText: String
+  rawTextEn: String
+  method: ContributionMethod
+  transactionId: String
+  receiptKey: String
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Alert @aws_iam @aws_cognito_user_pools {
+  groupId: ID!
+  cycleId: ID
+  memberId: ID
+  memberName: String
+  type: AlertType
+  message: String!
+  messageEn: String
+  createdAt: AWSDateTime!
+  resolved: Boolean
+  proposalKind: AlertProposalKind
+  proposalDetails: String
+  proposalDetailsEn: String
+  dedupeKey: String!
+  id: ID!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type FundMovement @aws_iam @aws_cognito_user_pools {
+  groupId: ID!
+  cycleId: ID
+  kind: FundMovementKind
+  amount: Int!
+  reason: String
+  reasonEn: String
+  createdAt: AWSDateTime!
+  id: ID!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type Digest @aws_iam @aws_cognito_user_pools {
+  groupId: ID!
+  cycleId: ID!
+  locale: DigestLocale
+  script: String!
+  audioKey: String!
+  createdAt: AWSDateTime!
+  id: ID!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+enum GroupFrequency {
+  WEEKLY
+  MONTHLY
+}
+
+enum GroupRole {
+  Admin
+  Member
+}
+
+enum CycleStatus {
+  OPEN
+  CLOSED
+}
+
+enum ContributionStatus {
+  CONFIRMED
+  PENDING
+  LATE
+  COVERED_BY_EMERGENCY_FUND
+}
+
+enum ContributionMethod {
+  TEXT_NLU
+  OCR_RECEIPT
+  MANUAL
+  EMERGENCY_FUND
+}
+
+enum AlertType {
+  LATE_PAYMENT
+  ANOMALY
+  REMINDER
+  SWAP_PROPOSAL
+  EMERGENCY_DISPATCH
+}
+
+enum AlertProposalKind {
+  swap
+  installment
+  emergency
+}
+
+enum FundMovementKind {
+  DEBIT
+  REPAY
+}
+
+enum DigestLocale {
+  fr
+  en
+}
+
+input AmplifyAIConversationTurnErrorInput {
+  errorType: String!
+  message: String!
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelSubscriptionStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  in: [String]
+  notIn: [String]
+}
+
+input ModelSubscriptionIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  in: [Int]
+  notIn: [Int]
+}
+
+input ModelSubscriptionFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  in: [Float]
+  notIn: [Float]
+}
+
+input ModelSubscriptionBooleanInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSubscriptionIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+  notIn: [ID]
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelGroupConnection @aws_iam @aws_cognito_user_pools {
+  items: [Group]!
+  nextToken: String
+}
+
+input ModelGroupFrequencyInput {
+  eq: GroupFrequency
+  ne: GroupFrequency
+}
+
+input ModelGroupRoleInput {
+  eq: GroupRole
+  ne: GroupRole
+}
+
+input ModelGroupFilterInput {
+  name: ModelStringInput
+  description: ModelStringInput
+  descriptionEn: ModelStringInput
+  currency: ModelStringInput
+  contributionAmount: ModelIntInput
+  frequency: ModelGroupFrequencyInput
+  memberCount: ModelIntInput
+  currentCycleIndex: ModelIntInput
+  emergencyFundBalance: ModelIntInput
+  emergencyFundTarget: ModelIntInput
+  role: ModelGroupRoleInput
+  cycleCollected: ModelIntInput
+  cycleExpected: ModelIntInput
+  openAlerts: ModelIntInput
+  archived: ModelBooleanInput
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelGroupFilterInput]
+  or: [ModelGroupFilterInput]
+  not: ModelGroupFilterInput
+  owner: ModelStringInput
+}
+
+type Query {
+  getGroup(id: ID!): Group @aws_iam @aws_cognito_user_pools
+  listGroups(filter: ModelGroupFilterInput, limit: Int, nextToken: String): ModelGroupConnection @aws_iam @aws_cognito_user_pools
+  getMember(id: ID!): Member @aws_iam @aws_cognito_user_pools
+  listMembers(filter: ModelMemberFilterInput, limit: Int, nextToken: String): ModelMemberConnection @aws_iam @aws_cognito_user_pools
+  listMemberByGroupId(groupId: ID!, sortDirection: ModelSortDirection, filter: ModelMemberFilterInput, limit: Int, nextToken: String): ModelMemberConnection @aws_iam @aws_cognito_user_pools
+  getCycle(id: ID!): Cycle @aws_iam @aws_cognito_user_pools
+  listCycles(filter: ModelCycleFilterInput, limit: Int, nextToken: String): ModelCycleConnection @aws_iam @aws_cognito_user_pools
+  listCycleByGroupId(groupId: ID!, sortDirection: ModelSortDirection, filter: ModelCycleFilterInput, limit: Int, nextToken: String): ModelCycleConnection @aws_iam @aws_cognito_user_pools
+  getContribution(id: ID!): Contribution @aws_iam @aws_cognito_user_pools
+  listContributions(filter: ModelContributionFilterInput, limit: Int, nextToken: String): ModelContributionConnection @aws_iam @aws_cognito_user_pools
+  listContributionByGroupId(groupId: ID!, sortDirection: ModelSortDirection, filter: ModelContributionFilterInput, limit: Int, nextToken: String): ModelContributionConnection @aws_iam @aws_cognito_user_pools
+  listContributionByCycleId(cycleId: ID!, sortDirection: ModelSortDirection, filter: ModelContributionFilterInput, limit: Int, nextToken: String): ModelContributionConnection @aws_iam @aws_cognito_user_pools
+  getAlert(id: ID!): Alert @aws_iam @aws_cognito_user_pools
+  listAlerts(filter: ModelAlertFilterInput, limit: Int, nextToken: String): ModelAlertConnection @aws_iam @aws_cognito_user_pools
+  listAlertByGroupId(groupId: ID!, sortDirection: ModelSortDirection, filter: ModelAlertFilterInput, limit: Int, nextToken: String): ModelAlertConnection @aws_iam @aws_cognito_user_pools
+  listAlertByDedupeKey(dedupeKey: String!, sortDirection: ModelSortDirection, filter: ModelAlertFilterInput, limit: Int, nextToken: String): ModelAlertConnection @aws_iam @aws_cognito_user_pools
+  getFundMovement(id: ID!): FundMovement @aws_iam @aws_cognito_user_pools
+  listFundMovements(filter: ModelFundMovementFilterInput, limit: Int, nextToken: String): ModelFundMovementConnection @aws_iam @aws_cognito_user_pools
+  listFundMovementByGroupId(groupId: ID!, sortDirection: ModelSortDirection, filter: ModelFundMovementFilterInput, limit: Int, nextToken: String): ModelFundMovementConnection @aws_iam @aws_cognito_user_pools
+  getDigest(id: ID!): Digest @aws_iam @aws_cognito_user_pools
+  listDigests(filter: ModelDigestFilterInput, limit: Int, nextToken: String): ModelDigestConnection @aws_iam @aws_cognito_user_pools
+  listDigestByGroupId(groupId: ID!, sortDirection: ModelSortDirection, filter: ModelDigestFilterInput, limit: Int, nextToken: String): ModelDigestConnection @aws_iam @aws_cognito_user_pools
+}
+
+input ModelGroupConditionInput {
+  name: ModelStringInput
+  description: ModelStringInput
+  descriptionEn: ModelStringInput
+  currency: ModelStringInput
+  contributionAmount: ModelIntInput
+  frequency: ModelGroupFrequencyInput
+  memberCount: ModelIntInput
+  currentCycleIndex: ModelIntInput
+  emergencyFundBalance: ModelIntInput
+  emergencyFundTarget: ModelIntInput
+  role: ModelGroupRoleInput
+  cycleCollected: ModelIntInput
+  cycleExpected: ModelIntInput
+  openAlerts: ModelIntInput
+  archived: ModelBooleanInput
+  and: [ModelGroupConditionInput]
+  or: [ModelGroupConditionInput]
+  not: ModelGroupConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateGroupInput {
+  name: String!
+  description: String
+  descriptionEn: String
+  currency: String
+  contributionAmount: Int!
+  frequency: GroupFrequency
+  memberCount: Int!
+  currentCycleIndex: Int!
+  emergencyFundBalance: Int!
+  emergencyFundTarget: Int!
+  role: GroupRole
+  cycleCollected: Int
+  cycleExpected: Int
+  openAlerts: Int
+  archived: Boolean
+  id: ID
+}
+
+input UpdateGroupInput {
+  name: String
+  description: String
+  descriptionEn: String
+  currency: String
+  contributionAmount: Int
+  frequency: GroupFrequency
+  memberCount: Int
+  currentCycleIndex: Int
+  emergencyFundBalance: Int
+  emergencyFundTarget: Int
+  role: GroupRole
+  cycleCollected: Int
+  cycleExpected: Int
+  openAlerts: Int
+  archived: Boolean
+  id: ID!
+}
+
+input DeleteGroupInput {
+  id: ID!
+}
+
+type Mutation {
+  createGroup(input: CreateGroupInput!, condition: ModelGroupConditionInput): Group @aws_iam @aws_cognito_user_pools
+  updateGroup(input: UpdateGroupInput!, condition: ModelGroupConditionInput): Group @aws_iam @aws_cognito_user_pools
+  deleteGroup(input: DeleteGroupInput!, condition: ModelGroupConditionInput): Group @aws_iam @aws_cognito_user_pools
+  createMember(input: CreateMemberInput!, condition: ModelMemberConditionInput): Member @aws_iam @aws_cognito_user_pools
+  updateMember(input: UpdateMemberInput!, condition: ModelMemberConditionInput): Member @aws_iam @aws_cognito_user_pools
+  deleteMember(input: DeleteMemberInput!, condition: ModelMemberConditionInput): Member @aws_iam @aws_cognito_user_pools
+  createCycle(input: CreateCycleInput!, condition: ModelCycleConditionInput): Cycle @aws_iam @aws_cognito_user_pools
+  updateCycle(input: UpdateCycleInput!, condition: ModelCycleConditionInput): Cycle @aws_iam @aws_cognito_user_pools
+  deleteCycle(input: DeleteCycleInput!, condition: ModelCycleConditionInput): Cycle @aws_iam @aws_cognito_user_pools
+  createContribution(input: CreateContributionInput!, condition: ModelContributionConditionInput): Contribution @aws_iam @aws_cognito_user_pools
+  updateContribution(input: UpdateContributionInput!, condition: ModelContributionConditionInput): Contribution @aws_iam @aws_cognito_user_pools
+  deleteContribution(input: DeleteContributionInput!, condition: ModelContributionConditionInput): Contribution @aws_iam @aws_cognito_user_pools
+  createAlert(input: CreateAlertInput!, condition: ModelAlertConditionInput): Alert @aws_iam @aws_cognito_user_pools
+  updateAlert(input: UpdateAlertInput!, condition: ModelAlertConditionInput): Alert @aws_iam @aws_cognito_user_pools
+  deleteAlert(input: DeleteAlertInput!, condition: ModelAlertConditionInput): Alert @aws_iam @aws_cognito_user_pools
+  createFundMovement(input: CreateFundMovementInput!, condition: ModelFundMovementConditionInput): FundMovement @aws_iam @aws_cognito_user_pools
+  updateFundMovement(input: UpdateFundMovementInput!, condition: ModelFundMovementConditionInput): FundMovement @aws_iam @aws_cognito_user_pools
+  deleteFundMovement(input: DeleteFundMovementInput!, condition: ModelFundMovementConditionInput): FundMovement @aws_iam @aws_cognito_user_pools
+  createDigest(input: CreateDigestInput!, condition: ModelDigestConditionInput): Digest @aws_iam @aws_cognito_user_pools
+  updateDigest(input: UpdateDigestInput!, condition: ModelDigestConditionInput): Digest @aws_iam @aws_cognito_user_pools
+  deleteDigest(input: DeleteDigestInput!, condition: ModelDigestConditionInput): Digest @aws_iam @aws_cognito_user_pools
+}
+
+input ModelSubscriptionGroupFilterInput {
+  name: ModelSubscriptionStringInput
+  description: ModelSubscriptionStringInput
+  descriptionEn: ModelSubscriptionStringInput
+  currency: ModelSubscriptionStringInput
+  contributionAmount: ModelSubscriptionIntInput
+  frequency: ModelSubscriptionStringInput
+  memberCount: ModelSubscriptionIntInput
+  currentCycleIndex: ModelSubscriptionIntInput
+  emergencyFundBalance: ModelSubscriptionIntInput
+  emergencyFundTarget: ModelSubscriptionIntInput
+  role: ModelSubscriptionStringInput
+  cycleCollected: ModelSubscriptionIntInput
+  cycleExpected: ModelSubscriptionIntInput
+  openAlerts: ModelSubscriptionIntInput
+  archived: ModelSubscriptionBooleanInput
+  id: ModelSubscriptionIDInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionGroupFilterInput]
+  or: [ModelSubscriptionGroupFilterInput]
+  owner: ModelStringInput
+}
+
+type Subscription {
+  onCreateGroup(filter: ModelSubscriptionGroupFilterInput): Group @aws_subscribe(mutations: ["createGroup"]) @aws_iam @aws_cognito_user_pools
+  onUpdateGroup(filter: ModelSubscriptionGroupFilterInput): Group @aws_subscribe(mutations: ["updateGroup"]) @aws_iam @aws_cognito_user_pools
+  onDeleteGroup(filter: ModelSubscriptionGroupFilterInput): Group @aws_subscribe(mutations: ["deleteGroup"]) @aws_iam @aws_cognito_user_pools
+  onCreateMember(filter: ModelSubscriptionMemberFilterInput): Member @aws_subscribe(mutations: ["createMember"]) @aws_iam @aws_cognito_user_pools
+  onUpdateMember(filter: ModelSubscriptionMemberFilterInput): Member @aws_subscribe(mutations: ["updateMember"]) @aws_iam @aws_cognito_user_pools
+  onDeleteMember(filter: ModelSubscriptionMemberFilterInput): Member @aws_subscribe(mutations: ["deleteMember"]) @aws_iam @aws_cognito_user_pools
+  onCreateCycle(filter: ModelSubscriptionCycleFilterInput): Cycle @aws_subscribe(mutations: ["createCycle"]) @aws_iam @aws_cognito_user_pools
+  onUpdateCycle(filter: ModelSubscriptionCycleFilterInput): Cycle @aws_subscribe(mutations: ["updateCycle"]) @aws_iam @aws_cognito_user_pools
+  onDeleteCycle(filter: ModelSubscriptionCycleFilterInput): Cycle @aws_subscribe(mutations: ["deleteCycle"]) @aws_iam @aws_cognito_user_pools
+  onCreateContribution(filter: ModelSubscriptionContributionFilterInput): Contribution @aws_subscribe(mutations: ["createContribution"]) @aws_iam @aws_cognito_user_pools
+  onUpdateContribution(filter: ModelSubscriptionContributionFilterInput): Contribution @aws_subscribe(mutations: ["updateContribution"]) @aws_iam @aws_cognito_user_pools
+  onDeleteContribution(filter: ModelSubscriptionContributionFilterInput): Contribution @aws_subscribe(mutations: ["deleteContribution"]) @aws_iam @aws_cognito_user_pools
+  onCreateAlert(filter: ModelSubscriptionAlertFilterInput): Alert @aws_subscribe(mutations: ["createAlert"]) @aws_iam @aws_cognito_user_pools
+  onUpdateAlert(filter: ModelSubscriptionAlertFilterInput): Alert @aws_subscribe(mutations: ["updateAlert"]) @aws_iam @aws_cognito_user_pools
+  onDeleteAlert(filter: ModelSubscriptionAlertFilterInput): Alert @aws_subscribe(mutations: ["deleteAlert"]) @aws_iam @aws_cognito_user_pools
+  onCreateFundMovement(filter: ModelSubscriptionFundMovementFilterInput): FundMovement @aws_subscribe(mutations: ["createFundMovement"]) @aws_iam @aws_cognito_user_pools
+  onUpdateFundMovement(filter: ModelSubscriptionFundMovementFilterInput): FundMovement @aws_subscribe(mutations: ["updateFundMovement"]) @aws_iam @aws_cognito_user_pools
+  onDeleteFundMovement(filter: ModelSubscriptionFundMovementFilterInput): FundMovement @aws_subscribe(mutations: ["deleteFundMovement"]) @aws_iam @aws_cognito_user_pools
+  onCreateDigest(filter: ModelSubscriptionDigestFilterInput): Digest @aws_subscribe(mutations: ["createDigest"]) @aws_iam @aws_cognito_user_pools
+  onUpdateDigest(filter: ModelSubscriptionDigestFilterInput): Digest @aws_subscribe(mutations: ["updateDigest"]) @aws_iam @aws_cognito_user_pools
+  onDeleteDigest(filter: ModelSubscriptionDigestFilterInput): Digest @aws_subscribe(mutations: ["deleteDigest"]) @aws_iam @aws_cognito_user_pools
+}
+
+type ModelMemberConnection @aws_iam @aws_cognito_user_pools {
+  items: [Member]!
+  nextToken: String
+}
+
+input ModelMemberFilterInput {
+  groupId: ModelIDInput
+  name: ModelStringInput
+  email: ModelStringInput
+  phone: ModelStringInput
+  trustScore: ModelIntInput
+  lateCount: ModelIntInput
+  cyclesCompleted: ModelIntInput
+  notifySms: ModelBooleanInput
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelMemberFilterInput]
+  or: [ModelMemberFilterInput]
+  not: ModelMemberFilterInput
+  owner: ModelStringInput
+}
+
+input ModelMemberConditionInput {
+  groupId: ModelIDInput
+  name: ModelStringInput
+  email: ModelStringInput
+  phone: ModelStringInput
+  trustScore: ModelIntInput
+  lateCount: ModelIntInput
+  cyclesCompleted: ModelIntInput
+  notifySms: ModelBooleanInput
+  and: [ModelMemberConditionInput]
+  or: [ModelMemberConditionInput]
+  not: ModelMemberConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateMemberInput {
+  groupId: ID!
+  name: String!
+  email: String!
+  phone: String
+  trustScore: Int!
+  lateCount: Int
+  cyclesCompleted: Int
+  notifySms: Boolean
+  id: ID
+}
+
+input UpdateMemberInput {
+  groupId: ID
+  name: String
+  email: String
+  phone: String
+  trustScore: Int
+  lateCount: Int
+  cyclesCompleted: Int
+  notifySms: Boolean
+  id: ID!
+}
+
+input DeleteMemberInput {
+  id: ID!
+}
+
+input ModelSubscriptionMemberFilterInput {
+  groupId: ModelSubscriptionIDInput
+  name: ModelSubscriptionStringInput
+  email: ModelSubscriptionStringInput
+  phone: ModelSubscriptionStringInput
+  trustScore: ModelSubscriptionIntInput
+  lateCount: ModelSubscriptionIntInput
+  cyclesCompleted: ModelSubscriptionIntInput
+  notifySms: ModelSubscriptionBooleanInput
+  id: ModelSubscriptionIDInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionMemberFilterInput]
+  or: [ModelSubscriptionMemberFilterInput]
+  owner: ModelStringInput
+}
+
+type ModelCycleConnection @aws_iam @aws_cognito_user_pools {
+  items: [Cycle]!
+  nextToken: String
+}
+
+input ModelCycleStatusInput {
+  eq: CycleStatus
+  ne: CycleStatus
+}
+
+input ModelCycleFilterInput {
+  groupId: ModelIDInput
+  cycleNumber: ModelIntInput
+  recipientMemberId: ModelIDInput
+  recipientName: ModelStringInput
+  startDate: ModelStringInput
+  endDate: ModelStringInput
+  status: ModelCycleStatusInput
+  totalExpected: ModelIntInput
+  totalCollected: ModelIntInput
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelCycleFilterInput]
+  or: [ModelCycleFilterInput]
+  not: ModelCycleFilterInput
+  owner: ModelStringInput
+}
+
+input ModelCycleConditionInput {
+  groupId: ModelIDInput
+  cycleNumber: ModelIntInput
+  recipientMemberId: ModelIDInput
+  recipientName: ModelStringInput
+  startDate: ModelStringInput
+  endDate: ModelStringInput
+  status: ModelCycleStatusInput
+  totalExpected: ModelIntInput
+  totalCollected: ModelIntInput
+  and: [ModelCycleConditionInput]
+  or: [ModelCycleConditionInput]
+  not: ModelCycleConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateCycleInput {
+  groupId: ID!
+  cycleNumber: Int!
+  recipientMemberId: ID
+  recipientName: String
+  startDate: AWSDate!
+  endDate: AWSDate!
+  status: CycleStatus
+  totalExpected: Int!
+  totalCollected: Int!
+  id: ID
+}
+
+input UpdateCycleInput {
+  groupId: ID
+  cycleNumber: Int
+  recipientMemberId: ID
+  recipientName: String
+  startDate: AWSDate
+  endDate: AWSDate
+  status: CycleStatus
+  totalExpected: Int
+  totalCollected: Int
+  id: ID!
+}
+
+input DeleteCycleInput {
+  id: ID!
+}
+
+input ModelSubscriptionCycleFilterInput {
+  groupId: ModelSubscriptionIDInput
+  cycleNumber: ModelSubscriptionIntInput
+  recipientMemberId: ModelSubscriptionIDInput
+  recipientName: ModelSubscriptionStringInput
+  startDate: ModelSubscriptionStringInput
+  endDate: ModelSubscriptionStringInput
+  status: ModelSubscriptionStringInput
+  totalExpected: ModelSubscriptionIntInput
+  totalCollected: ModelSubscriptionIntInput
+  id: ModelSubscriptionIDInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionCycleFilterInput]
+  or: [ModelSubscriptionCycleFilterInput]
+  owner: ModelStringInput
+}
+
+type ModelContributionConnection @aws_iam @aws_cognito_user_pools {
+  items: [Contribution]!
+  nextToken: String
+}
+
+input ModelContributionStatusInput {
+  eq: ContributionStatus
+  ne: ContributionStatus
+}
+
+input ModelContributionMethodInput {
+  eq: ContributionMethod
+  ne: ContributionMethod
+}
+
+input ModelContributionFilterInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  memberId: ModelIDInput
+  memberName: ModelStringInput
+  amount: ModelIntInput
+  status: ModelContributionStatusInput
+  dateDeclared: ModelStringInput
+  rawText: ModelStringInput
+  rawTextEn: ModelStringInput
+  method: ModelContributionMethodInput
+  transactionId: ModelStringInput
+  receiptKey: ModelStringInput
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelContributionFilterInput]
+  or: [ModelContributionFilterInput]
+  not: ModelContributionFilterInput
+  owner: ModelStringInput
+}
+
+input ModelContributionConditionInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  memberId: ModelIDInput
+  memberName: ModelStringInput
+  amount: ModelIntInput
+  status: ModelContributionStatusInput
+  dateDeclared: ModelStringInput
+  rawText: ModelStringInput
+  rawTextEn: ModelStringInput
+  method: ModelContributionMethodInput
+  transactionId: ModelStringInput
+  receiptKey: ModelStringInput
+  and: [ModelContributionConditionInput]
+  or: [ModelContributionConditionInput]
+  not: ModelContributionConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateContributionInput {
+  groupId: ID!
+  cycleId: ID!
+  memberId: ID!
+  memberName: String!
+  amount: Int!
+  status: ContributionStatus
+  dateDeclared: AWSDate
+  rawText: String
+  rawTextEn: String
+  method: ContributionMethod
+  transactionId: String
+  receiptKey: String
+  id: ID
+}
+
+input UpdateContributionInput {
+  groupId: ID
+  cycleId: ID
+  memberId: ID
+  memberName: String
+  amount: Int
+  status: ContributionStatus
+  dateDeclared: AWSDate
+  rawText: String
+  rawTextEn: String
+  method: ContributionMethod
+  transactionId: String
+  receiptKey: String
+  id: ID!
+}
+
+input DeleteContributionInput {
+  id: ID!
+}
+
+input ModelSubscriptionContributionFilterInput {
+  groupId: ModelSubscriptionIDInput
+  cycleId: ModelSubscriptionIDInput
+  memberId: ModelSubscriptionIDInput
+  memberName: ModelSubscriptionStringInput
+  amount: ModelSubscriptionIntInput
+  status: ModelSubscriptionStringInput
+  dateDeclared: ModelSubscriptionStringInput
+  rawText: ModelSubscriptionStringInput
+  rawTextEn: ModelSubscriptionStringInput
+  method: ModelSubscriptionStringInput
+  transactionId: ModelSubscriptionStringInput
+  receiptKey: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionContributionFilterInput]
+  or: [ModelSubscriptionContributionFilterInput]
+  owner: ModelStringInput
+}
+
+type ModelAlertConnection @aws_iam @aws_cognito_user_pools {
+  items: [Alert]!
+  nextToken: String
+}
+
+input ModelAlertTypeInput {
+  eq: AlertType
+  ne: AlertType
+}
+
+input ModelAlertProposalKindInput {
+  eq: AlertProposalKind
+  ne: AlertProposalKind
+}
+
+input ModelAlertFilterInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  memberId: ModelIDInput
+  memberName: ModelStringInput
+  type: ModelAlertTypeInput
+  message: ModelStringInput
+  messageEn: ModelStringInput
+  createdAt: ModelStringInput
+  resolved: ModelBooleanInput
+  proposalKind: ModelAlertProposalKindInput
+  proposalDetails: ModelStringInput
+  proposalDetailsEn: ModelStringInput
+  dedupeKey: ModelStringInput
+  id: ModelIDInput
+  updatedAt: ModelStringInput
+  and: [ModelAlertFilterInput]
+  or: [ModelAlertFilterInput]
+  not: ModelAlertFilterInput
+  owner: ModelStringInput
+}
+
+input ModelAlertConditionInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  memberId: ModelIDInput
+  memberName: ModelStringInput
+  type: ModelAlertTypeInput
+  message: ModelStringInput
+  messageEn: ModelStringInput
+  createdAt: ModelStringInput
+  resolved: ModelBooleanInput
+  proposalKind: ModelAlertProposalKindInput
+  proposalDetails: ModelStringInput
+  proposalDetailsEn: ModelStringInput
+  dedupeKey: ModelStringInput
+  and: [ModelAlertConditionInput]
+  or: [ModelAlertConditionInput]
+  not: ModelAlertConditionInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateAlertInput {
+  groupId: ID!
+  cycleId: ID
+  memberId: ID
+  memberName: String
+  type: AlertType
+  message: String!
+  messageEn: String
+  createdAt: AWSDateTime
+  resolved: Boolean
+  proposalKind: AlertProposalKind
+  proposalDetails: String
+  proposalDetailsEn: String
+  dedupeKey: String!
+  id: ID
+}
+
+input UpdateAlertInput {
+  groupId: ID
+  cycleId: ID
+  memberId: ID
+  memberName: String
+  type: AlertType
+  message: String
+  messageEn: String
+  createdAt: AWSDateTime
+  resolved: Boolean
+  proposalKind: AlertProposalKind
+  proposalDetails: String
+  proposalDetailsEn: String
+  dedupeKey: String
+  id: ID!
+}
+
+input DeleteAlertInput {
+  id: ID!
+}
+
+input ModelSubscriptionAlertFilterInput {
+  groupId: ModelSubscriptionIDInput
+  cycleId: ModelSubscriptionIDInput
+  memberId: ModelSubscriptionIDInput
+  memberName: ModelSubscriptionStringInput
+  type: ModelSubscriptionStringInput
+  message: ModelSubscriptionStringInput
+  messageEn: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  resolved: ModelSubscriptionBooleanInput
+  proposalKind: ModelSubscriptionStringInput
+  proposalDetails: ModelSubscriptionStringInput
+  proposalDetailsEn: ModelSubscriptionStringInput
+  dedupeKey: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionAlertFilterInput]
+  or: [ModelSubscriptionAlertFilterInput]
+  owner: ModelStringInput
+}
+
+type ModelFundMovementConnection @aws_iam @aws_cognito_user_pools {
+  items: [FundMovement]!
+  nextToken: String
+}
+
+input ModelFundMovementKindInput {
+  eq: FundMovementKind
+  ne: FundMovementKind
+}
+
+input ModelFundMovementFilterInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  kind: ModelFundMovementKindInput
+  amount: ModelIntInput
+  reason: ModelStringInput
+  reasonEn: ModelStringInput
+  createdAt: ModelStringInput
+  id: ModelIDInput
+  updatedAt: ModelStringInput
+  and: [ModelFundMovementFilterInput]
+  or: [ModelFundMovementFilterInput]
+  not: ModelFundMovementFilterInput
+  owner: ModelStringInput
+}
+
+input ModelFundMovementConditionInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  kind: ModelFundMovementKindInput
+  amount: ModelIntInput
+  reason: ModelStringInput
+  reasonEn: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelFundMovementConditionInput]
+  or: [ModelFundMovementConditionInput]
+  not: ModelFundMovementConditionInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateFundMovementInput {
+  groupId: ID!
+  cycleId: ID
+  kind: FundMovementKind
+  amount: Int!
+  reason: String
+  reasonEn: String
+  createdAt: AWSDateTime
+  id: ID
+}
+
+input UpdateFundMovementInput {
+  groupId: ID
+  cycleId: ID
+  kind: FundMovementKind
+  amount: Int
+  reason: String
+  reasonEn: String
+  createdAt: AWSDateTime
+  id: ID!
+}
+
+input DeleteFundMovementInput {
+  id: ID!
+}
+
+input ModelSubscriptionFundMovementFilterInput {
+  groupId: ModelSubscriptionIDInput
+  cycleId: ModelSubscriptionIDInput
+  kind: ModelSubscriptionStringInput
+  amount: ModelSubscriptionIntInput
+  reason: ModelSubscriptionStringInput
+  reasonEn: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionFundMovementFilterInput]
+  or: [ModelSubscriptionFundMovementFilterInput]
+  owner: ModelStringInput
+}
+
+type ModelDigestConnection @aws_iam @aws_cognito_user_pools {
+  items: [Digest]!
+  nextToken: String
+}
+
+input ModelDigestLocaleInput {
+  eq: DigestLocale
+  ne: DigestLocale
+}
+
+input ModelDigestFilterInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  locale: ModelDigestLocaleInput
+  script: ModelStringInput
+  audioKey: ModelStringInput
+  createdAt: ModelStringInput
+  id: ModelIDInput
+  updatedAt: ModelStringInput
+  and: [ModelDigestFilterInput]
+  or: [ModelDigestFilterInput]
+  not: ModelDigestFilterInput
+  owner: ModelStringInput
+}
+
+input ModelDigestConditionInput {
+  groupId: ModelIDInput
+  cycleId: ModelIDInput
+  locale: ModelDigestLocaleInput
+  script: ModelStringInput
+  audioKey: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelDigestConditionInput]
+  or: [ModelDigestConditionInput]
+  not: ModelDigestConditionInput
+  updatedAt: ModelStringInput
+  owner: ModelStringInput
+}
+
+input CreateDigestInput {
+  groupId: ID!
+  cycleId: ID!
+  locale: DigestLocale
+  script: String!
+  audioKey: String!
+  createdAt: AWSDateTime
+  id: ID
+}
+
+input UpdateDigestInput {
+  groupId: ID
+  cycleId: ID
+  locale: DigestLocale
+  script: String
+  audioKey: String
+  createdAt: AWSDateTime
+  id: ID!
+}
+
+input DeleteDigestInput {
+  id: ID!
+}
+
+input ModelSubscriptionDigestFilterInput {
+  groupId: ModelSubscriptionIDInput
+  cycleId: ModelSubscriptionIDInput
+  locale: ModelSubscriptionStringInput
+  script: ModelSubscriptionStringInput
+  audioKey: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionDigestFilterInput]
+  or: [ModelSubscriptionDigestFilterInput]
+  owner: ModelStringInput
+}
