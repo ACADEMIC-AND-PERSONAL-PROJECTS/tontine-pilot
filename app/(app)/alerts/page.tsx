@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   fakeAlerts,
@@ -14,6 +14,9 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatFCFA, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
+import { useGroups } from "@/lib/groups";
+import { client, isBackendEnabled } from "@/lib/backend";
+import { toAlert } from "@/lib/remote";
 import {
   Bell,
   AlertTriangle,
@@ -72,6 +75,27 @@ export default function AlertsPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
   const [alerts, setAlerts] = useState(fakeAlerts);
+  const { active } = useGroups();
+  const [nudging, setNudging] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isBackendEnabled()) return;
+    let live = true;
+    client.models.Alert.list({ filter: { groupId: { eq: active.id } } }).then(
+      ({ data, errors }) => {
+        if (!live || errors?.length || !data?.length) return;
+        try {
+          setAlerts((data as Record<string, unknown>[]).map((r) => toAlert(r)));
+        } catch {
+          // contract drift -> keep demo
+        }
+      },
+      () => {}
+    );
+    return () => {
+      live = false;
+    };
+  }, [active.id]);
   const [speaking, setSpeaking] = useState(false);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<StatusFilter>("open");
@@ -80,10 +104,27 @@ export default function AlertsPage() {
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [showResolved, setShowResolved] = useState(false);
 
-  function resolve(id: string) {
-    setAlerts((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, resolved: true } : a))
-    );
+  async function resolve(id: string) {
+    setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, resolved: true } : a)));
+    if (isBackendEnabled()) {
+      try {
+        await client.models.Alert.update({ id, resolved: true });
+      } catch {
+        // local state already updated
+      }
+    }
+  }
+
+  async function nudge(id: string) {
+    if (!isBackendEnabled() || nudging) return;
+    setNudging(id);
+    try {
+      await client.mutations.sendNudge({ alertId: id });
+    } catch {
+      // mock-send or offline: brief spin only
+    } finally {
+      setNudging(null);
+    }
   }
 
   function resetPaging() {
@@ -368,9 +409,21 @@ export default function AlertsPage() {
                           <Check className="h-3.5 w-3.5" />
                           {fr ? "Marquer résolu" : "Mark resolved"}
                         </Button>
-                        <Button size="sm" variant="ghost" className="gap-1.5">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="gap-1.5"
+                          onClick={() => nudge(a.id)}
+                          disabled={nudging === a.id}
+                        >
                           <MessageCircle className="h-3.5 w-3.5" />
-                          {fr ? "Relancer (simulé)" : "Nudge (simulated)"}
+                          {nudging === a.id
+                            ? fr
+                              ? "Envoi…"
+                              : "Sending…"
+                            : fr
+                              ? "Relancer (simulé)"
+                              : "Nudge (simulated)"}
                         </Button>
                       </div>
                     )}
