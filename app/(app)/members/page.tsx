@@ -11,12 +11,38 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
+import { client, isBackendEnabled } from "@/lib/backend";
+import { toMember } from "@/lib/remote";
+import { useEffect, useState } from "react";
+import type { Member } from "@/lib/fake-data";
 
 export default function MembersPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
   const { active } = useGroups();
-  const aiOrder = recommendRotationOrder();
+  const [remoteMembers, setRemoteMembers] = useState<Member[] | null>(null);
+
+  useEffect(() => {
+    if (!isBackendEnabled()) return;
+    let live = true;
+    client.models.Member.list({ filter: { groupId: { eq: active.id } } }).then(
+      ({ data, errors }) => {
+        if (!live || errors?.length || !data?.length) return;
+        try {
+          setRemoteMembers((data as Record<string, unknown>[]).map((r) => toMember(r)));
+        } catch {
+          // keep demo
+        }
+      },
+      () => {}
+    );
+    return () => {
+      live = false;
+    };
+  }, [active.id]);
+
+  const members = remoteMembers ?? fakeMembers;
+  const aiOrder = recommendRotationOrder(members);
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -58,7 +84,7 @@ export default function MembersPage() {
       </motion.div>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        {fakeMembers.map((m, i) => {
+        {members.map((m, i) => {
           const contrib = fakeContributions.find((c) => c.memberId === m.id);
           return (
             <motion.div

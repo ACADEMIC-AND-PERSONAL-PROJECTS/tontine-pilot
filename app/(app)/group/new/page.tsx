@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { recommendRotationOrder, type Member, type Group } from "@/lib/fake-data";
 import { useGroups } from "@/lib/groups";
+import { client, isBackendEnabled } from "@/lib/backend";
 import { ArrowRight, ArrowLeft, Check, Plus, X, Sparkles, MailWarning, History } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -129,6 +130,36 @@ export default function NewGroupPage() {
         openAlerts: 0,
       };
       addGroup(g);
+      if (isBackendEnabled()) {
+        const trust = (late: number, cycles: number) =>
+          Math.max(50, Math.min(99, 92 - late * 7 + Math.min(6, cycles)));
+        Promise.all(
+          form.members.map((md, i) =>
+            client.models.Member.create({
+              id: `${g.id}-m${i}`,
+              groupId: g.id,
+              name: md.name.trim(),
+              email: md.email.trim(),
+              phone: md.phone.trim() || undefined,
+              trustScore: trust(md.lateCount, md.cycles),
+              lateCount: md.lateCount,
+              cyclesCompleted: md.cycles,
+              notifySms: false,
+            }).catch(() => null)
+          )
+        ).then(() => {
+          client.models.Cycle.create({
+            id: `${g.id}-cycle-1`,
+            groupId: g.id,
+            cycleNumber: 1,
+            startDate: new Date().toISOString().slice(0, 10),
+            endDate: new Date().toISOString().slice(0, 10),
+            status: "OPEN",
+            totalExpected: amount * form.members.length,
+            totalCollected: 0,
+          }).catch(() => null);
+        });
+      }
       setDone(true);
       setTimeout(() => router.push("/dashboard"), 1800);
     }

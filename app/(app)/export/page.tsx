@@ -14,17 +14,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, FileSpreadsheet, FileText, Check } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
-import { contributionText } from "@/lib/fake-data";
+import { contributionText, type Contribution } from "@/lib/fake-data";
+import { useRemoteCycleData } from "@/lib/use-remote";
+import { useGroups } from "@/lib/groups";
 
-function buildCsv() {
+function buildCsv(rows: Contribution[]) {
   const header = "Membre,Montant,Statut,Date,Déclaration\n";
-  const rows = fakeContributions
-    .map(
-      (c) =>
-        `"${c.memberName}",${c.amount},${c.status},"${c.dateDeclared}","${c.rawText.replace(/"/g, '""')}"`
-    )
-    .join("\n");
-  return header + rows;
+  return (
+    header +
+    rows
+      .map(
+        (c) =>
+          `"${c.memberName}",${c.amount},${c.status},"${c.dateDeclared}","${(c.rawText || "").replace(/"/g, '""')}"`
+      )
+      .join("\n")
+  );
 }
 
 function downloadBlob(content: string, filename: string, type: string) {
@@ -41,10 +45,13 @@ export default function ExportPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
   const [downloaded, setDownloaded] = useState<"csv" | "pdf" | null>(null);
+  const { active } = useGroups();
+  const remote = useRemoteCycleData(active.id);
+  const contributions = remote.contributions.length > 0 ? remote.contributions : fakeContributions;
 
   function exportCsv() {
     downloadBlob(
-      buildCsv(),
+      buildCsv(contributions),
       `registre-cycle-${currentCycle.cycleNumber}.csv`,
       "text/csv;charset=utf-8"
     );
@@ -59,7 +66,7 @@ export default function ExportPage() {
       `Période: ${currentCycle.startDate} → ${currentCycle.endDate}`,
       `Collecté: ${currentCycle.totalCollected} / ${currentCycle.totalExpected} FCFA`,
       "",
-      ...fakeContributions.map(
+      ...contributions.map(
         (c) =>
           `${c.memberName.padEnd(22)} ${String(c.amount).padStart(8)}  ${c.status.padEnd(10)}  ${c.dateDeclared || "—"}`
       ),
@@ -152,7 +159,7 @@ export default function ExportPage() {
                 </tr>
             </thead>
             <tbody>
-              {fakeContributions.map((c) => (
+              {contributions.map((c) => (
                 <tr
                   key={c.id}
                   className="border-b border-border/60 last:border-0 hover:bg-bg-subtle/50"

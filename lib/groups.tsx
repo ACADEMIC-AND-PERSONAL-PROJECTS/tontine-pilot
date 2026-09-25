@@ -9,6 +9,8 @@ import {
   useState,
 } from "react";
 import { fakeGroup, seedGroups, type Group } from "@/lib/fake-data";
+import { client, isBackendEnabled } from "@/lib/backend";
+import { toGroup } from "@/lib/remote";
 
 const GROUPS_KEY = "tp-groups";
 const ACTIVE_KEY = "tp-active-group";
@@ -55,6 +57,27 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
     setReady(true);
   }, []);
 
+  // Remote sync: backend rows win when reachable (logged-in + deployed).
+  useEffect(() => {
+    if (!isBackendEnabled()) return;
+    let live = true;
+    client.models.Group.list().then(
+      ({ data, errors }) => {
+        if (!live || errors?.length || !data?.length) return;
+        try {
+          const remote = (data as Record<string, unknown>[]).map((r) => toGroup(r));
+          setGroups(remote);
+        } catch {
+          // contract drift -> keep local
+        }
+      },
+      () => {}
+    );
+    return () => {
+      live = false;
+    };
+  }, []);
+
   useEffect(() => {
     if (!ready) return;
     try {
@@ -77,10 +100,33 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
   const addGroup = useCallback((g: Group) => {
     setGroups((prev) => (prev.some((x) => x.id === g.id) ? prev : [...prev, g]));
     setActiveId(g.id);
+    if (isBackendEnabled()) {
+      client.models.Group.create({
+        id: g.id,
+        name: g.name,
+        description: g.description,
+        descriptionEn: g.descriptionEn,
+        currency: g.currency,
+        contributionAmount: g.contributionAmount,
+        frequency: g.frequency,
+        memberCount: g.memberCount,
+        currentCycleIndex: g.currentCycleIndex,
+        emergencyFundBalance: g.emergencyFundBalance,
+        emergencyFundTarget: g.emergencyFundTarget,
+        role: g.role,
+        cycleCollected: g.cycleCollected,
+        cycleExpected: g.cycleExpected,
+        openAlerts: g.openAlerts,
+        archived: false,
+      }).catch(() => {});
+    }
   }, []);
 
   const archiveGroup = useCallback((id: string, archived: boolean) => {
     setGroups((prev) => prev.map((g) => (g.id === id ? { ...g, archived } : g)));
+    if (isBackendEnabled()) {
+      client.models.Group.update({ id, archived }).catch(() => {});
+    }
   }, []);
 
   const removeGroup = useCallback(
@@ -91,6 +137,9 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
         if (activeId === id) setActiveId(next[0].id);
         return next;
       });
+      if (isBackendEnabled()) {
+        client.models.Group.delete({ id }).catch(() => {});
+      }
     },
     [activeId]
   );
