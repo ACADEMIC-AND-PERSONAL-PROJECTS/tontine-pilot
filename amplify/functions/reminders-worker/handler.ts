@@ -7,7 +7,7 @@ import { dedupeKey, templateNudge } from "../_shared/fallbacks";
 
 const client = dataClient();
 
-const region = process.env.AWS_REGION ?? "eu-west-1";
+const region = process.env.AWS_REGION ?? "us-east-1";
 const ses = new SESClient({ region });
 const sns = new SNSClient({ region });
 const MOCK_SEND = (process.env.MOCK_SEND ?? "true").toLowerCase() !== "false";

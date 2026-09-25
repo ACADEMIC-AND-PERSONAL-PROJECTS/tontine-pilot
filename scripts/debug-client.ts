@@ -10,7 +10,7 @@ Amplify.configure(
     API: {
       GraphQL: {
         endpoint,
-        region: "eu-west-1",
+        region: "us-east-1",
         defaultAuthMode: "iam",
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         modelIntrospection: intro as any,

@@ -11,7 +11,7 @@ import { textractParse } from "../_shared/receipt";
 
 const client = dataClient();
 
-const region = process.env.AWS_REGION ?? "eu-west-1";
+const region = process.env.AWS_REGION ?? "us-east-1";
 const bedrockRegion = process.env.BEDROCK_REGION ?? "us-east-1";
 const s3 = new S3Client({ region });
 const textract = new TextractClient({ region });

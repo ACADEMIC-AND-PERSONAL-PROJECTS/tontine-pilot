@@ -9,7 +9,7 @@ import { scriptFor } from "../_shared/digest";
 
 const client = dataClient();
 
-const region = process.env.AWS_REGION ?? "eu-west-1";
+const region = process.env.AWS_REGION ?? "us-east-1";
 const polly = new PollyClient({ region });
 const s3 = new S3Client({ region });
 

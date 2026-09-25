@@ -7,7 +7,7 @@ async function main() {
     AMPLIFY_DATA_MODEL_INTROSPECTION_SCHEMA_BUCKET_NAME:
       "amplify-tontinepilot-tont-modelintrospectionschema-wqmzs3v7nldj",
     AMPLIFY_DATA_MODEL_INTROSPECTION_SCHEMA_KEY: "modelIntrospectionSchema.json",
-    AMPLIFY_DATA_GRAPHQL_ENDPOINT: "https://example.appsync-api.eu-west-1.amazonaws.com/graphql",
+    AMPLIFY_DATA_GRAPHQL_ENDPOINT: "https://example.appsync-api.us-east-1.amazonaws.com/graphql",
   };
   const { resourceConfig } = await getAmplifyDataClientConfig(env);
   const models = Object.keys(
