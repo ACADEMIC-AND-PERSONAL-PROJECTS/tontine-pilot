@@ -3,6 +3,9 @@ frontend:
   phases:
     preBuild:
       commands:
+        - node --version && npm --version
+        - npm install -g npm@11
+        - npm --version
         - npm ci
     build:
       commands:
