@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "amplify"]
+  "exclude": ["node_modules", "amplify", "scripts"]
 }
