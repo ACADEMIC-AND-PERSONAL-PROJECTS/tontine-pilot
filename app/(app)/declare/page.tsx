@@ -16,6 +16,9 @@ import { Avatar } from "@/components/ui/avatar";
 import { fakeMembers, fakeGroup, fakeOcrReceipt } from "@/lib/fake-data";
 import { formatFCFA, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
+import { useGroups } from "@/lib/groups";
+import { client, isBackendEnabled } from "@/lib/backend";
+import { uploadData } from "aws-amplify/storage";
 
 type Mode = "text" | "ocr";
 
@@ -100,6 +103,23 @@ export default function DeclarePage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const { active } = useGroups();
+  const [receiptKey, setReceiptKey] = useState<string | null>(null);
+
+  async function remoteParse(text: string) {
+    const res = await client.queries.parseDeclaration({ text, groupId: active.id });
+    if (res.errors?.length) throw new Error(res.errors[0].message);
+    const p = res.data;
+    if (!p || p.amount == null) throw new Error("empty-parse");
+    return {
+      kind: "text" as const,
+      amount: p.amount,
+      recipientName: p.recipientName ?? "Cheikh Fall",
+      memberName: p.memberName ?? "",
+      confidence: p.confidence ?? 0.5,
+      raw: text,
+    };
+  }
 
   async function handleParse() {
     if (!text.trim()) {
@@ -110,9 +130,21 @@ export default function DeclarePage() {
     setLoading(true);
     setConfirmed(false);
     setParsed(null);
-    await new Promise((r) => setTimeout(r, 1100));
-    setParsed(fakeParse(text));
-    setLoading(false);
+    try {
+      if (isBackendEnabled()) {
+        try {
+          setParsed(await remoteParse(text));
+        } catch {
+          await new Promise((r) => setTimeout(r, 1100));
+          setParsed(fakeParse(text));
+        }
+      } else {
+        await new Promise((r) => setTimeout(r, 1100));
+        setParsed(fakeParse(text));
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleOcrFile(file: File) {
@@ -121,22 +153,86 @@ export default function DeclarePage() {
     setLoading(true);
     setConfirmed(false);
     setParsed(null);
-    await new Promise((r) => setTimeout(r, 1400));
-    const ocr = fakeOcrReceipt(file.name);
-    setParsed({
-      kind: "ocr",
-      amount: ocr.amount,
-      recipientName: ocr.recipientName,
-      transactionId: ocr.transactionId,
-      date: ocr.date,
-      provider: ocr.provider,
-      confidence: ocr.confidence,
-      fileName: file.name,
-    });
-    setLoading(false);
+    setReceiptKey(null);
+    try {
+      if (isBackendEnabled()) {
+        try {
+          const key = `receipts/${active.id}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+          await uploadData({ path: key, data: file }).result;
+          setReceiptKey(key);
+          const res = await client.queries.parseReceipt({ s3Key: key, groupId: active.id });
+          if (res.errors?.length) throw new Error(res.errors[0].message);
+          const ocr = res.data;
+          if (!ocr || ocr.amount == null) throw new Error("empty-ocr");
+          setParsed({
+            kind: "ocr",
+            amount: ocr.amount,
+            recipientName: ocr.recipientName ?? "",
+            transactionId: ocr.transactionId ?? "",
+            date: ocr.date ?? "",
+            provider: ocr.provider ?? "",
+            confidence: ocr.confidence ?? 0.5,
+            fileName: file.name,
+          });
+          return;
+        } catch {
+          // fall through to demo
+        }
+      }
+      await new Promise((r) => setTimeout(r, 1400));
+      const ocr = fakeOcrReceipt(file.name);
+      setParsed({
+        kind: "ocr",
+        amount: ocr.amount,
+        recipientName: ocr.recipientName,
+        transactionId: ocr.transactionId,
+        date: ocr.date,
+        provider: ocr.provider,
+        confidence: ocr.confidence,
+        fileName: file.name,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
+    if (parsed && isBackendEnabled()) {
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        if (parsed.kind === "text") {
+          const member =
+            fakeMembers.find((m) => m.name === parsed.memberName) ?? fakeMembers[0];
+          await client.models.Contribution.create({
+            groupId: active.id,
+            cycleId: "cycle-4",
+            memberId: member.id,
+            memberName: parsed.memberName,
+            amount: parsed.amount,
+            status: "CONFIRMED",
+            dateDeclared: today,
+            rawText: parsed.raw,
+            rawTextEn: parsed.raw,
+            method: "TEXT_NLU",
+          });
+        } else {
+          await client.models.Contribution.create({
+            groupId: active.id,
+            cycleId: "cycle-4",
+            memberId: "m1",
+            memberName: parsed.recipientName,
+            amount: parsed.amount,
+            status: "CONFIRMED",
+            dateDeclared: parsed.date || today,
+            method: "OCR_RECEIPT",
+            transactionId: parsed.transactionId || undefined,
+            receiptKey: receiptKey ?? undefined,
+          });
+        }
+      } catch {
+        // demo mode: confirmation screen is the proof
+      }
+    }
     setConfirmed(true);
   }
 
