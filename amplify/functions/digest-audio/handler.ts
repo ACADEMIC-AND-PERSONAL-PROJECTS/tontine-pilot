@@ -9,6 +9,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { log } from "../_shared/bedrock";
+import { scriptFor } from "../_shared/digest";
 
 const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
 Amplify.configure(resourceConfig, libraryOptions);
@@ -17,23 +18,6 @@ const client = generateClient<Schema>();
 const region = process.env.AWS_REGION ?? "eu-west-1";
 const polly = new PollyClient({ region });
 const s3 = new S3Client({ region });
-
-function scriptFor(
-  locale: string,
-  cycleNumber: number,
-  groupName: string,
-  recipient: string,
-  collected: number,
-  expected: number,
-  ok: number,
-  late: number,
-  pending: number,
-  fund: number
-) {
-  if (locale === "en")
-    return `Cycle ${cycleNumber} summary, ${groupName}. Recipient: ${recipient}. Collected: ${collected} FCFA of ${expected}. ${ok} members paid, ${late} late, ${pending} pending. Emergency fund: ${fund} FCFA.`;
-  return `Bilan cycle ${cycleNumber}, ${groupName}. Bénéficiaire : ${recipient}. Collecté : ${collected} francs CFA sur ${expected}. ${ok} membres à jour, ${late} en retard, ${pending} en attente. Caisse de secours : ${fund} francs.`;
-}
 
 export const handler: Handler = async (event) => {
   const args = (event as { arguments?: { cycleId?: string; locale?: string; bucket?: string } }).arguments ?? {};

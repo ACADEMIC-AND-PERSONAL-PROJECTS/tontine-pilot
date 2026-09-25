@@ -11,6 +11,7 @@ import {
 } from "@aws-sdk/client-textract";
 import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
 import { VISION_PROFILE, extractJson, log } from "../_shared/bedrock";
+import { textractParse } from "../_shared/receipt";
 
 const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
 Amplify.configure(resourceConfig, libraryOptions);
@@ -34,23 +35,6 @@ async function readBytes(bucket: string, key: string): Promise<{ bytes: Uint8Arr
   }
   const format = bytes[0] === 0x89 && bytes[1] === 0x50 ? "png" : "jpeg";
   return { bytes, format };
-}
-
-function textractParse(lines: string[], standardAmount: number, recipient: string) {
-  const joined = lines.join("\n");
-  const amounts = [...joined.matchAll(/(\d[\d\s]*)\s*(?:FCFA|F\s?CFA|F|CFA)?/gi)]
-    .map((m) => parseInt(m[1].replace(/\s/g, ""), 10))
-    .filter((n) => n >= 1000 && n <= 10000000);
-  const txn = joined.match(/(?:WV|OM|TRX|TXN|ID)[-\s:]?([A-Z0-9-]{4,})/i)?.[1] ?? null;
-  const provider = /wave/i.test(joined) ? "Wave" : /orange/i.test(joined) ? "Orange Money" : /mtn/i.test(joined) ? "MTN" : "Unknown";
-  return {
-    amount: amounts[0] ?? standardAmount,
-    transactionId: txn,
-    recipientName: recipient,
-    date: new Date().toISOString().slice(0, 10),
-    provider,
-    confidence: amounts[0] ? 0.75 : 0.4,
-  };
 }
 
 export const handler: Handler = async (event) => {
