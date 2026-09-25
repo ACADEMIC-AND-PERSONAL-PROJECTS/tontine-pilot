@@ -17,11 +17,11 @@ async function main() {
   console.log("signed in");
 
   const p = await client.queries.parseDeclaration({
-    text: "J'ai payé 20000 pour Cheikh",
+    text: "Moussa a payé 20000 pour Cheikh",
     groupId: "group-1",
   });
   ok("parseDeclaration", !p.errors?.length && p.data?.amount === 20000, p.data);
-  ok("parseDeclaration.member", p.data?.memberName === "Aïssatou Diallo", p.data?.memberName);
+  ok("parseDeclaration.member", p.data?.memberId === "m2", p.data?.memberName);
 
   const r = await client.queries.recommendRotationOp({ groupId: "group-1" });
   const entries = r.data?.entries ?? [];

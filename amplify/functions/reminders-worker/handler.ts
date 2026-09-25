@@ -74,12 +74,24 @@ async function sendSms(phone: string, body: string): Promise<boolean> {
 }
 
 export const handler: Handler = async (event) => {
-  const input = (event ?? {}) as { trigger?: string; alertId?: string };
+  const raw = (event ?? {}) as {
+    trigger?: string;
+    alertId?: string;
+    arguments?: { alertId?: string };
+  };
+  // AppSync nests mutation args under event.arguments; Scheduler sends a flat payload.
+  const alertId = raw.alertId ?? raw.arguments?.alertId;
+  const trigger = raw.trigger ?? (alertId ? "manual" : "cron-daily");
   // Manual path: regenerate + send a single alert.
-  if (input.trigger === "manual" && input.alertId) {
-    const alert = (await client.models.Alert.get({ id: input.alertId })).data;
+  if (trigger === "manual" && alertId) {
+    const alert = (await client.models.Alert.get({ id: alertId })).data;
     if (!alert) throw new Error("VALIDATION: unknown alert");
-    const member = alert.memberId ? (await client.models.Member.get({ id: alert.memberId })).data : null;
+    // DynamoDB reads are eventually consistent — one retry before giving up.
+    let member = alert.memberId ? (await client.models.Member.get({ id: alert.memberId })).data : null;
+    if (!member && alert.memberId) {
+      await new Promise((r) => setTimeout(r, 800));
+      member = (await client.models.Member.get({ id: alert.memberId })).data;
+    }
     const group = alert.groupId ? (await client.models.Group.get({ id: alert.groupId })).data : null;
     const d = await draftFor(alert, alert.memberName ?? "?", group?.contributionAmount ?? 20000);
     const body = `${d.fr}\n\n${d.en}\n\n${process.env.APP_URL}/alerts`;
