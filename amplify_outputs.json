@@ -1594,6 +1594,22 @@
             }
           }
         },
+        "resolveAlert": {
+          "name": "resolveAlert",
+          "isArray": false,
+          "type": {
+            "nonModel": "SendResult"
+          },
+          "isRequired": false,
+          "arguments": {
+            "alertId": {
+              "name": "alertId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
         "sendNudge": {
           "name": "sendNudge",
           "isArray": false,

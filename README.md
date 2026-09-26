@@ -1,4 +1,5 @@
 <div align="center">
+<img src="assets/brand/banner.svg" width="820" alt="TontinePilot — the AI copilot for community tontines">
 
 # TontinePilot
 

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380" role="img" aria-label="TontinePilot — the AI copilot for community tontines">
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#8B5CF6" stop-opacity="0.35"/>
+      <stop offset="0.6" stop-color="#8B5CF6" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FAFAFA"/>
+      <stop offset="0.55" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="pill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="1184" height="364" rx="28" fill="#0C0F1A" stroke="#8B5CF6" stroke-opacity="0.35" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1184" height="364" rx="28" fill="url(#glow)"/>
+  <text x="600" y="150" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="150" font-weight="bold" fill="#8B5CF6" opacity="0.16">T</text>
+  <circle cx="180" cy="290" r="4" fill="#FACC15" opacity="0.9"/>
+  <circle cx="1020" cy="90" r="4" fill="#22D3EE" opacity="0.9"/>
+  <circle cx="950" cy="300" r="3" fill="#D946EF" opacity="0.8"/>
+  <circle cx="250" cy="100" r="3" fill="#8B5CF6" opacity="0.8"/>
+  <text x="600" y="168" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="64" font-weight="bold" letter-spacing="6" fill="url(#title)">TONTINEPILOT</text>
+  <text x="600" y="212" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="22" letter-spacing="1" fill="#A1A1AA">The AI copilot for community tontines</text>
+  <rect x="470" y="248" width="260" height="44" rx="22" fill="url(#pill)"/>
+  <text x="600" y="276" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="16" font-weight="bold" letter-spacing="2" fill="#FFFFFF">COMMUNITY SAVINGS · IA</text>
+</svg>
