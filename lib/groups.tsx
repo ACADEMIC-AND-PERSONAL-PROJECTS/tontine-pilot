@@ -33,7 +33,22 @@ export const EMPTY_GROUP: Group = {
 };
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toGroup } from "@/lib/remote";
-import { getCurrentUser } from "aws-amplify/auth";
+import { fetchAuthSession } from "aws-amplify/auth";
+
+/** getCurrentUser() throws UserUnAuthenticatedException when Amplify has not
+ *  finished hydrating tokens from storage yet (race right after login /
+ *  navigation). Poll until the session carries tokens — GraphQL auth uses
+ *  this same path, so whatever it can do, we can read. */
+async function sessionUserId(): Promise<string> {
+  const deadline = Date.now() + 10000;
+  for (;;) {
+    const session = await fetchAuthSession();
+    const sub = session.tokens?.idToken?.payload?.sub as string | undefined;
+    if (sub) return sub;
+    if (Date.now() > deadline) throw new Error("no-session");
+    await new Promise((r) => setTimeout(r, 400));
+  }
+}
 
 const keyFor = (base: string, userId: string | null) =>
   userId ? `${base}-${userId}` : base;
@@ -97,10 +112,10 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       try {
-        const user = await getCurrentUser();
+        const userId = await sessionUserId();
         if (!live) return;
-        setUserId(user.userId);
-        const saved = load(user.userId);
+        setUserId(userId);
+        const saved = load(userId);
         if (saved) {
           // eslint-disable-next-line react-hooks/set-state-in-effect -- per-account cache hydration
           setGroups(saved.groups);
@@ -128,9 +143,9 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
     let live = true;
     (async () => {
       try {
-        const user = await getCurrentUser();
+        const userId = await sessionUserId();
         const { data, errors } = await client.models.Group.list({
-          filter: { ownerId: { eq: user.userId } },
+          filter: { ownerId: { eq: userId } },
         });
         if (!live) return;
         if (!errors?.length && data) {
@@ -185,10 +200,10 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
       setActiveId(g.id);
       if (!backendOn) return true;
       try {
-        const me = await getCurrentUser().catch(() => null);
+        const me = await sessionUserId().catch(() => null);
         const { errors } = await client.models.Group.create({
           id: g.id,
-          ownerId: me?.userId ?? userId ?? undefined,
+          ownerId: me ?? userId ?? undefined,
           name: g.name,
           description: g.description,
           descriptionEn: g.descriptionEn,
