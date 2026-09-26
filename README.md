@@ -2,134 +2,135 @@
 
 # TontinePilot
 
-[![Live Demo](https://img.shields.io/badge/demo-live-8B5CF6?style=for-the-badge&logo=vercel&logoColor=white)](https://main.dhnfua5oyahpy.amplifyapp.com)
-[![CI](https://img.shields.io/github/actions/workflow/status/khadimmbaye0/tontine-pilot/ci.yml?label=ci&style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/khadimmbaye0/tontine-pilot/actions)
-[![License MIT](https://img.shields.io/badge/license-MIT-FACC15?style=for-the-badge&logoColor=white)](LICENSE)
-[![AWS Hackathon](https://img.shields.io/badge/AWS-zero--to--shipped-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://builder.aws.com)
+[![Live Demo](https://img.shields.io/badge/LIVE_DEMO-8B5CF6?style=flat-square&logo=vercel&logoColor=white)](https://main.dhnfua5oyahpy.amplifyapp.com)
+[![CI](https://img.shields.io/github/actions/workflow/status/khadimmbaye0/tontine-pilot/ci.yml?label=CI&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/khadimmbaye0/tontine-pilot/actions)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Haiku_4.5_%2B_Sonnet_4.5-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/bedrock/)
+[![Amplify Gen 2](https://img.shields.io/badge/Amplify-Gen_2-DD344C?style=flat-square&logo=awsamplify&logoColor=white)](https://docs.amplify.aws)
+[![License MIT](https://img.shields.io/badge/License-MIT-FACC15?style=flat-square&logoColor=white)](LICENSE)
+[![Lang](https://img.shields.io/badge/FR-EN-22D3EE?style=flat-square&logoColor=white)](#)
 
-**TontinePilot** est le copilote IA des tontines communautaires : il transforme les
-déclarations informelles et les captures Mobile Money en registre partagé et vérifiable,
-avec médiation empathique, caisse de secours et digest audio. Propulsé par
-**Next.js 16** et **AWS Bedrock**, bilingue français-anglais, pensé pour un vrai
-admin de tontine — pas pour une démo jetable.
+<img src="assets/hero-banner.jpg" width="100%" alt="TontinePilot — group dashboard, rotation order, contribution tracking, reminders and export registry">
 
-<img src="assets/hero-banner.jpg" width="860" alt="TontinePilot — tableau de bord, rotation, cotisations, rappels et exports reliés">
+**TontinePilot** is the AI copilot for community rotating savings groups (tontines).
+It turns informal declarations and Mobile Money screenshots into a shared,
+verifiable ledger — with empathic mediation, an emergency fund, and audio digests.
+Built with **Next.js 16** and **AWS Bedrock**, bilingual French/English, designed
+for a real tontine admin — not a throwaway demo.
 
-**[Ouvrir la démo live](https://main.dhnfua5oyahpy.amplifyapp.com)** · compte démo sur demande ·
-aucun argent réel ne transite, suivi uniquement.
-
-<img src="assets/brand/badges.svg" width="700" alt="Badges : live demo, AWS Bedrock IA, Next.js 16, Amplify Gen 2, MIT, FR EN">
+**[Open the live demo](https://main.dhnfua5oyahpy.amplifyapp.com)** · demo account on request ·
+no real money ever moves, tracking only.
 
 </div>
 
 <div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Séparateur">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## Ce que fait le produit
+## What it does
 
-| Bloc | Super pouvoir |
+| Area | Capability |
 |---|---|
-| Déclarations en langage naturel | « J'ai payé 20000 pour Cheikh » → Bedrock extrait montant, membre, bénéficiaire |
-| OCR Mobile Money | Capture Wave / Orange Money / MTN → montant, ID transaction, date |
-| Médiation empathique | Relances douces, étalements, échanges de tour, détection d'anomalies |
-| Caisse de secours | Réserve Tontine Flex qui débloque le bénéficiaire en cas de retard critique |
-| Ordre de rotation IA | Confiance − retards + ancienneté ; tirage provisoire sans historique |
-| Digest audio | Bilan lu à voix haute (Polly Léa / Joanna), FR/EN, avec compte à rebours |
-| Assistant Tonti | Répond et agit : envoie relances et messages aux membres en langage naturel |
-| Registre exportable | CSV + aperçu imprimable pour clore les disputes |
+| Natural-language declarations | "I paid 20000 for Cheikh" → Bedrock extracts amount, member, recipient |
+| Mobile Money OCR | Wave / Orange Money / MTN screenshots → amount, transaction ID, date |
+| Empathic mediation | Gentle nudges, installment plans, tour swaps, anomaly detection |
+| Emergency fund | Tontine Flex reserve that unlocks the recipient on critical lates |
+| AI rotation order | Trust − lates + seniority; provisional lottery with no history |
+| Audio digest | Cycle summary read aloud (Polly Léa / Joanna), FR/EN, with countdown |
+| Tonti assistant | Answers and acts: emails and reminds members in natural language |
+| Exportable ledger | CSV + printable preview to end disputes |
 
 <div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Séparateur">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## La landing
+## Landing
 
 <div align="center">
-<img src="assets/screenshots/landing-hero.png" width="660" alt="Landing TontinePilot : hero avec réseau communautaire">
+<img src="assets/screenshots/landing-hero.png" width="660" alt="TontinePilot landing: hero with community network">
 </div>
 
 <details>
-<summary><b>Voir le film produit, la démo live et le fonctionnement</b></summary>
+<summary><b>Product film, live demo and how it works</b></summary>
 
 <div align="center">
-<img src="assets/screenshots/landing-film.png" width="560" alt="Section film produit">
+<img src="assets/screenshots/landing-film.png" width="560" alt="Product film section">
 <br><br>
-<img src="assets/screenshots/landing-demo.png" width="560" alt="Section démo du cycle de septembre">
+<img src="assets/screenshots/landing-demo.png" width="560" alt="September cycle live demo section">
 <br><br>
-<img src="assets/screenshots/landing-how.png" width="560" alt="Section comment ça marche">
+<img src="assets/screenshots/landing-how.png" width="560" alt="How it works section">
 <br><br>
-<img src="assets/screenshots/landing-features.png" width="560" alt="Section capacités">
+<img src="assets/screenshots/landing-features.png" width="560" alt="Capabilities section">
 </div>
 
 </details>
 
 <div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Séparateur">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## L'application
+## The app
 
 <div align="center">
-<img src="assets/screenshots/app-dashboard.png" width="660" alt="Dashboard : collecte, cotisations, caisse de secours, alertes">
+<img src="assets/screenshots/app-dashboard.png" width="660" alt="Dashboard: collection, contributions, emergency fund, alerts">
 </div>
 
 <details>
-<summary><b>Connexion et groupes</b></summary>
+<summary><b>Sign in and groups</b></summary>
 
 <div align="center">
-<img src="assets/screenshots/app-login.png" width="560" alt="Écran de connexion animé avec vérification par code">
+<img src="assets/screenshots/app-login.png" width="560" alt="Animated sign-in with code verification">
 <br><br>
-<img src="assets/screenshots/app-groups.png" width="560" alt="Gestion multi-groupes avec progression des cycles">
+<img src="assets/screenshots/app-groups.png" width="560" alt="Multi-group management with cycle progress">
 </div>
 
 </details>
 
 <details>
-<summary><b>Déclarer, membres et alertes</b></summary>
+<summary><b>Declare, members and alerts</b></summary>
 
 <div align="center">
-<img src="assets/screenshots/app-declare.png" width="560" alt="Déclaration par texte ou reçu Mobile Money">
+<img src="assets/screenshots/app-declare.png" width="560" alt="Declare by text or Mobile Money receipt">
 <br><br>
-<img src="assets/screenshots/app-members.png" width="560" alt="Membres avec scores de confiance">
+<img src="assets/screenshots/app-members.png" width="560" alt="Members with trust scores">
 <br><br>
-<img src="assets/screenshots/app-alerts.png" width="560" alt="Alertes avec filtres et médiation">
+<img src="assets/screenshots/app-alerts.png" width="560" alt="Alerts with filters and mediation">
 </div>
 
 </details>
 
 <details>
-<summary><b>Export et création de groupe</b></summary>
+<summary><b>Export and group creation</b></summary>
 
 <div align="center">
-<img src="assets/screenshots/app-export.png" width="560" alt="Export CSV du registre">
+<img src="assets/screenshots/app-export.png" width="560" alt="CSV ledger export">
 <br><br>
-<img src="assets/screenshots/app-group-new.png" width="560" alt="Assistant de création de groupe en 5 étapes">
+<img src="assets/screenshots/app-group-new.png" width="560" alt="Five-step group creation wizard">
 </div>
 
 </details>
 
 <div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Séparateur">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## La stack
+## Stack
 
-| Couche | Arsenal |
+| Layer | Arsenal |
 |---|---|
-| Front | Next.js 16.3.6 · React 19.2.8 · Tailwind CSS 4 · Framer Motion 13.4.4 |
+| Frontend | Next.js 16.3.6 · React 19.2.8 · Tailwind CSS 4 · Framer Motion 13.4.4 |
 | Backend | Amplify Gen 2 · Cognito · AppSync GraphQL · DynamoDB · Lambda Node 22 · S3 |
-| IA | Bedrock Converse : Claude Haiku 4.5 (NLU, médiation, chat) · Sonnet 4.5 (vision) · Polly (Léa, Joanna) · Textract (secours OCR) |
+| AI | Bedrock Converse: Claude Haiku 4.5 (NLU, mediation, chat) · Sonnet 4.5 (vision) · Polly (Léa, Joanna) · Textract (OCR fallback) |
 | Infra | EventBridge Scheduler · SES · SNS · Amplify Hosting · CDK 2.271.0 |
-| Qualité | TypeScript strict · Vitest (33 tests) · ESLint · GitHub Actions · Gitleaks |
+| Quality | Strict TypeScript · Vitest (33 tests) · ESLint · GitHub Actions · Gitleaks |
 
-## L'architecture
+## Architecture
 
 ```mermaid
 %%{init: {"theme":"dark", "themeVariables": {"primaryColor":"#8B5CF6", "primaryTextColor":"#FAFAFA", "primaryBorderColor":"#8B5CF6", "lineColor":"#22D3EE"}}}%%
 flowchart LR
-    subgraph Client["Navigateur — Next.js FR/EN"]
-        UI[Pages + chatbot Tonti]
+    subgraph Client["Browser — Next.js FR/EN"]
+        UI[Pages + Tonti chatbot]
     end
     subgraph AWS["AWS us-east-1"]
         COG[Cognito]
@@ -138,7 +139,7 @@ flowchart LR
         FN[Lambda ×8]
         BR[Bedrock Haiku + Sonnet]
         PO[Polly]
-        S3[(S3 reçus + audios)]
+        S3[(S3 receipts + audio)]
         EV[EventBridge Scheduler]
         MAIL[SES + SNS]
     end
@@ -148,14 +149,14 @@ flowchart LR
     EV --> FN --> MAIL
 ```
 
-Chaque appel IA a un repli déterministe : l'application ne tombe jamais en panne sèche,
-même sans quota Bedrock.
+Every AI call has a deterministic fallback — the app never hard-fails,
+even with zero Bedrock quota.
 
 <div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Séparateur">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## Démarrage rapide
+## Quickstart
 
 ```bash
 git clone github.com:khadimmbaye0/tontine-pilot.git
@@ -163,40 +164,39 @@ cd tontine-pilot
 npm install && npm run dev   # http://localhost:3101
 ```
 
-Sans backend, l'app tourne sur le jeu de démo intégré. Avec `amplify_outputs.json`
-(généré par `npx ampx sandbox`) et un compte, elle parle aux vraies données :
+Without a backend it runs on the built-in demo dataset. With `amplify_outputs.json`
+(from `npx ampx sandbox`) and an account, it talks to live AWS data:
 
 ```bash
-npx ampx sandbox --identifier tontine   # backend de dev
-npx tsx scripts/seed.ts                 # jeu de démo (SEED_USER + SEED_PASSWORD)
-npx tsx scripts/verify.ts               # 9 contrôles live
-./scripts/deploy-functions.sh [fn...]   # pousse le code des Lambdas
+npx ampx sandbox --identifier tontine   # dev backend
+npx tsx scripts/seed.ts                 # demo dataset (SEED_USER + SEED_PASSWORD)
+npx tsx scripts/verify.ts               # 9 live checks
+./scripts/deploy-functions.sh [fn...]   # push Lambda code
 ```
 
-## L'API
+## API
 
-| Opération | Entrée → Sortie |
+| Operation | Input → Output |
 |---|---|
-| `parseDeclaration` | texte + groupe → membre, montant, bénéficiaire, confiance, traduction EN |
-| `parseReceipt` | clé S3 + groupe → montant, transaction, destinataire, date, opérateur |
-| `draftNudge` | alerte + langue → message FR/EN + proposition |
-| `recommendRotationOp` | groupe → ordre, raisons bilingues, provisoire si sans historique |
-| `buildDigest` | cycle + langue → script + URL mp3 |
-| `sendNudge` / `resolveAlert` | alerte → envoi / résolution (anti-doublon par `dedupeKey`) |
-| `notifyNewGroup` | groupe → bienvenues `{sent, skipped}` |
-| `askAssistant` | question + langue + historique → réponse (+ outil e-mail membres) |
+| `parseDeclaration` | text + group → member, amount, recipient, confidence, EN translation |
+| `parseReceipt` | S3 key + group → amount, transaction, recipient, date, provider |
+| `draftNudge` | alert + locale → FR/EN message + proposal |
+| `recommendRotationOp` | group → order, bilingual reasons, provisional flag |
+| `buildDigest` | cycle + locale → script + mp3 URL |
+| `sendNudge` / `resolveAlert` | alert → send / resolve (dedupeKey anti-doubles) |
+| `notifyNewGroup` | group → welcome fan-out `{sent, skipped}` |
+| `askAssistant` | question + locale + history → answer (+ member-email tool) |
 
-## La qualité
+## Quality
 
-TypeScript strict sur trois configs (app, `amplify/`, fonctions), 33 tests Vitest
-(rotation, confiance, parsers, intents, adaptateurs), checklist de 9 contrôles live
-avant chaque mise en ligne, scans de secrets à chaque push, documentation `docs/`
-de l'idée au déploiement.
+Strict TypeScript across three configs (app, `amplify/`, functions), 33 Vitest tests
+(rotation, trust, parsers, intents, adapters), 9 live checks before every ship,
+secret scans on every push, end-to-end `docs/` from idea to deployment.
 
 <div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Séparateur">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
 <br><br>
-<b>TontinePilot — la tontine pilotée, pas subie.</b>
+<b>TontinePilot — the tontine, piloted.</b>
 <br><br>
-Conçu et vibe-codé avec rigueur par <b>Khadim</b> · Licence MIT · AWS Zero to Shipped
+Built by <b>Khadim</b> · MIT License · AWS Zero to Shipped
 </div>
