@@ -60,14 +60,23 @@ async function main() {
       console.log("DUMP", m.id.slice(0, 8), m.name, "late=", m.lateCount, "trust=", m.trustScore);
     }
   }
-  const after = await client.models.Member.get({ id: mid });
+  // poll: writes converge in seconds; a single read may be stale
+  let after = await client.models.Member.get({ id: mid });
+  for (let i = 0; i < 6 && (after.data?.lateCount ?? 0) === 0; i++) {
+    await new Promise((r) => setTimeout(r, 3000));
+    after = await client.models.Member.get({ id: mid });
+  }
   console.log(
     "trust after:",
     JSON.stringify({ late: after.data?.lateCount, trust: after.data?.trustScore })
   );
   const okTrust = after.data?.lateCount === 1;
 
-  const alerts = await client.models.Alert.list({ filter: { memberId: { eq: mid } } });
+  let alerts = await client.models.Alert.list({ filter: { memberId: { eq: mid } } });
+  for (let i = 0; i < 6 && (alerts.data ?? []).length === 0; i++) {
+    await new Promise((r) => setTimeout(r, 3000));
+    alerts = await client.models.Alert.list({ filter: { memberId: { eq: mid } } });
+  }
   console.log("alerts for temp member:", alerts.data?.length);
   for (const a of alerts.data ?? []) {
     await client.models.Alert.delete({ id: a.id });

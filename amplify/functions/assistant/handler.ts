@@ -4,6 +4,7 @@ import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_share
 import { dedupeKey } from "../_shared/fallbacks";
 import { applyLateEvent } from "../_shared/trust";
 import { detectLocale } from "../_shared/locale";
+import { routeMemberEmail } from "../_shared/intent";
 import { memberMessageHtml, reminderHtml } from "../_shared/email";
 import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
@@ -107,6 +108,54 @@ async function converseWithTool(
   );
   const t2 = (second.output?.message?.content ?? []).find((b) => "text" in b);
   return t2 && "text" in t2 ? (t2.text ?? "") : outcome;
+}
+
+async function executeRouted(
+  routed: { kind: "reminder" | "message"; recipient: string },
+  locale: string,
+  sub: string | null,
+  question: string
+): Promise<string | null> {
+  // Resolve first: never announce an email we cannot address.
+  const savedSub = currentSub;
+  currentSub = sub;
+  try {
+    const needle = routed.recipient.trim().toLowerCase();
+    const groups = (
+      await client.models.Group.list({ filter: { ownerId: { eq: sub ?? "" } } })
+    ).data;
+    let match: { id: string; name: string; email: string; groupId: string; groupName: string } | null = null;
+    for (const g of groups) {
+      const members = (
+        await client.models.Member.list({ filter: { groupId: { eq: g.id } } })
+      ).data;
+      for (const m of members) {
+        const name = (m.name ?? "").toLowerCase();
+        const email = (m.email ?? "").toLowerCase();
+        if (email === needle || (needle.length > 2 && name.includes(needle))) {
+          match = { id: m.id, name: m.name ?? "?", email: m.email ?? "", groupId: g.id, groupName: g.name ?? "" };
+          break;
+        }
+      }
+      if (match) break;
+    }
+    if (!match) return null;
+    if (!/^[^^\s@]+@[^\s@]+\.[^\s@]+$/.test(match.email)) return null;
+    const outcome = await executeEmailTool("routed", {
+      recipient: match.email,
+      kind: routed.kind,
+      subject: "",
+      body: question,
+    }, locale, sub);
+    if (outcome.startsWith("OK:")) {
+      return locale === "en"
+        ? `Done — email on its way to **${match.name}** (${match.email}). I also updated their record${routed.kind === "reminder" ? " and recalculated their trust score" : ""}.`
+        : `C'est fait — e-mail en route vers **${match.name}** (${match.email}). J'ai aussi mis à jour sa fiche${routed.kind === "reminder" ? " et recalculé son score de confiance" : ""}.`;
+    }
+    return null;
+  } finally {
+    currentSub = savedSub;
+  }
 }
 
 async function executeEmailTool(
@@ -230,6 +279,17 @@ export const handler: Handler = async (event) => {
   if (!question) throw new Error("VALIDATION: question required");
   currentSub = (event as { identity?: { sub?: string } }).identity?.sub ?? null;
   const history = (args.history ?? []).slice(-6);
+
+  // Deterministic fast path: explicit reminder/message requests skip the
+  // model lottery and execute immediately with a templated confirmation.
+  const routed = routeMemberEmail(question, uiLocale);
+  if (routed) {
+    const sub0 =
+      (event as { identity?: { sub?: string } }).identity?.sub ?? null;
+    const outcome = await executeRouted(routed, locale, sub0, question);
+    if (outcome) return { answer: outcome };
+    // fall through to the model when routing execution fails softly
+  }
 
   if (USE_MOCK) {
     log("FALLBACK: USE_MOCK=true, canned assistant reply");
