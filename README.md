@@ -26,6 +26,23 @@ no real money ever moves, tracking only.
 <img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
+## Demo — 60 seconds
+
+<div align="center">
+<a href="https://github.com/khadimmbaye0/tontine-pilot/blob/main/videos/tour.mp4">
+<img src="videos/tour-poster.jpg" width="660" alt="TontinePilot 60-second product tour — click to play">
+</a>
+
+**60-second product tour** — click to play. Dashboard, declare, groups, trust scores,
+alerts, export, and the Tonti assistant answering live. English voiceover.
+Also in repo: [`videos/tour.mp4`](videos/tour.mp4).
+
+</div>
+
+<div align="center">
+<img src="assets/brand/divider.svg" width="480" alt="Divider">
+</div>
+
 ## What it does
 
 | Area | Capability |
