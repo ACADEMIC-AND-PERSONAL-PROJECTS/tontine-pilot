@@ -198,5 +198,5 @@ secret scans on every push, end-to-end `docs/` from idea to deployment.
 <br><br>
 <b>TontinePilot — the tontine, piloted.</b>
 <br><br>
-Built by <b>Khadim</b> · MIT License · AWS Zero to Shipped
+MIT License · AWS Zero to Shipped
 </div>
