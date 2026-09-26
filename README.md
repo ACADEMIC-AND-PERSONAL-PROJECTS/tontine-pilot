@@ -29,7 +29,8 @@ no real money ever moves, tracking only.
 ## Demo — 60 seconds
 
 <div align="center">
-<img src="videos/tour-preview.gif" width="660" alt="TontinePilot 60-second product tour preview">
+
+![](https://github.com/user-attachments/assets/9660bb18-dffd-4882-82d4-f68b46c2a12f)
 
 **60-second product tour** — dashboard, declare, groups, trust scores,
 alerts, export, and the Tonti assistant answering live. English voiceover.
