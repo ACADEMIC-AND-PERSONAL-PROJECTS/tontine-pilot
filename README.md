@@ -4,33 +4,57 @@
 # TontinePilot
 
 [![Live Demo](https://img.shields.io/badge/LIVE_DEMO-8B5CF6?style=flat-square&logo=vercel&logoColor=white)](https://main.dhnfua5oyahpy.amplifyapp.com)
-[![CI](https://img.shields.io/github/actions/workflow/status/khadimmbaye0/tontine-pilot/ci.yml?label=CI&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/khadimmbaye0/tontine-pilot/actions)
+[![Demo video](https://img.shields.io/badge/DEMO_VIDEO-FF0000?style=flat-square&logo=youtube&logoColor=white)](https://youtu.be/Uvtu5lHfShs)
+[![Docs](https://img.shields.io/badge/DOCS-14_pages-0EA5E9?style=flat-square&logo=gitbook&logoColor=white)](docs/README.md)
+[![CI](https://img.shields.io/github/actions/workflow/status/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/ci.yml?label=CI&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/actions)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Haiku_4.5_%2B_Sonnet_4.5-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/bedrock/)
 [![Amplify Gen 2](https://img.shields.io/badge/Amplify-Gen_2-DD344C?style=flat-square&logo=awsamplify&logoColor=white)](https://docs.amplify.aws)
 [![License MIT](https://img.shields.io/badge/License-MIT-FACC15?style=flat-square&logoColor=white)](LICENSE)
 
-<img src="assets/hero-banner.jpg" width="100%" alt="TontinePilot — group dashboard, rotation order, contribution tracking, reminders and export registry">
-
-**TontinePilot** is the AI copilot for community rotating savings groups (tontines).
-It turns informal declarations and Mobile Money screenshots into a shared,
-verifiable ledger — with empathic mediation, an emergency fund, and audio digests.
-Built with **Next.js 16** and **AWS Bedrock**, bilingual French/English, designed
-for a real tontine admin — not a throwaway demo.
-
-no real money ever moves, tracking only.
+**The AI copilot for community rotating savings groups (tontines).**
+Built for AWS Zero to Shipped · Community lane · bilingual FR/EN · live in us-east-1.
 
 </div>
+
+## Try it live
+
+- **App:** https://main.dhnfua5oyahpy.amplifyapp.com
+- **Judge account:** `demo@tontinepilot.sn` (pre-confirmed — password in the Builder Center private notes, never in the repo)
+- **Video:** [60-second tour on YouTube](https://youtu.be/Uvtu5lHfShs) · full walkthroughs below
+- No real money ever moves — tracking only.
+
+## The problem
+
+Across Senegal and West Africa, millions of people save together in tontines:
+each cycle, every member contributes, one member collects. The ledger lives in
+a paper notebook or a WhatsApp group. Payments are declared in voice notes,
+receipts pile up as screenshots, and when someone pays late, the treasurer
+becomes a debt collector. Disputes over "who paid what" kill groups that
+families depend on.
+
+## What TontinePilot does
+
+TontinePilot turns messy human declarations into a shared, verifiable ledger —
+and handles the awkward parts with empathy instead of pressure.
+
+1. **Declare naturally** — type *"I paid 20000 for Awa"* or drop a Wave /
+   Orange Money screenshot. Bedrock extracts amount, member, recipient, date.
+2. **Stay fair automatically** — trust scores rank members, AI proposes the
+   rotation order, late payers get kind reminders, installment plans, or a
+   safety-net payout instead of shame.
+3. **Prove everything** — audio digest of each cycle, CSV ledger export, and
+   an assistant that answers ("who still needs to pay?") and acts for you.
 
 <div align="center">
 <img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## Demo — 60 seconds
+## Demo
 
 <div align="center">
 <a href="https://youtu.be/Uvtu5lHfShs">
-<img src="https://img.youtube.com/vi/Uvtu5lHfShs/maxresdefault.jpg" width="660" alt="Watch the TontinePilot demo on YouTube">
+<img src="https://img.youtube.com/vi/Uvtu5lHfShs/maxresdefault.jpg" width="800" alt="Watch the TontinePilot demo on YouTube">
 </a>
 
 **Demo on YouTube** — [watch here](https://youtu.be/Uvtu5lHfShs).
@@ -52,11 +76,11 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 <img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## What it does
+## Features
 
 | Area | Capability |
 |---|---|
-| Natural-language declarations | "I paid 20000 for Cheikh" → Bedrock extracts amount, member, recipient |
+| Natural-language declarations | "I paid 20000 for Awa" → Bedrock extracts amount, member, recipient |
 | Mobile Money OCR | Wave / Orange Money / MTN screenshots → amount, transaction ID, date |
 | Empathic mediation | Gentle nudges, installment plans, tour swaps, anomaly detection |
 | Emergency fund | Tontine Flex reserve that unlocks the recipient on critical lates |
@@ -70,16 +94,18 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 <img src="assets/brand/divider.svg" width="480" alt="Divider">
 </div>
 
-## Landing
+## Screens
 
 <div align="center">
-<img src="assets/screenshots/landing-hero.png" width="660" alt="TontinePilot landing: hero with community network">
+<img src="assets/screenshots/app-dashboard.png" width="800" alt="Dashboard: collection, contributions, emergency fund, alerts">
 </div>
 
 <details>
-<summary><b>Product film, live demo and how it works</b></summary>
+<summary><b>Landing: hero, film, live demo, how it works</b></summary>
 
 <div align="center">
+<img src="assets/screenshots/landing-hero.png" width="660" alt="TontinePilot landing: hero with community network">
+<br><br>
 <img src="assets/screenshots/landing-film.png" width="560" alt="Product film section">
 <br><br>
 <img src="assets/screenshots/landing-demo.png" width="560" alt="September cycle live demo section">
@@ -91,44 +117,20 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 
 </details>
 
-<div align="center">
-<img src="assets/brand/divider.svg" width="480" alt="Divider">
-</div>
-
-## The app
-
-<div align="center">
-<img src="assets/screenshots/app-dashboard.png" width="660" alt="Dashboard: collection, contributions, emergency fund, alerts">
-</div>
-
 <details>
-<summary><b>Sign in and groups</b></summary>
+<summary><b>App: sign in, groups, declare, members, alerts, export</b></summary>
 
 <div align="center">
 <img src="assets/screenshots/app-login.png" width="560" alt="Animated sign-in with code verification">
 <br><br>
 <img src="assets/screenshots/app-groups.png" width="560" alt="Multi-group management with cycle progress">
-</div>
-
-</details>
-
-<details>
-<summary><b>Declare, members and alerts</b></summary>
-
-<div align="center">
+<br><br>
 <img src="assets/screenshots/app-declare.png" width="560" alt="Declare by text or Mobile Money receipt">
 <br><br>
 <img src="assets/screenshots/app-members.png" width="560" alt="Members with trust scores">
 <br><br>
 <img src="assets/screenshots/app-alerts.png" width="560" alt="Alerts with filters and mediation">
-</div>
-
-</details>
-
-<details>
-<summary><b>Export and group creation</b></summary>
-
-<div align="center">
+<br><br>
 <img src="assets/screenshots/app-export.png" width="560" alt="CSV ledger export">
 <br><br>
 <img src="assets/screenshots/app-group-new.png" width="560" alt="Five-step group creation wizard">
@@ -234,25 +236,25 @@ node_scheduler -->|"triggers"| node_reminders
 node_welcome -->|"reads group members"| node_ledger
 node_welcome -->|"sends welcome email"| node_email_sms
 
-click node_auth_ui "https://github.com/khadimmbaye0/tontine-pilot/blob/main/components/auth/auth-card.tsx"
-click node_app_ui "https://github.com/khadimmbaye0/tontine-pilot/blob/main/app/(app)/dashboard/page.tsx"
-click node_declare_ui "https://github.com/khadimmbaye0/tontine-pilot/blob/main/app/(app)/declare/page.tsx"
-click node_alerts_ui "https://github.com/khadimmbaye0/tontine-pilot/blob/main/app/(app)/alerts/page.tsx"
-click node_export_ui "https://github.com/khadimmbaye0/tontine-pilot/blob/main/app/(app)/export/page.tsx"
-click node_assistant_ui "https://github.com/khadimmbaye0/tontine-pilot/blob/main/components/app/assistant-chat.tsx"
-click node_auth_service "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/auth/resource.ts"
-click node_remote "https://github.com/khadimmbaye0/tontine-pilot/blob/main/lib/remote.ts"
-click node_api "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/data/resource.ts"
-click node_ledger "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/data/resource.ts"
-click node_receipt_store "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/storage/resource.ts"
-click node_parse_declaration "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/parse-declaration/handler.ts"
-click node_parse_receipt "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/parse-receipt/handler.ts"
-click node_mediate "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/mediate/handler.ts"
-click node_rotation "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/recommend-rotation/handler.ts"
-click node_digest "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/digest-audio/handler.ts"
-click node_assistant "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/assistant/handler.ts"
-click node_reminders "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/reminders-worker/handler.ts"
-click node_welcome "https://github.com/khadimmbaye0/tontine-pilot/blob/main/amplify/functions/notify/handler.ts"
+click node_auth_ui "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/components/auth/auth-card.tsx"
+click node_app_ui "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/app/(app)/dashboard/page.tsx"
+click node_declare_ui "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/app/(app)/declare/page.tsx"
+click node_alerts_ui "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/app/(app)/alerts/page.tsx"
+click node_export_ui "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/app/(app)/export/page.tsx"
+click node_assistant_ui "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/components/app/assistant-chat.tsx"
+click node_auth_service "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/auth/resource.ts"
+click node_remote "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/lib/remote.ts"
+click node_api "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/data/resource.ts"
+click node_ledger "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/data/resource.ts"
+click node_receipt_store "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/storage/resource.ts"
+click node_parse_declaration "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/parse-declaration/handler.ts"
+click node_parse_receipt "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/parse-receipt/handler.ts"
+click node_mediate "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/mediate/handler.ts"
+click node_rotation "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/recommend-rotation/handler.ts"
+click node_digest "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/digest-audio/handler.ts"
+click node_assistant "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/assistant/handler.ts"
+click node_reminders "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/reminders-worker/handler.ts"
+click node_welcome "https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/amplify/functions/notify/handler.ts"
 
 classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
 classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
@@ -278,7 +280,7 @@ even with zero Bedrock quota.
 ## Quickstart
 
 ```bash
-git clone github.com:khadimmbaye0/tontine-pilot.git
+git clone git@github.com:ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot.git
 cd tontine-pilot
 npm install && npm run dev   # http://localhost:3101
 ```
@@ -306,16 +308,18 @@ npx tsx scripts/verify.ts               # 9 live checks
 | `notifyNewGroup` | group → welcome fan-out `{sent, skipped}` |
 | `askAssistant` | question + locale + history → answer (+ member-email tool) |
 
-## Quality
+## Docs & quality
 
 Strict TypeScript across three configs (app, `amplify/`, functions), 33 Vitest tests
 (rotation, trust, parsers, intents, adapters), 9 live checks before every ship,
-secret scans on every push, end-to-end `docs/` from idea to deployment.
+secret scans on every push. Full write-up: [docs/](docs/README.md) — vision,
+architecture, backend, AI features, notifications, security, deployment — plus
+the [proof pack](proof/README.md) (agent connection, live backend, email delivery).
 
 <div align="center">
 <img src="assets/brand/divider.svg" width="480" alt="Divider">
 <br><br>
 <b>TontinePilot — the tontine, piloted.</b>
 <br><br>
-MIT License · AWS Zero to Shipped
+MIT License · AWS Zero to Shipped · Community lane
 </div>
