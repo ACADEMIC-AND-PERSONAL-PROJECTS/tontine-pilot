@@ -29,13 +29,11 @@ no real money ever moves, tracking only.
 ## Demo — 60 seconds
 
 <div align="center">
-<a href="https://github.com/khadimmbaye0/tontine-pilot/blob/main/videos/tour.mp4">
-<img src="videos/tour-poster.jpg" width="660" alt="TontinePilot 60-second product tour — click to play">
-</a>
+<video src="https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/releases/download/demo/tour.mp4" width="660" controls playsinline preload="metadata" poster="https://raw.githubusercontent.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/main/videos/tour-poster.jpg"></video>
 
-**60-second product tour** — click to play. Dashboard, declare, groups, trust scores,
+**60-second product tour** — plays right here. Dashboard, declare, groups, trust scores,
 alerts, export, and the Tonti assistant answering live. English voiceover.
-Also in repo: [`videos/tour.mp4`](videos/tour.mp4).
+No player? [Watch it here](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/videos/tour.mp4).
 
 </div>
 
