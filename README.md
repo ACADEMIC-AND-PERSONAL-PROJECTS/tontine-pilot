@@ -63,6 +63,7 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 | AI rotation order | Trust − lates + seniority; provisional lottery with no history |
 | Audio digest | Cycle summary read aloud (Polly Léa / Joanna), FR/EN, with countdown |
 | Tonti assistant | Answers and acts: emails and reminds members in natural language |
+| Welcome emails | Branded bilingual email on member add (SES sandbox — custom domain is a perspective) |
 | Exportable ledger | CSV + printable preview to end disputes |
 
 <div align="center">

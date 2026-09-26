@@ -56,3 +56,9 @@ no PDF binary export in the MVP, single region, no custom domain yet.
 - Zero duplicate alerts across re-runs (dedupeKey enforced + verified).
 - AI availability: every call has a mock/fallback path; zero hard failures in logs.
 - Accessibility: full FR/EN parity, audio-first path for low-literacy members.
+
+## Perspectives (post-pilot)
+- Custom domain + SES production access: real delivery to any member address
+  (today: sandbox, verified test recipients only).
+- SMS reminders at scale via SNS (today: verified +221 numbers only).
+- Mobile Money API callbacks to reconcile declarations automatically.

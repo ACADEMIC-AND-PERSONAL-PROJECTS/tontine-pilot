@@ -22,3 +22,11 @@ Senegal (+221) before promising delivery.
 EventBridge Scheduler, `cron(0 8 * * ? *)` (08:00 UTC = Dakar), targets
 reminders-worker. Idempotent by `dedupeKey` (`group#cycle#member#type`) —
 re-runs never double-alert. Manual trigger: `sendNudge` mutation.
+
+## Delivery proof + sandbox limits
+Real welcome email landed in Gmail after a member add (see
+`../proof/email-welcome-received.png`). No custom domain yet, so SES stays in
+sandbox: only verified identities can receive, which is why demo recipients
+are hardcoded test addresses. Perspective (post-pilot): register a domain,
+verify it in SES, request production access — code needs no change, only
+verified-identity configuration.

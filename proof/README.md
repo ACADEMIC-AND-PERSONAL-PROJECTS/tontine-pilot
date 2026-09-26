@@ -30,6 +30,16 @@
 - Note: outputs are pinned to the sandbox stack — do not delete/recreate it
   before winners are announced (freeze per TASKS.md T-8).
 
+## Email delivery proof
+- Welcome email received in Gmail after adding a member (`notifyNewGroup` →
+  SES `SendEmailCommand`, branded bilingual template).
+- SES is in sandbox (no custom domain yet): sender + demo recipients are
+  verified identities, so test addresses are hardcoded for the pilot;
+  sandbox rejections are caught per-recipient and never break creation
+  (`amplify/functions/notify/handler.ts`).
+
+![Welcome email received in Gmail after member add](email-welcome-received.png)
+
 ## AWS services used
 Cognito (email+password+code auth) · AppSync + DynamoDB (Amplify Data) ·
 Lambda ×6 (Bedrock NLU, Vision OCR, mediation, rotation, Polly digest, reminders) ·
