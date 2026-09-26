@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   confirmSignUp,
@@ -29,6 +29,7 @@ export function useAuthFlow() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const passwordRef = useRef(""); // memory-only, for post-verify auto sign-in
 
   const mapError = useCallback(
     (e: unknown): string => {
@@ -47,19 +48,19 @@ export function useAuthFlow() {
   );
 
   const go = useCallback(
-    async (fn: () => Promise<void>, after?: () => void) => {
+    async (fn: () => Promise<void>): Promise<boolean> => {
       if (!isBackendEnabled()) {
         setError(t("auth.noBackend"));
-        return;
+        return false;
       }
       setLoading(true);
       setError(null);
       try {
         await fn();
-        after?.();
+        return true;
       } catch (e) {
         setError(mapError(e));
-        throw e;
+        return false;
       } finally {
         setLoading(false);
       }
@@ -69,10 +70,14 @@ export function useAuthFlow() {
 
   const doSignIn = useCallback(
     async (password: string) => {
+      if (!isBackendEnabled()) {
+        setError(t("auth.noBackend"));
+        return;
+      }
+      setLoading(true);
+      setError(null);
       try {
-        await go(async () => {
-          await signIn({ username: email.trim(), password });
-        });
+        await signIn({ username: email.trim(), password });
         router.push("/dashboard");
       } catch (e) {
         const name = (e as { name?: string })?.name ?? "";
@@ -82,11 +87,16 @@ export function useAuthFlow() {
           } catch {
             // ignore resend failure, step change is the signal
           }
+          setError(null);
           setStep("verify");
+        } else {
+          setError(mapError(e));
         }
+      } finally {
+        setLoading(false);
       }
     },
-    [email, go, router]
+    [email, mapError, router, t]
   );
 
   const doSignUp = useCallback(
@@ -99,15 +109,16 @@ export function useAuthFlow() {
         setError(t("auth.errWeakPw"));
         return;
       }
+      passwordRef.current = password;
       try {
-        await go(async () => {
+        const ok = await go(async () => {
           await signUp({
             username: email.trim(),
             password,
             options: { userAttributes: { email: email.trim(), name: name.trim() } },
           });
         });
-        setStep("verify");
+        if (ok) setStep("verify");
       } catch {
         // error already mapped
       }
@@ -117,16 +128,16 @@ export function useAuthFlow() {
 
   const doVerify = useCallback(
     async (code: string) => {
-      try {
-        await go(async () => {
-          await confirmSignUp({ username: email.trim(), confirmationCode: code.trim() });
-        });
-        router.push("/dashboard");
-      } catch {
-        // error already mapped
+      const ok = await go(async () => {
+        await confirmSignUp({ username: email.trim(), confirmationCode: code.trim() });
+      });
+      if (ok) {
+        // chain straight into a session — no second login needed
+        await doSignIn(passwordRef.current);
+        passwordRef.current = "";
       }
     },
-    [email, go, router]
+    [email, go, doSignIn]
   );
 
   const doResend = useCallback(async () => {
