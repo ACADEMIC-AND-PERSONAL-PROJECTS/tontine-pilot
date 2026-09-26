@@ -1374,6 +1374,25 @@
               "attributes": []
             }
           }
+        },
+        "NotifyResult": {
+          "name": "NotifyResult",
+          "fields": {
+            "sent": {
+              "name": "sent",
+              "isArray": false,
+              "type": "Int",
+              "isRequired": false,
+              "attributes": []
+            },
+            "skipped": {
+              "name": "skipped",
+              "isArray": false,
+              "type": "Int",
+              "isRequired": false,
+              "attributes": []
+            }
+          }
         }
       },
       "queries": {
@@ -1511,6 +1530,22 @@
         }
       },
       "mutations": {
+        "notifyNewGroup": {
+          "name": "notifyNewGroup",
+          "isArray": false,
+          "type": {
+            "nonModel": "NotifyResult"
+          },
+          "isRequired": false,
+          "arguments": {
+            "groupId": {
+              "name": "groupId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            }
+          }
+        },
         "sendNudge": {
           "name": "sendNudge",
           "isArray": false,
