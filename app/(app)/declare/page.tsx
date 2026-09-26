@@ -474,6 +474,7 @@ export default function DeclarePage() {
           {parsed && !confirmed && (
             <motion.div
               key="result"
+              data-testid="dw-parse-result"
               initial={{ opacity: 0, y: 16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
