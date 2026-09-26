@@ -35,11 +35,11 @@ no real money ever moves, tracking only.
 
 **Demo on YouTube** — [watch here](https://youtu.be/Uvtu5lHfShs).
 <br><br>
-<img src="videos/landing.gif" width="660" alt="TontinePilot landing page walkthrough">
+<img src="videos/landing.gif" width="800" alt="TontinePilot landing page walkthrough">
 
 **Landing page** — hero, features, product film, live demo, how it works.
 <br><br>
-<img src="videos/app.gif" width="660" alt="TontinePilot app walkthrough: login and all menus">
+<img src="videos/app.gif" width="800" alt="TontinePilot app walkthrough: login and all menus">
 
 **Full app walkthrough, no voiceover** — login, dashboard, groups, group creation,
 declare, members and trust scores, alerts, export, and the Tonti assistant answering live.
