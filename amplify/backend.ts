@@ -101,6 +101,12 @@ backend.notify.resources.lambda.addToRolePolicy(
     resources: ["*"], // SES identities verified at send time
   })
 );
+backend.assistant.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    actions: ["ses:SendEmail", "ses:SendRawEmail"],
+    resources: ["*"], // chatbot member emails (same sender identity)
+  })
+);
 
 // Daily cron 08:00 UTC (= 08:00 Dakar) -> remindersWorker, mock-send by default.
 const schedStack = backend.createStack("ReminderSchedule");
