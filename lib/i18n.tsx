@@ -25,6 +25,8 @@ const dictionaries: Record<Locale, Dict> = {
     "nav.login": "Sign in",
     "nav.open": "Open app",
     "nav.back": "Back to site",
+    "nav.profile": "Profile",
+    "nav.logout": "Log out",
     "nav.admin": "Signed in as Aïssatou Diallo · Admin",
     "hero.title": "The AI copilot for community tontines",
     "hero.body":
@@ -154,6 +156,8 @@ const dictionaries: Record<Locale, Dict> = {
     "nav.login": "Connexion",
     "nav.open": "Ouvrir l'app",
     "nav.back": "Retour au site",
+    "nav.profile": "Profil",
+    "nav.logout": "Déconnexion",
     "nav.admin": "Connecté en tant qu'Aïssatou Diallo · Admin",
     "hero.title": "Le copilote IA des tontines communautaires",
     "hero.body":

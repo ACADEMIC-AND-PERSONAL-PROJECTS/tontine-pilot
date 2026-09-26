@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -14,14 +14,22 @@ import {
   Menu,
   X,
   ArrowLeft,
+  LogOut,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  fetchUserAttributes,
+  getCurrentUser,
+  signOut,
+} from "aws-amplify/auth";
 import { cn } from "@/lib/utils";
 import { useGroups } from "@/lib/groups";
 import { useLocale } from "@/lib/i18n";
+import { isBackendEnabled } from "@/lib/backend";
 import { LangToggle } from "@/components/i18n/language-gate";
 import { BrandMark } from "@/components/landing/brand-mark";
 import { AssistantChat } from "@/components/app/assistant-chat";
+import { Avatar } from "@/components/ui/avatar";
 
 type NavLink = { href: string; label: string; icon: typeof LayoutDashboard };
 
@@ -68,9 +76,59 @@ function NavLinksView({
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userName, setUserName] = useState("Aïssatou Diallo");
+  const [userEmail, setUserEmail] = useState("");
+  const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
   const { t } = useLocale();
   const { active } = useGroups();
-  const pathname = usePathname();
+  useEffect(() => {
+    if (!isBackendEnabled()) return;
+    getCurrentUser().then(
+      async () => {
+        try {
+          const attrs = await fetchUserAttributes();
+          if (attrs.name) setUserName(attrs.name);
+          if (attrs.email) setUserEmail(attrs.email);
+        } catch {
+          // keep demo identity
+        }
+      },
+      () => {}
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onDown(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
+  async function logout() {
+    setMenuOpen(false);
+    if (isBackendEnabled()) {
+      try {
+        await signOut();
+      } catch {
+        // fall through to login screen anyway
+      }
+    }
+    router.push("/login");
+  }
 
   const links: NavLink[] = [
     { href: "/dashboard", label: t("app.dashboard"), icon: LayoutDashboard },
@@ -124,7 +182,49 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <p className="text-sm font-semibold lg:hidden">TontinePilot</p>
           <div className="flex items-center gap-2">
             <LangToggle className="lg:hidden" />
-            <div className="h-8 w-8 rounded-full bg-accent-glow" />
+            <div ref={menuRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-label={t("nav.profile")}
+                aria-haspopup="menu"
+                aria-expanded={menuOpen}
+                className="rounded-full outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-accent/50"
+              >
+                <Avatar name={userName} size="sm" />
+              </button>
+              <AnimatePresence>
+                {menuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    role="menu"
+                    className="shadow-elevate-medium absolute right-0 top-10 w-56 overflow-hidden rounded-2xl border border-border bg-bg-raised"
+                  >
+                    <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+                      <Avatar name={userName} size="sm" />
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{userName}</p>
+                        {userEmail && (
+                          <p className="truncate text-xs text-muted-dim">{userEmail}</p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={logout}
+                      className="flex w-full items-center gap-2.5 px-4 py-3 text-sm text-muted transition-colors hover:bg-bg-subtle hover:text-danger"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      {t("nav.logout")}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </header>
         <main className="px-4 py-6 sm:px-6 sm:py-8 lg:px-8">{children}</main>

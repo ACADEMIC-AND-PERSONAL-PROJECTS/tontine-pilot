@@ -16,9 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TontinePilot — AI copilot for community tontines",
+  title: {
+    default: "TontinePilot — AI copilot for community tontines",
+    template: "%s · TontinePilot",
+  },
   description:
     "Track contributions, smart reminders, anomaly detection, and a shared ledger for rotating savings groups.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
+  themeColor: "#070913",
 };
 
 export default function RootLayout({
