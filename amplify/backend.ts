@@ -29,7 +29,12 @@ const backend = defineBackend({
   notify,
 });
 
-const ACCOUNT = process.env.AWS_ACCOUNT_ID ?? "587308451740";
+const ACCOUNT = process.env.AWS_ACCOUNT_ID;
+if (!ACCOUNT) {
+  throw new Error(
+    "AWS_ACCOUNT_ID env var is required to synthesize the backend (no default — never commit an account ID)."
+  );
+}
 
 // Explicit AppSync endpoint for all functions (no $amplify/env magic).
 // NOTE: must be a STATIC string — referencing cfnGraphqlApi.attrGraphQlUrl
