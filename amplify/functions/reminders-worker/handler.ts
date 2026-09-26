@@ -4,6 +4,7 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_shared/bedrock";
 import { dedupeKey, templateNudge } from "../_shared/fallbacks";
+import { reminderHtml } from "../_shared/email";
 console.log("HANDLER_REV=3");
 
 const client = dataClient();
@@ -31,9 +32,11 @@ async function draftFor(alert: AlertRow, memberName: string, amount: number) {
   }
 }
 
-async function sendEmail(to: string, subject: string, body: string): Promise<boolean> {
+export type MailBody = { subject: string; html: string; text: string };
+
+async function sendEmail(to: string, mail: MailBody): Promise<boolean> {
   if (MOCK_SEND) {
-    log(`SEND email mocked to=${to.slice(0, 3)}*** subject=${subject}`);
+    log(`SEND email mocked to=${to.slice(0, 3)}*** subject=${mail.subject}`);
     return true;
   }
   try {
@@ -41,8 +44,11 @@ async function sendEmail(to: string, subject: string, body: string): Promise<boo
       Source: process.env.SES_FROM,
       Destination: { ToAddresses: [to] },
       Message: {
-        Subject: { Data: subject, Charset: "UTF-8" },
-        Body: { Text: { Data: body, Charset: "UTF-8" } },
+        Subject: { Data: mail.subject, Charset: "UTF-8" },
+        Body: {
+          Html: { Data: mail.html, Charset: "UTF-8" },
+          Text: { Data: mail.text, Charset: "UTF-8" },
+        },
       },
     }));
     log(`SEND email to=${to.slice(0, 3)}***`);
@@ -51,6 +57,14 @@ async function sendEmail(to: string, subject: string, body: string): Promise<boo
     log(`SEND_FAIL email (${(err as Error)?.message})`);
     return false;
   }
+}
+
+function brandedReminder(opts: {
+  memberName: string; groupName: string; amount: number; cycleLabel: string; late: boolean;
+}): MailBody {
+  const appUrl = process.env.APP_URL ?? "https://main.dhnfua5oyahpy.amplifyapp.com";
+  const logoUrl = process.env.LOGO_URL ?? `${appUrl}/logo.jpeg`;
+  return reminderHtml({ ...opts, appUrl, logoUrl });
 }
 
 async function sendSms(phone: string, body: string): Promise<boolean> {
@@ -95,8 +109,14 @@ export const handler: Handler = async (event) => {
     }
     const group = alert.groupId ? (await client.models.Group.get({ id: alert.groupId })).data : null;
     const d = await draftFor(alert, alert.memberName ?? "?", group?.contributionAmount ?? 20000);
-    const body = `${d.fr}\n\n${d.en}\n\n${process.env.APP_URL}/alerts`;
-    const sentEmail = member?.email ? await sendEmail(member.email, "TontinePilot — rappel / reminder", body) : false;
+    const mail = brandedReminder({
+      memberName: alert.memberName ?? "?",
+      groupName: group?.name ?? "",
+      amount: group?.contributionAmount ?? 20000,
+      cycleLabel: `cycle ${group?.currentCycleIndex ?? ""}`,
+      late: alert.type !== "REMINDER",
+    });
+    const sentEmail = member?.email ? await sendEmail(member.email, mail) : false;
     const sentSms = member?.notifySms && member?.phone ? await sendSms(member.phone, d.fr) : false;
     return { sentEmail, sentSms };
   }
@@ -132,7 +152,13 @@ export const handler: Handler = async (event) => {
             createdAt: new Date().toISOString(), resolved: false, dedupeKey: key,
           });
           created++;
-          if (await sendEmail(m.email, "TontinePilot — rappel / reminder", `${d.fr}\n\n${d.en}\n\n${process.env.APP_URL}/alerts`)) emailed++;
+          if (await sendEmail(m.email, brandedReminder({
+            memberName: m.name,
+            groupName: group.name,
+            amount: group.contributionAmount,
+            cycleLabel: `cycle ${group.currentCycleIndex}`,
+            late: true,
+          }))) emailed++;
           if (m.notifySms && m.phone) await sendSms(m.phone, d.fr);
         } catch (err) {
           log(`MEMBER_FAIL member=${m.id} (${(err as Error)?.message})`);

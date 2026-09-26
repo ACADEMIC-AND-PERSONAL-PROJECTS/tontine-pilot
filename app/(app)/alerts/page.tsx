@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   fakeAlerts,
@@ -138,7 +138,9 @@ export default function AlertsPage() {
     setVisible(PAGE_SIZE);
   }
 
-  function playDigest() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  function speakLocal() {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(
@@ -152,10 +154,44 @@ export default function AlertsPage() {
     window.speechSynthesis.speak(u);
   }
 
+  async function playDigest() {
+    // Real Polly audio first, local synthesis as fallback.
+    if (isBackendEnabled()) {
+      setSpeaking(true);
+      try {
+        const res = await client.queries.buildDigest({ cycleId: "cycle-4", locale });
+        if (!res.errors?.length && res.data?.audioUrl) {
+          const audio = new Audio(res.data.audioUrl);
+          audioRef.current = audio;
+          audio.onended = () => setSpeaking(false);
+          audio.onerror = () => {
+            setSpeaking(false);
+            speakLocal();
+          };
+          await audio.play();
+          return;
+        }
+      } catch {
+        // fall through to local synthesis
+      }
+      setSpeaking(false);
+    }
+    speakLocal();
+  }
+
   function stopDigest() {
+    audioRef.current?.pause();
+    audioRef.current = null;
     window.speechSynthesis?.cancel();
     setSpeaking(false);
   }
+
+  useEffect(() => {
+    return () => {
+      audioRef.current?.pause();
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: alerts.length };

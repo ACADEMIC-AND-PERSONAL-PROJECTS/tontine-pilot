@@ -6,6 +6,6 @@ export const digestAudio = defineFunction({
   timeoutSeconds: 120,
   memoryMB: 512,
   environment: {
-    USE_POLLY: "false", // flip to "true" to emit real mp3 (Polly needs no Bedrock quota)
+    USE_POLLY: "true",
   },
 });

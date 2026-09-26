@@ -17,10 +17,13 @@ import { Avatar } from "@/components/ui/avatar";
 import { fakeMembers, fakeGroup, fakeOcrReceipt } from "@/lib/fake-data";
 import { formatFCFA, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
+import { useRouter } from "next/navigation";
 import { useGroups } from "@/lib/groups";
 import { client, isBackendEnabled } from "@/lib/backend";
 import { useRemoteMembers } from "@/lib/use-remote";
+import { useRemoteCycleData } from "@/lib/use-remote";
 import { uploadData } from "aws-amplify/storage";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 type Mode = "text" | "ocr";
 
@@ -163,7 +166,10 @@ export default function DeclarePage() {
     try {
       if (isBackendEnabled()) {
         try {
-          const key = `receipts/${active.id}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+          // Storage rule is receipts/{identityId}/* — group id would be rejected.
+          const { identityId } = await fetchAuthSession();
+          if (!identityId) throw new Error("no-identity");
+          const key = `receipts/${identityId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
           await uploadData({ path: key, data: file }).result;
           setReceiptKey(key);
           const res = await client.queries.parseReceipt({ s3Key: key, groupId: active.id });
@@ -202,17 +208,55 @@ export default function DeclarePage() {
     }
   }
 
+  const router = useRouter();
+  const remoteCycle = useRemoteCycleData(active.id);
+
+  async function refreshTotals(cycleId: string) {
+    try {
+      const all = await client.models.Contribution.list({ filter: { cycleId: { eq: cycleId } } });
+      const sum = ((all.data ?? []) as Array<{ status?: string; amount?: number }>).reduce(
+        (n, c) => n + (c.status === "CONFIRMED" ? (c.amount ?? 0) : 0),
+        0
+      );
+      await client.models.Cycle.update({ id: cycleId, totalCollected: sum });
+      await client.models.Group.update({ id: active.id, cycleCollected: sum });
+    } catch {
+      // totals recompute is best-effort; dashboard still refreshes
+    }
+  }
+
   async function handleConfirm() {
     if (parsed && isBackendEnabled()) {
       try {
         const today = new Date().toISOString().slice(0, 10);
+        // Target the group's OPEN cycle (never a hardcoded id).
+        let cycleId = remoteCycle.cycle?.id;
+        if (!cycleId) {
+          const cycles = await client.models.Cycle.list({
+            filter: { groupId: { eq: active.id }, status: { eq: "OPEN" } },
+          });
+          cycleId = cycles.data?.[0]?.id;
+        }
+        if (!cycleId) {
+          const created = await client.models.Cycle.create({
+            groupId: active.id,
+            cycleNumber: 1,
+            startDate: today,
+            endDate: today,
+            status: "OPEN",
+            totalExpected: active.contributionAmount * Math.max(active.memberCount, 1),
+            totalCollected: 0,
+          });
+          cycleId = created.data?.id;
+        }
+        if (!cycleId) throw new Error("no-cycle");
         if (parsed.kind === "text") {
           const member =
             knownMembers.find((m) => m.name === parsed.memberName) ??
             knownMembers[0] ?? { id: "unknown", name: parsed.memberName };
           await client.models.Contribution.create({
             groupId: active.id,
-            cycleId: "cycle-4",
+            cycleId,
             memberId: member.id,
             memberName: parsed.memberName,
             amount: parsed.amount,
@@ -225,7 +269,7 @@ export default function DeclarePage() {
         } else {
           await client.models.Contribution.create({
             groupId: active.id,
-            cycleId: "cycle-4",
+            cycleId,
             memberId: "m1",
             memberName: parsed.recipientName,
             amount: parsed.amount,
@@ -236,11 +280,16 @@ export default function DeclarePage() {
             receiptKey: receiptKey ?? undefined,
           });
         }
+        await refreshTotals(cycleId);
       } catch {
         // demo mode: confirmation screen is the proof
       }
     }
     setConfirmed(true);
+    if (isBackendEnabled()) {
+      // let the user see the confirmation, then land on refreshed numbers
+      window.setTimeout(() => router.push("/dashboard"), 1800);
+    }
   }
 
   function reset() {

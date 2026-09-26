@@ -35,7 +35,7 @@ async function main() {
 
   const d = await client.queries.buildDigest({ cycleId: "cycle-4", locale: "fr" });
   ok("digest.script", Boolean(d.data?.script?.includes("Bilan cycle 4")), d.data?.script?.slice(0, 40));
-  ok("digest.no-audio-yet", d.data?.audioUrl === "", "USE_POLLY=false as expected");
+  ok("digest.audio", Boolean(d.data?.audioUrl?.startsWith("https://")), (d.data?.audioUrl ?? "").slice(0, 60));
 
   const n = await client.mutations.sendNudge({ alertId: "a2" });
   ok("sendNudge.mock", n.data?.sentEmail === true, n.data);

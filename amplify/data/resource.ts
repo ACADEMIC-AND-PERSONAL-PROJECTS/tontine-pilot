@@ -6,6 +6,7 @@ import { recommendRotation } from "../functions/recommend-rotation/resource";
 import { digestAudio } from "../functions/digest-audio/resource";
 import { remindersWorker } from "../functions/reminders-worker/resource";
 import { assistant } from "../functions/assistant/resource";
+import { notify } from "../functions/notify/resource";
 
 // Phase 1: models only (authenticated read, owner write).
 // Phase 2 adds Lambda function resources, custom queries/mutations
@@ -166,6 +167,7 @@ const schema = a.schema({
   DigestResult: a.customType({ script: a.string(), audioUrl: a.string() }),
   AssistantAnswer: a.customType({ answer: a.string() }),
   SendResult: a.customType({ sentEmail: a.boolean(), sentSms: a.boolean() }),
+  NotifyResult: a.customType({ sent: a.integer(), skipped: a.integer() }),
 
   parseDeclaration: a.query()
     .arguments({ text: a.string().required(), groupId: a.string().required() })
@@ -195,6 +197,10 @@ const schema = a.schema({
     })
     .returns(a.ref("AssistantAnswer")).handler(a.handler.function(assistant))
     .authorization((allow) => [allow.authenticated()]),
+  notifyNewGroup: a.mutation()
+    .arguments({ groupId: a.string().required() })
+    .returns(a.ref("NotifyResult")).handler(a.handler.function(notify))
+    .authorization((allow) => [allow.authenticated()]),
   sendNudge: a.mutation()
     .arguments({ alertId: a.string().required() })
     .returns(a.ref("SendResult")).handler(a.handler.function(remindersWorker))
@@ -209,6 +215,7 @@ const schemaWithAuth = schema.authorization((allow) => [
   allow.resource(digestAudio).to(["query", "mutate"]),
   allow.resource(remindersWorker).to(["query", "mutate"]),
   allow.resource(assistant).to(["query"]),
+  allow.resource(notify).to(["query", "mutate"]),
 ]);
 
 export type Schema = ClientSchema<typeof schemaWithAuth>;

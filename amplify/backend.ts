@@ -9,6 +9,7 @@ import { recommendRotation } from "./functions/recommend-rotation/resource";
 import { digestAudio } from "./functions/digest-audio/resource";
 import { remindersWorker } from "./functions/reminders-worker/resource";
 import { assistant } from "./functions/assistant/resource";
+import { notify } from "./functions/notify/resource";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import * as scheduler from "aws-cdk-lib/aws-scheduler";
@@ -25,6 +26,7 @@ const backend = defineBackend({
   digestAudio,
   remindersWorker,
   assistant,
+  notify,
 });
 
 const ACCOUNT = process.env.AWS_ACCOUNT_ID ?? "587308451740";
@@ -92,6 +94,12 @@ backend.remindersWorker.resources.lambda.addToRolePolicy(
 );
 backend.remindersWorker.resources.lambda.addToRolePolicy(
   new PolicyStatement({ actions: ["sns:Publish"], resources: ["*"] })
+);
+backend.notify.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    actions: ["ses:SendEmail", "ses:SendRawEmail"],
+    resources: ["*"], // SES identities verified at send time
+  })
 );
 
 // Daily cron 08:00 UTC (= 08:00 Dakar) -> remindersWorker, mock-send by default.

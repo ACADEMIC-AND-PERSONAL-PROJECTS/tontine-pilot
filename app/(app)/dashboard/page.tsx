@@ -19,7 +19,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
-import { isBackendEnabled } from "@/lib/backend";
+import { client, isBackendEnabled } from "@/lib/backend";
 import { useRemoteCycleData, useRemoteGroup } from "@/lib/use-remote";
 import {
   ArrowRight,
@@ -29,7 +29,7 @@ import {
   Landmark,
   Volume2,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function DashboardPage() {
   const { t, locale } = useLocale();
@@ -64,7 +64,9 @@ export default function DashboardPage() {
   );
   const [speaking, setSpeaking] = useState(false);
 
-  function playDigest() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  function speakLocal() {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(
@@ -72,9 +74,50 @@ export default function DashboardPage() {
     );
     u.lang = locale === "fr" ? "fr-FR" : "en-US";
     u.onend = () => setSpeaking(false);
+    u.onerror = () => setSpeaking(false);
     setSpeaking(true);
     window.speechSynthesis.speak(u);
   }
+
+  async function playDigest() {
+    // Real Polly audio first, local synthesis as fallback.
+    if (isBackendEnabled()) {
+      setSpeaking(true);
+      try {
+        const cycleId = remote.cycle?.id ?? currentCycle.id;
+        const res = await client.queries.buildDigest({ cycleId, locale });
+        if (!res.errors?.length && res.data?.audioUrl) {
+          const audio = new Audio(res.data.audioUrl);
+          audioRef.current = audio;
+          audio.onended = () => setSpeaking(false);
+          audio.onerror = () => {
+            setSpeaking(false);
+            speakLocal();
+          };
+          await audio.play();
+          return;
+        }
+      } catch {
+        // fall through to local synthesis
+      }
+      setSpeaking(false);
+    }
+    speakLocal();
+  }
+
+  function stopDigest() {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    window.speechSynthesis?.cancel();
+    setSpeaking(false);
+  }
+
+  useEffect(() => {
+    return () => {
+      audioRef.current?.pause();
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">

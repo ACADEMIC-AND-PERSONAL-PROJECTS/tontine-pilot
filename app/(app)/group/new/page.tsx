@@ -66,6 +66,8 @@ export default function NewGroupPage() {
   const { addGroup } = useGroups();
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [form, setForm] = useState<Form>({
     name: "",
     description: "",
@@ -107,9 +109,14 @@ export default function NewGroupPage() {
     setForm((f) => ({ ...f, members: f.members.filter((_, j) => j !== i) }));
   }
 
-  function next() {
-    if (step < steps.length - 1) setStep((s) => s + 1);
-    else {
+  async function next() {
+    if (step < steps.length - 1) {
+      setStep((s) => s + 1);
+      return;
+    }
+    {
+      setSaving(true);
+      setSaveError(false);
       const amount = Number(form.amount) || 0;
       const g: Group = {
         id: `group-${Date.now()}`,
@@ -129,7 +136,12 @@ export default function NewGroupPage() {
         cycleExpected: amount * form.members.length,
         openAlerts: 0,
       };
-      addGroup(g);
+      const saved = await addGroup(g);
+      if (!saved) {
+        setSaving(false);
+        setSaveError(true);
+        return;
+      }
       if (isBackendEnabled()) {
         const trust = (late: number, cycles: number) =>
           Math.max(50, Math.min(99, 92 - late * 7 + Math.min(6, cycles)));
@@ -160,6 +172,11 @@ export default function NewGroupPage() {
           }).catch(() => null);
         });
       }
+      // Welcome emails to new members — fire and forget, never blocks creation.
+      if (isBackendEnabled()) {
+        client.mutations.notifyNewGroup({ groupId: g.id }).catch(() => {});
+      }
+      setSaving(false);
       setDone(true);
       setTimeout(() => router.push("/dashboard"), 1800);
     }
@@ -525,16 +542,35 @@ export default function NewGroupPage() {
               <Button
                 variant="ghost"
                 onClick={back}
-                disabled={step === 0}
+                disabled={step === 0 || saving}
                 className="gap-1.5"
               >
                 <ArrowLeft className="h-4 w-4" />
                 {fr ? "Retour" : "Back"}
               </Button>
-              <Button onClick={next} disabled={!canNext} className="gap-1.5">
-                {step === 4 ? (fr ? "Créer le groupe" : "Create group") : fr ? "Continuer" : "Continue"}
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <div className="flex flex-col items-end gap-1.5">
+                {saveError && (
+                  <p className="text-xs text-danger">
+                    {fr
+                      ? "Échec d'enregistrement — vérifie ta connexion et réessaie."
+                      : "Save failed — check your connection and retry."}
+                  </p>
+                )}
+                <Button onClick={next} disabled={!canNext || saving} className="gap-1.5">
+                  {saving
+                    ? fr
+                      ? "Enregistrement…"
+                      : "Saving…"
+                    : step === 4
+                      ? fr
+                        ? "Créer le groupe"
+                        : "Create group"
+                      : fr
+                        ? "Continuer"
+                        : "Continue"}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}
