@@ -21,10 +21,9 @@ const SAY = {
 
 async function synthesize(text) {
   const { readFile } = await import('node:fs/promises')
-  const { execSync } = await import('node:child_process')
   const entry = Object.entries(SAY).find(([, v]) => v === text)
   if (!entry) throw new Error('no voiceover for: ' + text.slice(0, 40))
-  const idx = entry[0].replace('s', '')
+  const idx = entry[0].replace('s', '').padStart(2, '0')
   return readFile(`public/voiceover/scene-${idx}.mp3`)
 }
 
@@ -68,8 +67,8 @@ export default defineDemo({
     { type: 'caption', text: 'Déclarez en langage naturel.', say: SAY.s4, duration: 8000 },
     { type: 'type', selector: 'textarea', text: "J'ai payé 20000 pour Awa ce mois", perChar: 28 },
     { type: 'click', selector: '[data-testid="dw-parse"]' },
-    { type: 'wait', selector: '[data-testid="dw-declare"] dl', timeout: 20000 },
-    { type: 'highlight', selector: 'text=Résultat structuré', duration: 2200 },
+    { type: 'wait', duration: 25000 },
+    { type: 'highlight', selector: '[data-testid="dw-declare"]', duration: 2200 },
     // 5 — declare OCR tab (~9s)
     { type: 'click', selector: '[data-testid="dw-ocr-tab"]' },
     { type: 'caption', text: 'Ou par capture Mobile Money.', say: SAY.s5, duration: 6500 },
@@ -93,7 +92,7 @@ export default defineDemo({
     { type: 'highlight', selector: '[data-testid="dw-export"]', duration: 1800 },
     // 9 — assistant (~15s)
     { type: 'goto', url: 'http://localhost:3101/dashboard' },
-    { type: 'click', selector: 'button[aria-label="Ouvrir l\u2019assistant"]' },
+    { type: "click", selector: 'button[aria-label*="assistant"]' },
     { type: 'wait', selector: 'input[placeholder*="question"]' },
     { type: 'caption', text: 'Tonti répond et agit pour vous.', say: SAY.s9, duration: 5200 },
     { type: 'type', selector: 'input[placeholder*="question"]', text: 'Qui est en retard ce mois ?' },

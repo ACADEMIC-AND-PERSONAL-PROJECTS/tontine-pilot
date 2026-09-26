@@ -258,7 +258,7 @@ export function AssistantChat() {
               </button>
             </div>
 
-            <div className="scrollbar-thin flex-1 space-y-3 overflow-y-auto px-4 py-4">
+            <div data-testid="dw-chat" className="scrollbar-thin flex-1 space-y-3 overflow-y-auto px-4 py-4">
               {msgs.map((m) => (
                 <div
                   key={m.id}

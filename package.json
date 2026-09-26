@@ -34,6 +34,7 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
+    "@argo-video/cli": "^0.41.0",
     "@aws-amplify/backend-cli": "^1.10.0",
     "@matte97p/demowright": "^0.1.2",
     "@tailwindcss/postcss": "^4",
@@ -44,6 +45,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "kokoro-js": "^1.2.1",
     "playwright": "^1.63.0",
     "tailwindcss": "^4",
     "typescript": "^5",
