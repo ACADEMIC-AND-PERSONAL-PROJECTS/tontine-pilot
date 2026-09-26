@@ -29,6 +29,12 @@ no real money ever moves, tracking only.
 ## Demo — 60 seconds
 
 <div align="center">
+<a href="https://youtu.be/Uvtu5lHfShs">
+<img src="https://img.youtube.com/vi/Uvtu5lHfShs/maxresdefault.jpg" width="660" alt="Watch the TontinePilot demo on YouTube">
+</a>
+
+**Demo on YouTube** — [watch here](https://youtu.be/Uvtu5lHfShs).
+<br><br>
 <img src="videos/landing.gif" width="660" alt="TontinePilot landing page walkthrough">
 
 **Landing page** — hero, features, product film, live demo, how it works.
