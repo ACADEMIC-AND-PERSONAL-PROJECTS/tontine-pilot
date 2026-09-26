@@ -283,6 +283,7 @@ export const handler: Handler = async (event) => {
   // Deterministic fast path: explicit reminder/message requests skip the
   // model lottery and execute immediately with a templated confirmation.
   const routed = routeMemberEmail(question, uiLocale);
+  log(`ROUTED ${JSON.stringify(routed)} q=${question.slice(0, 60)}`);
   if (routed) {
     const sub0 =
       (event as { identity?: { sub?: string } }).identity?.sub ?? null;

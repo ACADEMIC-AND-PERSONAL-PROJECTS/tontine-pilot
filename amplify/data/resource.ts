@@ -219,7 +219,7 @@ const schemaWithAuth = schema.authorization((allow) => [
   allow.resource(recommendRotation).to(["query"]),
   allow.resource(digestAudio).to(["query", "mutate"]),
   allow.resource(remindersWorker).to(["query", "mutate"]),
-  allow.resource(assistant).to(["query"]),
+  allow.resource(assistant).to(["query", "mutate"]),
   allow.resource(notify).to(["query", "mutate"]),
 ]);
 
