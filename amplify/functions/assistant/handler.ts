@@ -245,7 +245,9 @@ async function executeEmailTool(
     await sendHtml(match.email, mail.subject, mail.html, mail.text);
     return `OK: message email sent to ${match.name} (${match.email}).`;
   } catch (err) {
-    return `ERROR: send failed (${(err as Error)?.message}).`;
+    // Delivery failure is a PLATFORM issue (e.g. sender not verified yet),
+    // never the member's fault — say so explicitly.
+    return `ERROR: delivery failed on our side (${(err as Error)?.message}). The reminder is saved in Alerts and trust was recalculated; only the email could not leave our servers yet.`;
   }
 }
 
