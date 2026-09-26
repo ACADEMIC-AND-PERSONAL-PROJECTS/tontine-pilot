@@ -17,6 +17,7 @@ import { useLocale } from "@/lib/i18n";
 import { contributionText, type Contribution } from "@/lib/fake-data";
 import { useRemoteCycleData } from "@/lib/use-remote";
 import { useGroups } from "@/lib/groups";
+import { isBackendEnabled } from "@/lib/backend";
 
 function buildCsv(rows: Contribution[]) {
   const header = "Membre,Montant,Statut,Date,Déclaration\n";
@@ -46,8 +47,9 @@ export default function ExportPage() {
   const fr = locale === "fr";
   const [downloaded, setDownloaded] = useState<"csv" | "pdf" | null>(null);
   const { active } = useGroups();
+  const backendOn = isBackendEnabled();
   const remote = useRemoteCycleData(active.id);
-  const contributions = remote.contributions.length > 0 ? remote.contributions : fakeContributions;
+  const contributions = backendOn ? remote.contributions : fakeContributions;
 
   function exportCsv() {
     downloadBlob(
@@ -159,6 +161,13 @@ export default function ExportPage() {
                 </tr>
             </thead>
             <tbody>
+              {contributions.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-5 py-10 text-center text-sm text-muted">
+                    {fr ? "Rien à exporter pour l'instant." : "Nothing to export yet."}
+                  </td>
+                </tr>
+              )}
               {contributions.map((c) => (
                 <tr
                   key={c.id}

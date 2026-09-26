@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { X, Send, Sparkles } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { client, isBackendEnabled } from "@/lib/backend";
 
 type Msg = { id: number; from: "bot" | "user"; text: string };
 
@@ -124,16 +125,38 @@ export function AssistantChat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [msgs, typing, open]);
 
-  function send(text: string) {
+  async function send(text: string) {
     const clean = text.trim();
     if (!clean || typing) return;
-    setMsgs((m) => [...m, { id: idc++, from: "user", text: clean }]);
+    const userMsg: Msg = { id: idc++, from: "user", text: clean };
+    setMsgs((m) => [...m, userMsg]);
     setInput("");
     setTyping(true);
-    window.setTimeout(() => {
-      setMsgs((m) => [...m, { id: idc++, from: "bot", text: answer(clean, fr) }]);
+    const reply = (t: string) => {
+      setMsgs((m) => [...m, { id: idc++, from: "bot", text: t }]);
       setTyping(false);
-    }, 650);
+    };
+    // Live AI first, local brain as fallback (offline / demo mode).
+    if (isBackendEnabled()) {
+      try {
+        const history = [...msgs, userMsg].slice(-7, -1).map((m) => ({
+          role: m.from === "user" ? "user" : "assistant",
+          text: m.text,
+        }));
+        const res = await client.queries.askAssistant({
+          question: clean,
+          locale,
+          history: JSON.stringify(history),
+        });
+        if (!res.errors?.length && res.data?.answer?.trim()) {
+          reply(res.data.answer.trim());
+          return;
+        }
+      } catch {
+        // fall through to local brain
+      }
+    }
+    window.setTimeout(() => reply(answer(clean, fr)), 650);
   }
 
   const suggestions = fr ? SUGGESTIONS_FR : SUGGESTIONS_EN;
@@ -255,7 +278,7 @@ export function AssistantChat() {
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-accent via-fuchsia to-cyan text-white shadow-elevate-high"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-border bg-bg-raised text-accent-hover shadow-elevate-high transition-colors hover:border-accent/40"
         aria-label={fr ? "Ouvrir l'assistant" : "Open assistant"}
       >
         {!seen && !open && (
@@ -266,7 +289,7 @@ export function AssistantChat() {
             </span>
           </span>
         )}
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? <X className="h-6 w-6" /> : <Sparkles className="h-6 w-6" />}
       </motion.button>
     </div>
   );

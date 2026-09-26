@@ -18,6 +18,7 @@ import { formatFCFA, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
 import { client, isBackendEnabled } from "@/lib/backend";
+import { useRemoteMembers } from "@/lib/use-remote";
 import { uploadData } from "aws-amplify/storage";
 
 type Mode = "text" | "ocr";
@@ -104,6 +105,8 @@ export default function DeclarePage() {
   const [fileName, setFileName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const { active } = useGroups();
+  const { members: remoteMembers } = useRemoteMembers(active.id);
+  const knownMembers = isBackendEnabled() ? remoteMembers : fakeMembers;
   const [receiptKey, setReceiptKey] = useState<string | null>(null);
 
   async function remoteParse(text: string) {
@@ -202,7 +205,8 @@ export default function DeclarePage() {
         const today = new Date().toISOString().slice(0, 10);
         if (parsed.kind === "text") {
           const member =
-            fakeMembers.find((m) => m.name === parsed.memberName) ?? fakeMembers[0];
+            knownMembers.find((m) => m.name === parsed.memberName) ??
+            knownMembers[0] ?? { id: "unknown", name: parsed.memberName };
           await client.models.Contribution.create({
             groupId: active.id,
             cycleId: "cycle-4",

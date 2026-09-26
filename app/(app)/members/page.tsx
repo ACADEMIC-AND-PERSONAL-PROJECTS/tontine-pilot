@@ -11,37 +11,18 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
-import { client, isBackendEnabled } from "@/lib/backend";
-import { toMember } from "@/lib/remote";
-import { useEffect, useState } from "react";
-import type { Member } from "@/lib/fake-data";
+import { isBackendEnabled } from "@/lib/backend";
+import { useRemoteMembers } from "@/lib/use-remote";
 
 export default function MembersPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
   const { active } = useGroups();
-  const [remoteMembers, setRemoteMembers] = useState<Member[] | null>(null);
-
-  useEffect(() => {
-    if (!isBackendEnabled()) return;
-    let live = true;
-    client.models.Member.list({ filter: { groupId: { eq: active.id } } }).then(
-      ({ data, errors }) => {
-        if (!live || errors?.length || !data?.length) return;
-        try {
-          setRemoteMembers((data as Record<string, unknown>[]).map((r) => toMember(r)));
-        } catch {
-          // keep demo
-        }
-      },
-      () => {}
-    );
-    return () => {
-      live = false;
-    };
-  }, [active.id]);
-
-  const members = remoteMembers ?? fakeMembers;
+  const backendOn = isBackendEnabled();
+  const { members: remoteMembers, loaded: membersLoaded } = useRemoteMembers(active.id);
+  // Backend on: real rows even when empty. Off: demo dataset.
+  const members = backendOn ? remoteMembers : fakeMembers;
+  const showSkeleton = backendOn && !membersLoaded;
   const aiOrder = recommendRotationOrder(members);
 
   return (
@@ -79,9 +60,22 @@ export default function MembersPage() {
               #{i + 1} {m.name.split(" ")[0]}
             </Badge>
           ))}
-          <Badge tone="muted">… +{aiOrder.length - 6}</Badge>
+          {aiOrder.length > 6 && <Badge tone="muted">… +{aiOrder.length - 6}</Badge>}
         </div>
       </motion.div>
+
+      {showSkeleton && (
+        <div className="flex items-center justify-center py-16">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-accent" />
+        </div>
+      )}
+      {!showSkeleton && members.length === 0 && (
+        <p className="panel mt-8 rounded-2xl px-5 py-10 text-center text-sm text-muted">
+          {fr
+            ? "Aucun membre pour l'instant — ajoute-les depuis la création du groupe."
+            : "No members yet — add them from group creation."}
+        </p>
+      )}
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
         {members.map((m, i) => {

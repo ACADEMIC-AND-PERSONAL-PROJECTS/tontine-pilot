@@ -11,6 +11,7 @@ import {
 import { fakeGroup, seedGroups, type Group } from "@/lib/fake-data";
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toGroup } from "@/lib/remote";
+import { getCurrentUser } from "aws-amplify/auth";
 
 const GROUPS_KEY = "tp-groups";
 const ACTIVE_KEY = "tp-active-group";
@@ -20,6 +21,7 @@ type Ctx = {
   activeId: string;
   active: Group;
   ready: boolean;
+  synced: boolean;
   switchGroup: (id: string) => void;
   addGroup: (g: Group) => void;
   archiveGroup: (id: string, archived: boolean) => void;
@@ -58,22 +60,32 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
     setReady(true);
   }, []);
 
-  // Remote sync: backend rows win when reachable (logged-in + deployed).
+  // Remote sync: owner-scoped rows win when reachable (logged-in + deployed).
+  // A new user sees ONLY their own groups (empty at first) — never demo data.
+  const [synced, setSynced] = useState(false);
   useEffect(() => {
     if (!isBackendEnabled()) return;
     let live = true;
-    client.models.Group.list().then(
-      ({ data, errors }) => {
-        if (!live || errors?.length || !data?.length) return;
-        try {
-          const remote = (data as Record<string, unknown>[]).map((r) => toGroup(r));
-          setGroups(remote);
-        } catch {
-          // contract drift -> keep local
+    (async () => {
+      try {
+        const user = await getCurrentUser();
+        const { data, errors } = await client.models.Group.list({
+          filter: { owner: { eq: user.userId } },
+        });
+        if (!live) return;
+        if (!errors?.length && data) {
+          try {
+            setGroups((data as Record<string, unknown>[]).map((r) => toGroup(r)));
+          } catch {
+            // contract drift -> keep local
+          }
         }
-      },
-      () => {}
-    );
+      } catch {
+        // logged out / offline -> keep local
+      } finally {
+        if (live) setSynced(true);
+      }
+    })();
     return () => {
       live = false;
     };
@@ -151,7 +163,7 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ groups, activeId, active, ready, switchGroup, addGroup, archiveGroup, removeGroup }),
+    () => ({ groups, activeId, active, ready, synced, switchGroup, addGroup, archiveGroup, removeGroup }),
     [groups, activeId, active, ready, switchGroup, addGroup, archiveGroup, removeGroup]
   );
 

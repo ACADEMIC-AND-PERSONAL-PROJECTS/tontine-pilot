@@ -5,6 +5,7 @@ import { mediate } from "../functions/mediate/resource";
 import { recommendRotation } from "../functions/recommend-rotation/resource";
 import { digestAudio } from "../functions/digest-audio/resource";
 import { remindersWorker } from "../functions/reminders-worker/resource";
+import { assistant } from "../functions/assistant/resource";
 
 // Phase 1: models only (authenticated read, owner write).
 // Phase 2 adds Lambda function resources, custom queries/mutations
@@ -163,6 +164,7 @@ const schema = a.schema({
   }),
   RotationResult: a.customType({ provisional: a.boolean(), entries: a.ref("RotationEntry").array() }),
   DigestResult: a.customType({ script: a.string(), audioUrl: a.string() }),
+  AssistantAnswer: a.customType({ answer: a.string() }),
   SendResult: a.customType({ sentEmail: a.boolean(), sentSms: a.boolean() }),
 
   parseDeclaration: a.query()
@@ -185,6 +187,14 @@ const schema = a.schema({
     .arguments({ cycleId: a.string().required(), locale: a.string().required() })
     .returns(a.ref("DigestResult")).handler(a.handler.function(digestAudio))
     .authorization((allow) => [allow.authenticated()]),
+  askAssistant: a.query()
+    .arguments({
+      question: a.string().required(),
+      locale: a.string().required(),
+      history: a.json(),
+    })
+    .returns(a.ref("AssistantAnswer")).handler(a.handler.function(assistant))
+    .authorization((allow) => [allow.authenticated()]),
   sendNudge: a.mutation()
     .arguments({ alertId: a.string().required() })
     .returns(a.ref("SendResult")).handler(a.handler.function(remindersWorker))
@@ -198,6 +208,7 @@ const schemaWithAuth = schema.authorization((allow) => [
   allow.resource(recommendRotation).to(["query"]),
   allow.resource(digestAudio).to(["query", "mutate"]),
   allow.resource(remindersWorker).to(["query", "mutate"]),
+  allow.resource(assistant).to(["query"]),
 ]);
 
 export type Schema = ClientSchema<typeof schemaWithAuth>;

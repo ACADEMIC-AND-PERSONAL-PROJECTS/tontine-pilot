@@ -19,6 +19,7 @@ import { AnimatedNumber } from "@/components/ui/animated-number";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
+import { isBackendEnabled } from "@/lib/backend";
 import { useRemoteCycleData, useRemoteGroup } from "@/lib/use-remote";
 import {
   ArrowRight,
@@ -33,17 +34,25 @@ import { useState } from "react";
 export default function DashboardPage() {
   const { t, locale } = useLocale();
   const fr = locale === "fr";
-  const { active: localActive } = useGroups();
+  const { active: localActive, groups, synced } = useGroups();
+  const backendOn = isBackendEnabled();
   const remoteGroup = useRemoteGroup(localActive.id);
-  const active = remoteGroup ?? localActive;
+  const active = remoteGroup.group ?? localActive;
   const remote = useRemoteCycleData(localActive.id);
-  const contributions = remote.contributions.length > 0 ? remote.contributions : fakeContributions;
-  const allAlerts = remote.alerts.length > 0 ? remote.alerts : fakeAlerts;
-  const cycle = {
-    cycleNumber: remote.cycle?.cycleNumber ?? currentCycle.cycleNumber,
-    recipientName: remote.cycle?.recipientName ?? currentCycle.recipientName,
-    startDate: remote.cycle?.startDate ?? currentCycle.startDate,
-    endDate: remote.cycle?.endDate ?? currentCycle.endDate,
+  // Backend on: trust remote rows even when empty (real zeros, never fakes).
+  // Backend off / unreachable: demo dataset.
+  const useRemote = backendOn && (remote.loaded || remoteGroup.loaded);
+  const contributions = useRemote ? remote.contributions : fakeContributions;
+  const allAlerts = useRemote ? remote.alerts : fakeAlerts;
+  const remoteCycles = useRemote ? remote.cycles : [];
+  const pastList = useRemote
+    ? remoteCycles.filter((c) => remote.cycle == null || c.id !== remote.cycle.id)
+    : pastCycles;
+  const cycle = remote.cycle ?? {
+    cycleNumber: currentCycle.cycleNumber,
+    recipientName: currentCycle.recipientName,
+    startDate: currentCycle.startDate,
+    endDate: currentCycle.endDate,
   };
   const collected = active.cycleCollected ?? currentCycle.totalCollected;
   const expected = active.cycleExpected ?? currentCycle.totalExpected;
@@ -69,6 +78,38 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
+      {backendOn && !synced && (
+        <div className="flex items-center justify-center py-20">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-accent" />
+        </div>
+      )}
+      {backendOn && synced && groups.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="panel-luminous flex flex-col items-center rounded-2xl px-6 py-16 text-center"
+        >
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
+            {fr ? "Bienvenue" : "Welcome"}
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+            {fr ? "Crée ton premier groupe" : "Create your first group"}
+          </h1>
+          <p className="mt-2 max-w-md text-sm text-muted">
+            {fr
+              ? "Tes chiffres partiront de zéro — aucun argent suivi pour l'instant. Nomme ton groupe, invite tes membres, lance le premier cycle."
+              : "Your numbers start at zero — nothing tracked yet. Name your group, invite members, start the first cycle."}
+          </p>
+          <Link href="/group/new" className="mt-6">
+            <Button className="gap-1.5">
+              {fr ? "Créer un groupe" : "Create a group"}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </motion.div>
+      )}
+      {(!backendOn || !synced || groups.length > 0) && (
+        <>
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -233,6 +274,13 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-2 max-h-[420px] divide-y divide-border overflow-y-auto scrollbar-thin">
+            {contributions.length === 0 && (
+              <p className="px-5 py-8 text-center text-sm text-muted">
+                {fr
+                  ? "Aucune cotisation pour ce cycle — déclare la première."
+                  : "No contributions this cycle — declare the first one."}
+              </p>
+            )}
             {contributions.map((c, i) => (
               <motion.div
                 key={c.id}
@@ -384,8 +432,13 @@ export default function DashboardPage() {
         className="panel p-5"
       >
         <h2 className="text-base font-semibold tracking-tight">{t("dash.past")}</h2>
+        {pastList.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">
+            {fr ? "Aucun cycle clôturé pour l'instant." : "No closed cycles yet."}
+          </p>
+        ) : (
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {pastCycles.map((c) => (
+          {pastList.map((c) => (
             <div
               key={c.id}
               className="rounded-[10px] border border-border bg-bg-subtle/40 p-4"
@@ -396,12 +449,15 @@ export default function DashboardPage() {
               </div>
               <p className="mt-2 text-xs text-muted">→ {c.recipientName}</p>
               <p className="mt-1 font-mono text-lg font-semibold tabular-nums">
-                {formatFCFA(c.totalCollected, locale)}
+                {formatFCFA("totalCollected" in c ? (c.totalCollected as number) : 0, locale)}
               </p>
             </div>
           ))}
         </div>
+        )}
       </motion.div>
+        </>
+      )}
     </div>
   );
 }

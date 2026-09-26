@@ -74,23 +74,30 @@ const ALL_TYPES: AlertType[] = [
 export default function AlertsPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
-  const [alerts, setAlerts] = useState(fakeAlerts);
+  const backendOn = isBackendEnabled();
+  const [alerts, setAlerts] = useState(backendOn ? [] : fakeAlerts);
+  const [alertsLoaded, setAlertsLoaded] = useState(!backendOn);
   const { active } = useGroups();
   const [nudging, setNudging] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isBackendEnabled()) return;
+    if (!backendOn) return;
     let live = true;
+    setAlertsLoaded(false);
     client.models.Alert.list({ filter: { groupId: { eq: active.id } } }).then(
       ({ data, errors }) => {
         if (!live || errors?.length || !data?.length) return;
         try {
           setAlerts((data as Record<string, unknown>[]).map((r) => toAlert(r)));
         } catch {
-          // contract drift -> keep demo
+          // contract drift -> keep current
+        } finally {
+          if (live) setAlertsLoaded(true);
         }
       },
-      () => {}
+      () => {
+        if (live) setAlertsLoaded(true);
+      }
     );
     return () => {
       live = false;
@@ -434,7 +441,13 @@ export default function AlertsPage() {
           })}
         </AnimatePresence>
 
-        {filtered.length === 0 && (
+        {!alertsLoaded && (
+          <div className="flex items-center justify-center py-12">
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-accent" />
+          </div>
+        )}
+
+        {alertsLoaded && filtered.length === 0 && (
           <p className="rounded-2xl border border-border px-5 py-8 text-center text-sm text-muted">
             {fr
               ? "Aucune alerte ne correspond à ces filtres."

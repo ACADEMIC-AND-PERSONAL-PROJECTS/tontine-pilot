@@ -8,6 +8,7 @@ import { mediate } from "./functions/mediate/resource";
 import { recommendRotation } from "./functions/recommend-rotation/resource";
 import { digestAudio } from "./functions/digest-audio/resource";
 import { remindersWorker } from "./functions/reminders-worker/resource";
+import { assistant } from "./functions/assistant/resource";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import * as scheduler from "aws-cdk-lib/aws-scheduler";
@@ -23,6 +24,7 @@ const backend = defineBackend({
   recommendRotation,
   digestAudio,
   remindersWorker,
+  assistant,
 });
 
 const ACCOUNT = process.env.AWS_ACCOUNT_ID ?? "587308451740";
@@ -44,6 +46,7 @@ for (const fn of [
   backend.parseReceipt,
   backend.mediate,
   backend.recommendRotation,
+  backend.assistant,
 ]) {
   fn.addEnvironment("BEDROCK_REGION", "us-east-1");
   fn.resources.lambda.addToRolePolicy(
