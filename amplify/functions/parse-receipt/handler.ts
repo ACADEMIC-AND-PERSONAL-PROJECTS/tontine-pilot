@@ -8,6 +8,7 @@ import {
 import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
 import { VISION_PROFILE, extractJson, log } from "../_shared/bedrock";
 import { textractParse } from "../_shared/receipt";
+console.log("HANDLER_REV=3");
 
 const client = dataClient();
 

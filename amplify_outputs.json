@@ -1344,6 +1344,18 @@
             }
           }
         },
+        "AssistantAnswer": {
+          "name": "AssistantAnswer",
+          "fields": {
+            "answer": {
+              "name": "answer",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            }
+          }
+        },
         "SendResult": {
           "name": "SendResult",
           "fields": {
@@ -1466,6 +1478,34 @@
               "isArray": false,
               "type": "String",
               "isRequired": true
+            }
+          }
+        },
+        "askAssistant": {
+          "name": "askAssistant",
+          "isArray": false,
+          "type": {
+            "nonModel": "AssistantAnswer"
+          },
+          "isRequired": false,
+          "arguments": {
+            "question": {
+              "name": "question",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            },
+            "locale": {
+              "name": "locale",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true
+            },
+            "history": {
+              "name": "history",
+              "isArray": false,
+              "type": "AWSJSON",
+              "isRequired": false
             }
           }
         }

@@ -4,6 +4,7 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_shared/bedrock";
 import { dedupeKey, templateNudge } from "../_shared/fallbacks";
+console.log("HANDLER_REV=3");
 
 const client = dataClient();
 

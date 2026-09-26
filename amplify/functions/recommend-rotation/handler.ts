@@ -2,6 +2,7 @@ import type { Handler } from "aws-lambda";
 import { dataClient } from "../_shared/data-client";
 import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_shared/bedrock";
 import { lottery, trustFor } from "../_shared/fallbacks";
+console.log("HANDLER_REV=3");
 
 const client = dataClient();
 

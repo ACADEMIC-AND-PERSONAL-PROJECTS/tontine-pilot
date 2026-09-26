@@ -1,6 +1,7 @@
 import type { Handler } from "aws-lambda";
 import { dataClient } from "../_shared/data-client";
 import { NLU_PROFILE, USE_MOCK, converseText, log } from "../_shared/bedrock";
+console.log("HANDLER_REV=3");
 
 const client = dataClient();
 void client;

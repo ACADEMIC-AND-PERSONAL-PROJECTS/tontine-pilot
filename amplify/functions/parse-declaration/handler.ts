@@ -8,6 +8,7 @@ import {
   log,
 } from "../_shared/bedrock";
 import { heuristicParse } from "../_shared/fallbacks";
+console.log("HANDLER_REV=3");
 
 const client = dataClient();
 
