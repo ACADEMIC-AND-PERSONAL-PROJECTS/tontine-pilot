@@ -1,0 +1,56 @@
+{
+  "demo": "tour",
+  "totalDurationMs": 60307,
+  "overflowMs": 0,
+  "scenes": [
+    {
+      "scene": "dashboard",
+      "startMs": 0,
+      "endMs": 9850,
+      "durationMs": 9850
+    },
+    {
+      "scene": "declare",
+      "startMs": 10384,
+      "endMs": 19109,
+      "durationMs": 8725
+    },
+    {
+      "scene": "groups",
+      "startMs": 19209,
+      "endMs": 27559,
+      "durationMs": 8350
+    },
+    {
+      "scene": "members",
+      "startMs": 27905,
+      "endMs": 35605,
+      "durationMs": 7700
+    },
+    {
+      "scene": "alerts",
+      "startMs": 36009,
+      "endMs": 43884,
+      "durationMs": 7875
+    },
+    {
+      "scene": "export",
+      "startMs": 43984,
+      "endMs": 49859,
+      "durationMs": 5875
+    },
+    {
+      "scene": "assistant",
+      "startMs": 49959,
+      "endMs": 55959,
+      "durationMs": 6000
+    },
+    {
+      "scene": "outro",
+      "startMs": 56059,
+      "endMs": 60234,
+      "durationMs": 4175
+    }
+  ],
+  "output": "videos/tour.mp4"
+}

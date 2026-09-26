@@ -1,0 +1,71 @@
+{
+  "demo": "tour",
+  "createdAt": "2026-09-26T09:48:19.232Z",
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "browser": "chromium",
+    "deviceScaleFactor": 1
+  },
+  "tts": {
+    "engine": "kokoro",
+    "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+    "dtype": "q8"
+  },
+  "scenes": [
+    {
+      "scene": "dashboard",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 9850
+    },
+    {
+      "scene": "declare",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 8725
+    },
+    {
+      "scene": "groups",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 8350
+    },
+    {
+      "scene": "members",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 7700
+    },
+    {
+      "scene": "alerts",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 7875
+    },
+    {
+      "scene": "export",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 5875
+    },
+    {
+      "scene": "assistant",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 6000
+    },
+    {
+      "scene": "outro",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 4175
+    }
+  ],
+  "export": {
+    "preset": "medium",
+    "crf": 18
+  },
+  "output": "videos/tour.mp4"
+}

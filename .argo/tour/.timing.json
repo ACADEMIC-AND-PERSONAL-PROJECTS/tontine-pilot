@@ -1,4 +1,10 @@
 {
-  "dashboard": 1,
-  "declare": 10873
+  "dashboard": 0,
+  "declare": 11185,
+  "groups": 19699,
+  "members": 29225,
+  "alerts": 37935,
+  "export": 45293,
+  "assistant": 49587,
+  "outro": 55621
 }

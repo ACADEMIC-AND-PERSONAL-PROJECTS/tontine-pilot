@@ -4,6 +4,7 @@ const EMAIL = process.env.DEMO_EMAIL || 'demo@tontinepilot.sn'
 const PASSWORD = process.env.DEMO_PASSWORD || 'T0ntine-DEMO-2026!'
 
 test('tour', async ({ page, narration }) => {
+  test.setTimeout(300000)
   await page.addInitScript("try{localStorage.setItem('tp-locale','en')}catch(e){}")
 
   // Setup (not recorded): login
@@ -12,7 +13,8 @@ test('tour', async ({ page, narration }) => {
   await page.locator('input[type="password"]').fill(PASSWORD)
   await page.locator('form button[type="submit"]').click()
   await page.waitForURL('**/dashboard**', { timeout: 30000 })
-  await page.waitForTimeout(1500)
+  // Let live data land before rolling (no empty-state frame at t=0)
+  await page.waitForTimeout(6000)
 
   await narration.startRecording(page)
 
@@ -25,7 +27,7 @@ test('tour', async ({ page, narration }) => {
   await page.goto('/declare')
   narration.mark('declare')
   await page.locator('textarea').click()
-  await page.locator('textarea').press_sequentially('I paid 20000 for Awa this month', { delay: 30 })
+  await page.keyboard.type('I paid 20000 for Awa this month', { delay: 30 })
   await page.locator('[data-testid="dw-parse"]').click()
   await page.locator('[data-testid="dw-parse-result"]').waitFor({ timeout: 60000 })
   await page.waitForTimeout(1500)
@@ -65,7 +67,7 @@ test('tour', async ({ page, narration }) => {
   await page.locator('input[placeholder*="question"]').waitFor({ timeout: 10000 })
   const before = await page.locator('[data-testid="dw-chat"] > div').count()
   await page.locator('input[placeholder*="question"]').click()
-  await page.locator('input[placeholder*="question"]').press_sequentially('Who still needs to pay this month?', { delay: 25 })
+  await page.keyboard.type('Who still needs to pay this month?', { delay: 25 })
   await page.keyboard.press('Enter')
   await page.waitForFunction(
     (n) => document.querySelectorAll('[data-testid="dw-chat"] > div').length > n,
