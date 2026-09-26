@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   fakeAlerts,
   audioDigestScript,
-  fakeGroup,
   alertMessageText,
   alertProposalText,
 } from "@/lib/fake-data";
@@ -15,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { formatDate, formatFCFA, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
+import { useRemoteCycleData } from "@/lib/use-remote";
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toAlert } from "@/lib/remote";
 import {
@@ -77,7 +77,12 @@ export default function AlertsPage() {
   const backendOn = isBackendEnabled();
   const [alerts, setAlerts] = useState(backendOn ? [] : fakeAlerts);
   const [alertsLoaded, setAlertsLoaded] = useState(!backendOn);
-  const { active } = useGroups();
+  const { active, groups, synced } = useGroups();
+  const noGroups = backendOn && synced && groups.length === 0;
+  const remote = useRemoteCycleData(active.id);
+  const cycleId = remote.cycle?.id;
+  const cycleLabel = remote.cycle ? ` du cycle ${remote.cycle.cycleNumber}` : "";
+  const cycleLabelEn = remote.cycle ? ` of cycle ${remote.cycle.cycleNumber}` : "";
   const [nudging, setNudging] = useState<string | null>(null);
 
   useEffect(() => {
@@ -86,17 +91,24 @@ export default function AlertsPage() {
     setAlertsLoaded(false);
     client.models.Alert.list({ filter: { groupId: { eq: active.id } } }).then(
       ({ data, errors }) => {
-        if (!live || errors?.length || !data?.length) return;
+        if (!live) return;
         try {
-          setAlerts((data as Record<string, unknown>[]).map((r) => toAlert(r)));
+          if (!errors?.length && data?.length) {
+            setAlerts((data as Record<string, unknown>[]).map((r) => toAlert(r)));
+          } else {
+            setAlerts([]);
+          }
         } catch {
-          // contract drift -> keep current
+          setAlerts([]);
         } finally {
           if (live) setAlertsLoaded(true);
         }
       },
       () => {
-        if (live) setAlertsLoaded(true);
+        if (live) {
+          setAlerts([]);
+          setAlertsLoaded(true);
+        }
       }
     );
     return () => {
@@ -159,7 +171,8 @@ export default function AlertsPage() {
     if (isBackendEnabled()) {
       setSpeaking(true);
       try {
-        const res = await client.queries.buildDigest({ cycleId: "cycle-4", locale });
+        if (!cycleId) throw new Error("no-cycle");
+        const res = await client.queries.buildDigest({ cycleId, locale });
         if (!res.errors?.length && res.data?.audioUrl) {
           const audio = new Audio(res.data.audioUrl);
           audioRef.current = audio;
@@ -234,7 +247,7 @@ export default function AlertsPage() {
         transition={{ duration: 0.55 }}
       >
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
-          Médiateur IA · EventBridge (simulé)
+          {fr ? 'Médiateur IA · EventBridge' : 'AI mediator · EventBridge'}
         </p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
           {fr ? "Rappels & médiation" : "Alerts & mediation"}
@@ -247,6 +260,15 @@ export default function AlertsPage() {
       </motion.div>
 
       {/* Audio digest */}
+      {noGroups && (
+        <div className="panel mt-6 rounded-2xl px-5 py-8 text-center">
+          <p className="text-sm font-medium">{fr ? "Aucun groupe pour l'instant" : "No groups yet"}</p>
+          <p className="mx-auto mt-1 max-w-sm text-xs text-muted">
+            {fr ? "Crée ton premier groupe pour recevoir alertes et digest." : "Create your first group to get alerts and digest."}
+          </p>
+        </div>
+      )}
+      {!noGroups && (
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -255,17 +277,17 @@ export default function AlertsPage() {
       >
         <div>
           <p className="text-xs uppercase tracking-wider text-muted">
-            Audio-digest · Polly (simulé)
+            {fr ? 'Audio-digest · Polly' : 'Audio digest · Polly'}
           </p>
           <p className="mt-1 text-sm font-medium">
             {fr
-              ? "Écouter le bilan du cycle 4"
-              : "Listen to cycle 4 summary"}
+              ? `Écouter le bilan${cycleLabel}`
+              : `Listen to the summary${cycleLabelEn}`}
           </p>
           <p className="mt-1 text-xs text-muted">
             {fr
-              ? `Caisse de secours : ${formatFCFA(fakeGroup.emergencyFundBalance, locale)}`
-              : `Emergency fund: ${formatFCFA(fakeGroup.emergencyFundBalance, locale)}`}
+              ? `Caisse de secours : ${formatFCFA(active.emergencyFundBalance, locale)}`
+              : `Emergency fund: ${formatFCFA(active.emergencyFundBalance, locale)}`}
           </p>
         </div>
         {speaking ? (
@@ -280,6 +302,7 @@ export default function AlertsPage() {
           </Button>
         )}
       </motion.div>
+      )}
 
       {/* Toolbar: search + status + type filters — avoids endless scroll */}
       <div className="panel mt-6 rounded-2xl p-4 sm:p-5">
