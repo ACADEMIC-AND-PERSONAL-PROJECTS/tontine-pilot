@@ -44,3 +44,39 @@ Full prompts + JSON contracts in `backend-plan/05-functions-prompts.md`.
 ## Storage & schedule
 S3: `receipts/<identityId>/*` (auth-scoped), `digests/*`.
 EventBridge Scheduler cron `0 8 * * ? *` → reminders-worker (dedupe-guarded fan-out).
+
+## Full data model (enums verbatim)
+- **Group**: name*, description(+En), currency=FCFA, contributionAmount*, frequency
+  WEEKLY|MONTHLY, memberCount*, currentCycleIndex*, emergencyFundBalance/Target*,
+  role Admin|Member, cycleCollected/Expected, openAlerts, archived, startDate,
+  endDate, ownerId. Secondary index: ownerId.
+- **Member**: groupId*, name*, email*, phone, trustScore*, lateCount=0,
+  cyclesCompleted=0, notifySms=false, ownerId. Indexes: groupId, ownerId.
+- **Cycle**: groupId*, cycleNumber*, recipientMemberId/Name, startDate*, endDate*,
+  status OPEN|CLOSED, totalExpected*, totalCollected*. Index: groupId.
+- **Contribution**: groupId*, cycleId* (index), memberId*, memberName*, amount*,
+  status CONFIRMED|PENDING|LATE|COVERED_BY_EMERGENCY_FUND, dateDeclared,
+  rawText(+En), method TEXT_NLU|OCR_RECEIPT|MANUAL|EMERGENCY_FUND, transactionId,
+  receiptKey.
+- **Alert**: groupId*, cycleId, memberId(+Name), type LATE_PAYMENT|ANOMALY|REMINDER|
+  SWAP_PROPOSAL|EMERGENCY_DISPATCH, message(+En)*, createdAt*, resolved=false,
+  proposalKind swap|installment|emergency, proposalDetails(+En), dedupeKey*
+  (`group#cycle#member#type`). Indexes: groupId, dedupeKey.
+- **FundMovement**: groupId*, cycleId, kind DEBIT|REPAY, amount*, reason(+En), createdAt*.
+- **Digest**: groupId*, cycleId*, locale fr|en, script*, audioKey*, createdAt*.
+`*` = required. `owner` (implicit, allow.owner) coexists with explicit `ownerId`.
+
+## IAM table (backend.ts)
+| Grantee | Actions | Resources |
+|---|---|---|
+| 4 Bedrock functions | bedrock:InvokeModel | us-east-1 inference profiles `us.anthropic.*` + app profiles + `arn:aws:bedrock:*::foundation-model/anthropic.claude-*` |
+| parse-receipt | s3:GetObject | receipts/* |
+| digest-audio | polly:SynthesizeSpeech (no resource scoping exists → `*`), s3:Get/Put digests/*, textract:DetectDocumentText (`*`, account-scoped) |
+| reminders-worker, notify, assistant | ses:SendEmail/SendRawEmail (`*`, identities verified at send), sns:Publish (worker) | — |
+| Scheduler role | lambda:InvokeFunction | reminders-worker ARN |
+
+## Handler anatomy (every Lambda)
+1. `dataClient()` (explicit endpoint + introspection + chain credentials).
+2. Parse/validate AppSync `event.arguments` (throw `VALIDATION:` on bad input).
+3. `USE_MOCK` branch or live Bedrock call with try/catch → deterministic fallback.
+4. Structured logging (`CONVERSE_OK`, `FALLBACK:`, `SEND`, `TOOL_*`) for CloudWatch triage.

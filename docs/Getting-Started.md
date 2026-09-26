@@ -27,3 +27,31 @@ With `amplify_outputs.json` (from `npx ampx sandbox`) + login, it talks to live 
 | `npx tsx scripts/seed.ts` | seed demo dataset (needs SEED_USER/SEED_PASSWORD) |
 | `npx tsx scripts/verify.ts` | 9 live backend checks |
 | `./scripts/deploy-functions.sh [fn...]` | push Lambda code (see Deployment quirks) |
+
+## Prerequisites
+- Node 20+ (repo runs 24), npm 11 (`npm install`, NOT `npm ci` — arborist drift, see Deployment).
+- AWS CLI v2 with a profile that can deploy Amplify + invoke Bedrock.
+- Bedrock model access granted (console): Haiku 4.5 + Sonnet 4.5, us-east-1.
+- Service quotas (user-side console steps): Bedrock inference TPM raised from 0.
+- GitHub account (private repo + Actions work on Pro).
+
+## Environment variables (scripts only — never committed)
+- `SEED_USER` / `SEED_PASSWORD` — seeded demo/admin account for seed + verify scripts.
+- `SEED_EMAIL_BASE` — optional; rewrites seed member emails to `base+name@domain` so
+  sandbox SES can actually deliver.
+- `RECEIPT_KEY` — S3 key for the OCR E2E test.
+- `TEST_EMAIL` — real inbox for delivery tests (must be SES-verified in sandbox).
+- Lambda env (`amplify/functions/*/resource.ts` + `backend.ts`): `USE_MOCK`,
+  `BEDROCK_NLU_PROFILE`, `BEDROCK_VISION_PROFILE`, `BEDROCK_REGION`, `OCR_ENGINE`,
+  `MOCK_SEND`, `USE_POLLY`, `SES_FROM`, `APP_URL`, `LOGO_URL`, `STORAGE_BUCKET`.
+
+## Troubleshooting
+| Symptom | Cause → fix |
+|---|---|
+| `npm ci` EUSAGE drift | Use `npm install`; lockfile regen planned post-hackathon |
+| Sandbox `$amplify/env` bundle error | We bypass it — explicit endpoint wiring (see Backend) |
+| Sandbox deploys don't refresh Lambda code | Run `./scripts/deploy-functions.sh`, then re-verify |
+| `NoCredentials` in Lambda | Custom credentials-provider merge (documented in Backend) |
+| SES "not verified" | Sandbox: verify sender + each recipient, or request production access |
+| Owner filter returns nothing | Use explicit `ownerId` field, never implicit `owner` (verified broken) |
+| Stale UI after deploy | Hard refresh (CDN), check job commit matches HEAD |

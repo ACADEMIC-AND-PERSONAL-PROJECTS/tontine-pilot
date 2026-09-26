@@ -27,3 +27,25 @@ admins who reconcile payments, members with low literacy (audio-first inclusive 
 3. **Human in the loop** — AI proposes, admin confirms (rotation, mediation, declarations).
 4. **Graceful degradation** — every AI call has a deterministic fallback; the app never hard-fails.
 5. **Tracking only** — never moves real money.
+
+## 3-minute demo script (for judges and video)
+1. **Landing (30s)**: hero → live demo preview (September cycle, 83% bar animating).
+2. **Declare (45s)**: type "Moussa a payé 20000 pour Cheikh" → structured result with
+   confidence → confirm → dashboard collected ticks up.
+3. **OCR (30s)**: upload Wave screenshot → amount + transaction ID extracted → confirm.
+4. **Alerts (30s)**: open Ibrahima's late alert → accept installment plan → mark resolved.
+5. **Audio + export (30s)**: play the Léa-voiced digest → download the CSV ledger.
+6. **Chatbot (15s)**: "remind Ibrahima he is late" → confirmation with trust recalculated.
+
+## Repository map
+- `tontine-pilot/` — Next.js app + Amplify backend + scripts (this repo).
+- `tontine-pilot/app/` — routes (`(app)/` protected, `/login`, landing `/`).
+- `tontine-pilot/components/` — `app/` (shell, chatbot), `auth/` (login flow),
+  `landing/`, `ui/` (design system primitives).
+- `tontine-pilot/lib/` — `fake-data.ts` (demo dataset + bilingual helpers),
+  `groups.tsx` (multi-group store), `backend.ts` / `remote.ts` / `use-remote.ts`
+  (live-data layer), `i18n.tsx` (FR/EN dictionaries).
+- `tontine-pilot/amplify/` — Gen 2 backend: `auth/`, `data/resource.ts` (schema),
+  `storage/`, `functions/` (8 Lambdas), `backend.ts` (wiring, IAM, scheduler).
+- `tontine-pilot/scripts/` — `seed.ts`, `verify*.ts` (live checks), `deploy-functions.sh`.
+- `tontine-pilot/docs/` — this documentation. `backend-plan/` (sibling) — agent build pack.
