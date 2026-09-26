@@ -12,6 +12,8 @@
 [![Amplify Gen 2](https://img.shields.io/badge/Amplify-Gen_2-DD344C?style=flat-square&logo=awsamplify&logoColor=white)](https://docs.amplify.aws)
 [![License MIT](https://img.shields.io/badge/License-MIT-FACC15?style=flat-square&logoColor=white)](LICENSE)
 
+<img src="assets/hero-banner.jpg" width="100%" alt="TontinePilot — group dashboard, rotation order, contribution tracking, reminders and export registry">
+
 **The AI copilot for community rotating savings groups (tontines).**
 Built for AWS Zero to Shipped · Community lane · bilingual FR/EN · live in us-east-1.
 
