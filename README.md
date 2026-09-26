@@ -29,12 +29,16 @@ no real money ever moves, tracking only.
 ## Demo — 60 seconds
 
 <div align="center">
+<img src="videos/landing.gif" width="660" alt="TontinePilot landing page walkthrough">
 
-![](https://github.com/user-attachments/assets/9660bb18-dffd-4882-82d4-f68b46c2a12f)
+**Landing page** — hero, features, product film, live demo, how it works.
+<br><br>
+<img src="videos/app.gif" width="660" alt="TontinePilot app walkthrough: login and all menus">
 
-**60-second product tour** — dashboard, declare, groups, trust scores,
-alerts, export, and the Tonti assistant answering live. English voiceover.
-Full video with sound: [videos/tour.mp4](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/videos/tour.mp4).
+**Full app walkthrough, no voiceover** — login, dashboard, groups, group creation,
+declare, members and trust scores, alerts, export, and the Tonti assistant answering live.
+<br>
+Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/videos/tour.mp4).
 
 </div>
 

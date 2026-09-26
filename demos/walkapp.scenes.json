@@ -1,0 +1,11 @@
+[
+  { "scene": "login", "text": "Sign in." },
+  { "scene": "dashboard", "text": "Dashboard." },
+  { "scene": "groups", "text": "Groups." },
+  { "scene": "group-new", "text": "Create a group." },
+  { "scene": "declare", "text": "Declare a payment." },
+  { "scene": "members", "text": "Members and trust." },
+  { "scene": "alerts", "text": "Alerts." },
+  { "scene": "export", "text": "Export." },
+  { "scene": "assistant", "text": "Assistant." }
+]
