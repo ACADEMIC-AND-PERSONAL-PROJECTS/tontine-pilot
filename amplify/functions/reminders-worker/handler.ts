@@ -93,8 +93,20 @@ export const handler: Handler = async (event) => {
   const raw = (event ?? {}) as {
     trigger?: string;
     alertId?: string;
-    arguments?: { alertId?: string };
+    action?: string;
+    arguments?: { alertId?: string; action?: string };
   };
+  // Owner-proof resolve: Lambda-created rows are not updatable by users
+  // directly (owner rule), so resolution goes through this function.
+  const action = raw.action ?? raw.arguments?.action;
+  const actionAlertId = raw.alertId ?? raw.arguments?.alertId;
+  if (action === "resolve" && actionAlertId) {
+    const updated = await client.models.Alert.update({ id: actionAlertId, resolved: true });
+    if (updated.errors?.length) {
+      throw new Error(`resolve rejected: ${JSON.stringify(updated.errors)?.slice(0, 200)}`);
+    }
+    return { sentEmail: false, sentSms: false };
+  }
   // AppSync nests mutation args under event.arguments; Scheduler sends a flat payload.
   const alertId = raw.alertId ?? raw.arguments?.alertId;
   const trigger = raw.trigger ?? (alertId ? "manual" : "cron-daily");
@@ -151,6 +163,10 @@ export const handler: Handler = async (event) => {
             groupId: group.id, cycleId: cycle.id, memberId: m.id, memberName: m.name,
             type: "LATE_PAYMENT", message: d.fr, messageEn: d.en,
             createdAt: new Date().toISOString(), resolved: false, dedupeKey: key,
+          }).then((r) => {
+            if (r.errors?.length || !r.data) {
+              throw new Error(`alert create rejected: ${JSON.stringify(r.errors)?.slice(0, 200)}`);
+            }
           });
           created++;
           // Background: the late event immediately degrades the trust score,

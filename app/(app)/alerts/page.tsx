@@ -127,7 +127,8 @@ export default function AlertsPage() {
     setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, resolved: true } : a)));
     if (isBackendEnabled()) {
       try {
-        await client.models.Alert.update({ id, resolved: true });
+        // Owner-proof: Lambda-created rows are not updatable by users directly.
+        await client.mutations.resolveAlert({ alertId: id });
       } catch {
         // local state already updated
       }

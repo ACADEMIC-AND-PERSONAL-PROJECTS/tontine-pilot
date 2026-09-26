@@ -206,6 +206,10 @@ const schema = a.schema({
     .arguments({ groupId: a.string().required() })
     .returns(a.ref("NotifyResult")).handler(a.handler.function(notify))
     .authorization((allow) => [allow.authenticated()]),
+  resolveAlert: a.mutation()
+    .arguments({ alertId: a.string().required() })
+    .returns(a.ref("SendResult")).handler(a.handler.function(remindersWorker))
+    .authorization((allow) => [allow.authenticated()]),
   sendNudge: a.mutation()
     .arguments({ alertId: a.string().required() })
     .returns(a.ref("SendResult")).handler(a.handler.function(remindersWorker))

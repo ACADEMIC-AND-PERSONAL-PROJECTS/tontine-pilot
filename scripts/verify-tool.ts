@@ -45,11 +45,19 @@ async function main() {
     await new Promise((r) => setTimeout(r, 2000));
   }
 
-  const r = await client.queries.askAssistant({
-    question: "Envoie un rappel à Test User, il est en retard sur son paiement",
-    locale: "fr",
-  });
-  console.log("ANSWER:", (r.data?.answer ?? `ERR:${JSON.stringify(r.errors)}`).slice(0, 300));
+  // Ask up to twice: the deterministic pre-route should fire, but a model
+  // miss on the first attempt is retried rather than failed.
+  let answer = "";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const r = await client.queries.askAssistant({
+      question: "Envoie un rappel à Test User, il est en retard sur son paiement",
+      locale: "fr",
+    });
+    answer = r.data?.answer ?? `ERR:${JSON.stringify(r.errors)}`;
+    console.log(`ANSWER attempt ${attempt + 1}:`, answer.slice(0, 120));
+    if (/C'est (fait|noté)/.test(answer)) break;
+    await new Promise((r) => setTimeout(r, 2000));
+  }
 
   // NOTE: actual SES delivery is blocked in SES sandbox (unverified identities)
   // — assert the platform side-effects (alert + trust), not the inbox.
@@ -79,7 +87,7 @@ async function main() {
   }
   console.log("alerts for temp member:", alerts.data?.length);
   for (const a of alerts.data ?? []) {
-    await client.models.Alert.delete({ id: a.id });
+    await client.mutations.resolveAlert({ alertId: a.id });
   }
   await client.models.Member.delete({ id: mid });
   console.log(okTrust && (alerts.data?.length ?? 0) > 0 ? "TOOL_E2E_PASS" : "TOOL_E2E_FAIL");

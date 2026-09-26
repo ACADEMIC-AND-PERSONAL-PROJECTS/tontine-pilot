@@ -90,6 +90,7 @@ async function converseWithTool(
   // One tool round-trip max (latency + cost bound).
   const input = (toolUse.input ?? {}) as { recipient?: string; kind?: string; subject?: string; body?: string };
   const outcome = await executeEmailTool(toolUse.toolUseId ?? "tool-1", input, locale, currentSub);
+  const outcomeText = `[${outcome.status}] ${outcome.message}`;
   const second = await bedrock.send(
     new ConverseCommand({
       modelId,
@@ -100,7 +101,7 @@ async function converseWithTool(
         { role: "assistant", content: [{ toolUse: { toolUseId: toolUse.toolUseId ?? "tool-1", name: toolUse.name, input } }] },
         {
           role: "user",
-          content: [{ toolResult: { toolUseId: toolUse.toolUseId ?? "tool-1", content: [{ text: outcome }] } }],
+          content: [{ toolResult: { toolUseId: toolUse.toolUseId ?? "tool-1", content: [{ text: outcomeText }] } }],
         },
       ],
       inferenceConfig: { maxTokens: 400, temperature: 0.3 },
@@ -108,7 +109,7 @@ async function converseWithTool(
     })
   );
   const t2 = (second.output?.message?.content ?? []).find((b) => "text" in b);
-  return t2 && "text" in t2 ? (t2.text ?? "") : outcome;
+  return t2 && "text" in t2 ? (t2.text ?? "") : outcomeText;
 }
 
 async function executeRouted(
@@ -141,19 +142,22 @@ async function executeRouted(
       if (match) break;
     }
     if (!match) return null;
-    if (!/^[^^\s@]+@[^\s@]+\.[^\s@]+$/.test(match.email)) return null;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(match.email)) return null;
     const outcome = await executeEmailTool("routed", {
       recipient: match.email,
       kind: routed.kind,
       subject: "",
       body: question,
     }, locale, sub);
-    if (outcome.startsWith("OK:")) {
-      return locale === "en"
+    if (outcome.status === "error") return null;
+    // sent OR saved (alert + trust done, email pending): confirm, no model retry.
+    return locale === "en"
+      ? outcome.status === "sent"
         ? `Done — email on its way to **${match.name}** (${match.email}). I also updated their record${routed.kind === "reminder" ? " and recalculated their trust score" : ""}.`
-        : `C'est fait — e-mail en route vers **${match.name}** (${match.email}). J'ai aussi mis à jour sa fiche${routed.kind === "reminder" ? " et recalculé son score de confiance" : ""}.`;
-    }
-    return null;
+        : `Done — reminder for **${match.name}** is saved (alert created${routed.kind === "reminder" ? " and trust recalculated" : ""}). The email itself is still pending on our side and will follow automatically.`
+      : outcome.status === "sent"
+        ? `C'est fait — e-mail en route vers **${match.name}** (${match.email}). J'ai aussi mis à jour sa fiche${routed.kind === "reminder" ? " et recalculé son score de confiance" : ""}.`
+        : `C'est noté — rappel pour **${match.name}** enregistré (alerte créée${routed.kind === "reminder" ? " et confiance recalculée" : ""}). L'e-mail suivra automatiquement dès que l'envoi sera possible.`;
   } finally {
     currentSub = savedSub;
   }
@@ -164,12 +168,13 @@ async function executeEmailTool(
   input: { recipient?: string; kind?: string; subject?: string; body?: string },
   locale: string,
   sub: string | null
-): Promise<string> {
+): Promise<{ status: "sent" | "saved" | "error"; message: string }> {
   void toolUseId;
-  if (!sub) return "ERROR: caller identity unknown, email not sent.";
+  const err = (message: string) => ({ status: "error" as const, message });
+  if (!sub) return err("ERROR: caller identity unknown, email not sent.");
   const callerSub: string = sub;
   const needle = (input.recipient ?? "").trim().toLowerCase();
-  if (!needle) return "ERROR: no recipient given, email not sent.";
+  if (!needle) return err("ERROR: no recipient given, email not sent.");
   // Scope: members of the caller's own groups only.
   async function findMatch() {
     const groups = (
@@ -202,9 +207,9 @@ async function executeEmailTool(
     await new Promise((r) => setTimeout(r, 2500));
     match = await findMatch();
   }
-  if (!match) return `ERROR: no member matching "${input.recipient}" in your groups, email not sent.`;
+  if (!match) return err(`ERROR: no member matching "${input.recipient}" in your groups, email not sent.`);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(match.email)) {
-    return `ERROR: ${match.name} has no valid email on file, email not sent.`;
+    return err(`ERROR: ${match.name} has no valid email on file, email not sent.`);
   }
   const appUrl = process.env.APP_URL ?? "https://main.dhnfua5oyahpy.amplifyapp.com";
   const logoUrl = process.env.LOGO_URL ?? `${appUrl}/logo.jpeg`;
@@ -219,13 +224,16 @@ async function executeEmailTool(
       ).data;
       log(`TOOL_MATCH member=${match.name} group=${match.groupName} alerts_open=${existing.length}`);
       if (existing.length === 0) {
-        await client.models.Alert.create({
+        const created = await client.models.Alert.create({
           groupId: match.groupId, cycleId, memberId: match.id, memberName: match.name,
           type: "LATE_PAYMENT",
           message: input.body ?? `Rappel pour ${match.name}`,
           messageEn: input.body ?? `Reminder for ${match.name}`,
           createdAt: new Date().toISOString(), resolved: false, dedupeKey: key,
         });
+        if (created.errors?.length || !created.data) {
+          throw new Error(`alert create rejected: ${JSON.stringify(created.errors)?.slice(0, 200)}`);
+        }
         const tr = await applyLateEvent(client.models, match.id).catch(() => null);
         log(`TOOL_TRUST ${JSON.stringify(tr)}`);
       }
@@ -235,20 +243,26 @@ async function executeEmailTool(
         cycleLabel: `cycle ${group?.currentCycleIndex ?? 1}`,
         late: true, appUrl, logoUrl,
       });
-      await sendHtml(match.email, mail.subject, mail.html, mail.text);
-      return `OK: reminder email sent to ${match.name} (${match.email}); trust score recalculated.`;
+      try {
+        await sendHtml(match.email, mail.subject, mail.html, mail.text);
+        return { status: "sent" as const, message: `reminder email sent to ${match.name} (${match.email}); trust score recalculated.` };
+      } catch (e) {
+        return { status: "saved" as const, message: `reminder saved for ${match.name}; trust score recalculated; email pending (${(e as Error)?.message ?? "delivery unavailable"}).` };
+      }
     }
     const mail = memberMessageHtml({
       memberName: match.name, groupName: match.groupName,
       subject: input.subject ?? (locale === "en" ? "Message from your group admin" : "Message de ton admin"),
       message: input.body ?? "", appUrl, logoUrl,
     });
-    await sendHtml(match.email, mail.subject, mail.html, mail.text);
-    return `OK: message email sent to ${match.name} (${match.email}).`;
+    try {
+      await sendHtml(match.email, mail.subject, mail.html, mail.text);
+      return { status: "sent" as const, message: `message email sent to ${match.name} (${match.email}).` };
+    } catch (e) {
+      return { status: "saved" as const, message: `message saved for ${match.name} but email pending (${(e as Error)?.message ?? "delivery unavailable"}).` };
+    }
   } catch (err) {
-    // Delivery failure is a PLATFORM issue (e.g. sender not verified yet),
-    // never the member's fault — say so explicitly.
-    return `ERROR: delivery failed on our side (${(err as Error)?.message}). The reminder is saved in Alerts and trust was recalculated; only the email could not leave our servers yet.`;
+    return { status: "error" as const, message: `ERROR: failed (${(err as Error)?.message}).` };
   }
 }
 
