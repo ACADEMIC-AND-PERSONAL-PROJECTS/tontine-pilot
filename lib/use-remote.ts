@@ -132,8 +132,8 @@ export function useRemoteCycleData(groupId: string): {
         raw.sort((a, b) => b.row.cycleNumber - a.row.cycleNumber);
         const cycles = raw.map((r) => r.row);
         const open = raw.find((r) => r.status === "OPEN")?.row ?? cycles[0] ?? null;
-        let contributions: FakeContribution[] = [];
-        let alerts: FakeAlert[] = [];
+        const contributions: FakeContribution[] = [];
+        const alerts: FakeAlert[] = [];
         if (open) {
           const [contribs, al] = await Promise.all([
             client.models.Contribution.list({ filter: { cycleId: { eq: open.id } } }),

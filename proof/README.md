@@ -21,6 +21,8 @@
 
 ![Bedrock console access with model playground](bedrock-console-access.png)
 
+![Agent debugging the Amplify data-client wiring live (SSM introspection)](agent-debug-ssm.png)
+
 ## Backend live (sandbox, us-east-1)
 - AppSync + Cognito + 8 Lambdas + Scheduler `tontine-daily-reminders` (ENABLED).
 - End-to-end proof: `scripts/verify.ts` 9/9 PASS against real Bedrock Haiku 4.5
