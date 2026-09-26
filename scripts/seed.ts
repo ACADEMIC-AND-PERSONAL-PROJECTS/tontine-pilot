@@ -76,6 +76,8 @@ async function main() {
       cycleExpected: grp.cycleExpected,
       openAlerts: grp.openAlerts,
       archived: false,
+      startDate: grp.startDate,
+      endDate: grp.endDate,
     });
     g++;
   }

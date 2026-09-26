@@ -25,6 +25,8 @@ const schema = a.schema({
       emergencyFundBalance: a.integer().required(),
       emergencyFundTarget: a.integer().required(),
       role: a.enum(["Admin", "Member"]),
+    startDate: a.date(),
+    endDate: a.date(),
       cycleCollected: a.integer(),
       cycleExpected: a.integer(),
       openAlerts: a.integer(),

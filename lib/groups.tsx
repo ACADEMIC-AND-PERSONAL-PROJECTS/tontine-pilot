@@ -28,6 +28,8 @@ export const EMPTY_GROUP: Group = {
   cycleExpected: 1,
   openAlerts: 0,
   archived: false,
+  startDate: "",
+  endDate: "",
 };
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toGroup } from "@/lib/remote";

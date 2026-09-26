@@ -23,6 +23,8 @@ type MemberDraft = {
 type Form = {
   name: string;
   description: string;
+  startDate: string;
+  endDate: string;
   amount: string;
   frequency: "WEEKLY" | "MONTHLY";
   members: MemberDraft[];
@@ -71,6 +73,8 @@ export default function NewGroupPage() {
   const [form, setForm] = useState<Form>({
     name: "",
     description: "",
+    startDate: "",
+    endDate: "",
     amount: "20000",
     frequency: "MONTHLY",
     members: seedMembers,
@@ -90,6 +94,39 @@ export default function NewGroupPage() {
   const displayOrder = form.useAiOrder
     ? aiOrder
     : form.members.map(toMember);
+
+  const [historyFound, setHistoryFound] = useState<Record<number, boolean>>({});
+
+  // Auto-fill history from previous groups when a known email is typed:
+  // the AI rotation then works with real antecedents, not blank slates.
+  async function lookupHistory(i: number, email: string) {
+    if (!isBackendEnabled() || !EMAIL_RE.test(email)) return;
+    try {
+      const res = await client.models.Member.list({
+        filter: { email: { eq: email.trim().toLowerCase() } },
+      });
+      const rows = (res.data ?? []) as Array<Record<string, unknown>>;
+      if (!rows.length) return;
+      const best = rows.sort(
+        (a, b) => Number(b.cyclesCompleted ?? 0) - Number(a.cyclesCompleted ?? 0)
+      )[0];
+      setForm((f) => ({
+        ...f,
+        members: f.members.map((m, j) =>
+          j === i
+            ? {
+                ...m,
+                lateCount: Number(best.lateCount ?? 0),
+                cycles: Number(best.cyclesCompleted ?? 0),
+              }
+            : m
+        ),
+      }));
+      setHistoryFound((h) => ({ ...h, [i]: true }));
+    } catch {
+      // offline -> manual entry stays
+    }
+  }
 
   function patchMember(i: number, patch: Partial<MemberDraft>) {
     setForm((f) => ({
@@ -124,6 +161,8 @@ export default function NewGroupPage() {
         description: form.description.trim() || (fr ? "Nouveau groupe de tontine" : "New tontine group"),
         descriptionEn: form.description.trim() || "New tontine group",
         currency: "FCFA",
+        startDate: form.startDate || undefined,
+        endDate: form.endDate || undefined,
         contributionAmount: amount,
         frequency: form.frequency,
         memberCount: form.members.length,
@@ -151,7 +190,7 @@ export default function NewGroupPage() {
               id: `${g.id}-m${i}`,
               groupId: g.id,
               name: md.name.trim(),
-              email: md.email.trim(),
+              email: md.email.trim().toLowerCase(),
               phone: md.phone.trim() || undefined,
               trustScore: trust(md.lateCount, md.cycles),
               lateCount: md.lateCount,
@@ -270,6 +309,31 @@ export default function NewGroupPage() {
                     className="mt-1.5 w-full rounded-xl border border-border bg-background/50 px-4 py-2.5 text-sm outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/30"
                   />
                 </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs uppercase tracking-wider text-muted">
+                      {fr ? "Début" : "Start"}
+                    </label>
+                    <input
+                      type="date"
+                      value={form.startDate}
+                      onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))}
+                      className="mt-1.5 w-full rounded-xl border border-border bg-background/50 px-4 py-2.5 text-sm outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-wider text-muted">
+                      {fr ? "Fin" : "End"}
+                    </label>
+                    <input
+                      type="date"
+                      value={form.endDate}
+                      min={form.startDate || undefined}
+                      onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))}
+                      className="mt-1.5 w-full rounded-xl border border-border bg-background/50 px-4 py-2.5 text-sm outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                </div>
                 <div>
                   <label className="text-xs uppercase tracking-wider text-muted">
                     {fr ? "Description" : "Description"}
@@ -371,10 +435,19 @@ export default function NewGroupPage() {
                           <input
                             value={m.email}
                             onChange={(e) => patchMember(i, { email: e.target.value })}
+                            onBlur={(e) => lookupHistory(i, e.target.value)}
                             placeholder="email@exemple.sn"
                             inputMode="email"
                             className={cn(inputCls, m.email && !emailOk && "border-danger/50")}
                           />
+                          {historyFound[i] && (
+                            <p className="flex items-center gap-1.5 text-[11px] text-ok">
+                              <History className="h-3 w-3" />
+                              {fr
+                                ? "Historique retrouvé — antécédents pré-remplis."
+                                : "History found — past record pre-filled."}
+                            </p>
+                          )}
                           {!emailOk && (
                             <p className="flex items-center gap-1.5 text-[11px] text-warn">
                               <MailWarning className="h-3 w-3" />
@@ -509,6 +582,14 @@ export default function NewGroupPage() {
                   <span className="text-muted">{fr ? "Nom" : "Name"}</span>
                   <span className="font-medium">{form.name || "—"}</span>
                 </div>
+                {(form.startDate || form.endDate) && (
+                  <div className="flex justify-between border-b border-border py-2">
+                    <span className="text-muted">{fr ? "Période" : "Period"}</span>
+                    <span className="font-medium">
+                      {form.startDate || "…"} → {form.endDate || "…"}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between border-b border-border py-2">
                   <span className="text-muted">{fr ? "Cotisation" : "Contribution"}</span>
                   <span className="font-medium">

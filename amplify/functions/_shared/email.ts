@@ -26,13 +26,14 @@ export function shell(opts: {
 <tr><td align="center" style="padding:0 0 24px 0;">
 <img src="${logoUrl}" alt="TontinePilot" width="72" style="display:block;width:72px;height:auto;border:0;border-radius:18px;"/>
 <p style="margin:12px 0 0 0;font-size:20px;font-weight:bold;letter-spacing:0.5px;"><span style="color:#a78bfa;">Tontine</span><span style="color:${GOLD};">Pilot</span></p>
+<table role="presentation" width="120" cellpadding="0" cellspacing="0" border="0" style="margin:14px auto 0 auto;"><tr><td style="height:3px;background-color:${GOLD};border-radius:2px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
 </td></tr>
 <tr><td style="background-color:${CARD};border:1px solid ${BORDER};border-radius:16px;padding:32px 28px;">
 <h1 style="margin:0 0 8px 0;font-size:22px;line-height:1.3;">${title}</h1>
 ${body}
 ${
   ctaUrl && ctaLabel
-    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0 0;"><tr><td align="center" style="background-color:${ACCENT};border-radius:10px;padding:13px 28px;"><a href="${ctaUrl}" style="color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;">${ctaLabel}</a></td></tr></table>`
+    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 0 0;"><tr><td align="center" style="background-color:${ACCENT};border-radius:12px;padding:15px 34px;"><a href="${ctaUrl}" style="color:#ffffff;text-decoration:none;font-weight:bold;font-size:15px;">${ctaLabel}</a></td></tr></table>`
     : ""
 }
 </td></tr>
@@ -83,6 +84,30 @@ ${row("Caisse de secours / Safety fund", `${fundTarget.toLocaleString("fr-FR")} 
       logoUrl, appUrl,
     }),
     text: `Bonjour ${memberName}, tu as rejoint ${groupName} (${amount} FCFA, ${freq}, ${memberCount} membres). Hello ${memberName}, you joined ${groupName}. ${appUrl}/dashboard`,
+  };
+}
+
+export function memberMessageHtml(opts: {
+  memberName: string;
+  groupName: string;
+  subject: string;
+  message: string;
+  appUrl: string;
+  logoUrl: string;
+}): { subject: string; html: string; text: string } {
+  const { memberName, groupName, subject, message, appUrl, logoUrl } = opts;
+  const body = `<p style="font-size:15px;line-height:1.6;">Bonjour ${memberName} 👋<br/>Un message de l'admin de <strong>${groupName}</strong> :</p>
+<blockquote style="margin:12px 0;padding:12px 16px;border-left:3px solid ${GOLD};background:rgba(250,204,21,0.06);border-radius:0 10px 10px 0;font-size:15px;line-height:1.6;">${message}</blockquote>
+<p style="font-size:13px;color:${MUTED};">— via TontinePilot</p>`;
+  return {
+    subject: `Message · ${groupName} — ${subject}`,
+    html: shell({
+      lang: "fr", preheader: subject.slice(0, 80),
+      title: subject, body,
+      ctaUrl: `${appUrl}/dashboard`, ctaLabel: "Ouvrir mon dashboard · Open dashboard",
+      logoUrl, appUrl,
+    }),
+    text: `Bonjour ${memberName}, message de ${groupName} : ${message} ${appUrl}/dashboard`,
   };
 }
 

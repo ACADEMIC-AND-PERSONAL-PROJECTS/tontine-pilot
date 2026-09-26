@@ -139,6 +139,11 @@ export default function GroupsPage() {
                     {g.openAlerts} {fr ? "alertes" : "alerts"}
                   </span>
                 )}
+                {(g.startDate || g.endDate) && (
+                  <span>
+                    {g.startDate || "…"} → {g.endDate || "…"}
+                  </span>
+                )}
               </div>
 
               <div className="mt-3">

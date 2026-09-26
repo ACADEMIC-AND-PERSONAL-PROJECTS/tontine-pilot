@@ -71,6 +71,8 @@ export interface Group {
   emergencyFundBalance: number;
   emergencyFundTarget: number;
   role?: "Admin" | "Member";
+  startDate?: string;
+  endDate?: string;
   cycleCollected?: number;
   cycleExpected?: number;
   openAlerts?: number;
@@ -91,6 +93,8 @@ export const fakeGroup: Group = {
   createdAt: "2024-01-15",
   emergencyFundBalance: 60000,
   emergencyFundTarget: 120000,
+  startDate: "2024-09-01",
+  endDate: "2024-12-31",
   role: "Admin",
   cycleCollected: 200000,
   cycleExpected: 240000,

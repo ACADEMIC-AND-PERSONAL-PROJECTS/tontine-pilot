@@ -84,6 +84,8 @@ export function toGroup(r: Row): FakeGroup {
     emergencyFundBalance: req<number>(r.emergencyFundBalance, "Group.emergencyFundBalance"),
     emergencyFundTarget: req<number>(r.emergencyFundTarget, "Group.emergencyFundTarget"),
     role: (r.role as "Admin" | "Member") ?? undefined,
+    startDate: (r.startDate as string) ?? undefined,
+    endDate: (r.endDate as string) ?? undefined,
     cycleCollected: (r.cycleCollected as number) ?? undefined,
     cycleExpected: (r.cycleExpected as number) ?? undefined,
     openAlerts: (r.openAlerts as number) ?? undefined,

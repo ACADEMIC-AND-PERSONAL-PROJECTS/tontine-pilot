@@ -168,6 +168,11 @@ export default function DashboardPage() {
             Cycle {cycle.cycleNumber} · {cycle.recipientName} ·{" "}
             {formatDate(cycle.startDate, locale)} → {formatDate(cycle.endDate, locale)}
           </p>
+          {(active.startDate || active.endDate) && (
+            <p className="mt-1 text-xs text-muted-dim">
+              {fr ? "Tontine" : "Tontine"} · {active.startDate || "…"} → {active.endDate || "…"}
+            </p>
+          )}
         </div>
         <div className="flex gap-2">
           <Link href="/declare">

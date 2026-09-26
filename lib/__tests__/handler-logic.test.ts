@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { textractParse } from "../../amplify/functions/_shared/receipt";
-import { scriptFor } from "../../amplify/functions/_shared/digest";
+import { daysLeft, scriptFor } from "../../amplify/functions/_shared/digest";
 
 describe("textractParse", () => {
   it("extracts Wave amount + transaction id", () => {
@@ -30,5 +30,9 @@ describe("scriptFor", () => {
     expect(fr).toContain("200000");
     const en = scriptFor("en", 4, "G", "Cheikh", 200000, 240000, 10, 1, 1, 60000);
     expect(en).toContain("Cycle 4 summary");
+    const dl = scriptFor("fr", 4, "G", "Cheikh", 200000, 240000, 10, 1, 1, 60000, "2024-12-31");
+    expect(dl).toContain("Échéance");
+    expect(daysLeft("2099-01-01")).toBeGreaterThan(0);
+    expect(daysLeft(undefined)).toBeNull();
   });
 });

@@ -4,6 +4,7 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 import { NLU_PROFILE, USE_MOCK, converseText, extractJson, log } from "../_shared/bedrock";
 import { dedupeKey, templateNudge } from "../_shared/fallbacks";
+import { applyLateEvent } from "../_shared/trust";
 import { reminderHtml } from "../_shared/email";
 console.log("HANDLER_REV=3");
 
@@ -152,6 +153,9 @@ export const handler: Handler = async (event) => {
             createdAt: new Date().toISOString(), resolved: false, dedupeKey: key,
           });
           created++;
+          // Background: the late event immediately degrades the trust score,
+          // so the next AI rotation works with fresh antecedents.
+          await applyLateEvent(client.models, m.id).catch(() => null);
           if (await sendEmail(m.email, brandedReminder({
             memberName: m.name,
             groupName: group.name,

@@ -126,6 +126,20 @@
               "isRequired": false,
               "attributes": []
             },
+            "startDate": {
+              "name": "startDate",
+              "isArray": false,
+              "type": "AWSDate",
+              "isRequired": false,
+              "attributes": []
+            },
+            "endDate": {
+              "name": "endDate",
+              "isArray": false,
+              "type": "AWSDate",
+              "isRequired": false,
+              "attributes": []
+            },
             "cycleCollected": {
               "name": "cycleCollected",
               "isArray": false,
