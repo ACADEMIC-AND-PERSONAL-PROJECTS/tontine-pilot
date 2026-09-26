@@ -93,7 +93,7 @@ export default function MembersPage() {
         </div>
       )}
       {!noGroups && (
-      <div className="mt-8 grid gap-3 sm:grid-cols-2">
+      <div data-testid="dw-members" className="mt-8 grid gap-3 sm:grid-cols-2">
         {members.map((m, i) => {
           const contrib = fakeContributions.find((c) => c.memberId === m.id);
           return (

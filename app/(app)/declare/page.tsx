@@ -375,6 +375,7 @@ export default function DeclarePage() {
           <motion.div
             animate={error ? { x: [0, -8, 8, -6, 6, 0] } : {}}
             transition={{ duration: 0.4 }}
+            data-testid="dw-declare"
             className="panel-luminous rounded-2xl p-5 sm:p-6"
           >
             <label className="text-xs font-medium uppercase tracking-wider text-muted">

@@ -396,7 +396,7 @@ export default function AlertsPage() {
         </p>
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div data-testid="dw-alerts" className="mt-6 space-y-4">
         <AnimatePresence mode="popLayout">
           {shown.map((a, i) => {
             const Icon = icons[a.type];

@@ -147,6 +147,7 @@ export default function ExportPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.18 }}
+        data-testid="dw-export"
         className="panel mt-8 overflow-hidden rounded-2xl"
       >
         <div className="border-b border-border px-5 py-4 sm:px-6">

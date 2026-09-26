@@ -321,7 +321,7 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div className="mt-2 max-h-[420px] divide-y divide-border overflow-y-auto scrollbar-thin">
+          <div data-testid="dw-contributions" className="mt-2 max-h-[420px] divide-y divide-border overflow-y-auto scrollbar-thin">
             {contributions.length === 0 && (
               <p className="px-5 py-8 text-center text-sm text-muted">
                 {fr

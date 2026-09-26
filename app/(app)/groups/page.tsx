@@ -94,7 +94,7 @@ export default function GroupsPage() {
         </p>
       )}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
+      <div data-testid="dw-groups" className="mt-6 grid gap-4 md:grid-cols-2">
         {filtered.map((g, i) => {
           const isActive = g.id === activeId;
           const collected = g.cycleCollected ?? 0;
