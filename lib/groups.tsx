@@ -130,7 +130,7 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
       try {
         const user = await getCurrentUser();
         const { data, errors } = await client.models.Group.list({
-          filter: { owner: { eq: user.userId } },
+          filter: { ownerId: { eq: user.userId } },
         });
         if (!live) return;
         if (!errors?.length && data) {
@@ -185,8 +185,10 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
       setActiveId(g.id);
       if (!backendOn) return true;
       try {
+        const me = await getCurrentUser().catch(() => null);
         const { errors } = await client.models.Group.create({
           id: g.id,
+          ownerId: me?.userId ?? userId ?? undefined,
           name: g.name,
           description: g.description,
           descriptionEn: g.descriptionEn,

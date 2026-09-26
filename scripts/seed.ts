@@ -91,6 +91,7 @@ async function main() {
       lateCount: mem.lateCount ?? 0,
       cyclesCompleted: 4,
       notifySms: false,
+      ownerId,
     });
     m++;
   }

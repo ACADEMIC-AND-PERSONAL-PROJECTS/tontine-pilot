@@ -8,6 +8,7 @@ export interface Member {
   trustScore: number;
   lateCount?: number;
   cyclesCompleted?: number;
+  ownerId?: string;
 }
 
 export interface Contribution {
@@ -73,6 +74,7 @@ export interface Group {
   role?: "Admin" | "Member";
   startDate?: string;
   endDate?: string;
+  ownerId?: string;
   cycleCollected?: number;
   cycleExpected?: number;
   openAlerts?: number;

@@ -140,6 +140,13 @@
               "isRequired": false,
               "attributes": []
             },
+            "ownerId": {
+              "name": "ownerId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
             "cycleCollected": {
               "name": "cycleCollected",
               "isArray": false,
@@ -191,6 +198,16 @@
             {
               "type": "model",
               "properties": {}
+            },
+            {
+              "type": "key",
+              "properties": {
+                "name": "groupsByOwnerId",
+                "queryField": "listGroupByOwnerId",
+                "fields": [
+                  "ownerId"
+                ]
+              }
             },
             {
               "type": "auth",
@@ -289,6 +306,13 @@
               "isRequired": false,
               "attributes": []
             },
+            "ownerId": {
+              "name": "ownerId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": false,
+              "attributes": []
+            },
             "createdAt": {
               "name": "createdAt",
               "isArray": false,
@@ -320,6 +344,16 @@
                 "queryField": "listMemberByGroupId",
                 "fields": [
                   "groupId"
+                ]
+              }
+            },
+            {
+              "type": "key",
+              "properties": {
+                "name": "membersByOwnerId",
+                "queryField": "listMemberByOwnerId",
+                "fields": [
+                  "ownerId"
                 ]
               }
             },

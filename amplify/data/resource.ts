@@ -25,13 +25,15 @@ const schema = a.schema({
       emergencyFundBalance: a.integer().required(),
       emergencyFundTarget: a.integer().required(),
       role: a.enum(["Admin", "Member"]),
-    startDate: a.date(),
-    endDate: a.date(),
+      startDate: a.date(),
+      endDate: a.date(),
       cycleCollected: a.integer(),
       cycleExpected: a.integer(),
       openAlerts: a.integer(),
       archived: a.boolean().default(false),
+      ownerId: a.string(),
     })
+    .secondaryIndexes((idx) => [idx("ownerId")])
     .authorization((allow) => [
       allow.authenticated().to(["read"]),
       allow.owner().to(["create", "update", "delete"]),
@@ -46,8 +48,9 @@ const schema = a.schema({
       lateCount: a.integer().default(0),
       cyclesCompleted: a.integer().default(0),
       notifySms: a.boolean().default(false),
+      ownerId: a.string(),
     })
-    .secondaryIndexes((idx) => [idx("groupId")])
+    .secondaryIndexes((idx) => [idx("groupId"), idx("ownerId")])
     .authorization((allow) => [
       allow.authenticated().to(["read"]),
       allow.owner().to(["create", "update", "delete"]),

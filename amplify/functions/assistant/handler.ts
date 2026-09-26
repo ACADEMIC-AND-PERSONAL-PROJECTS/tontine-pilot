@@ -102,6 +102,7 @@ async function converseWithTool(
         },
       ],
       inferenceConfig: { maxTokens: 400, temperature: 0.3 },
+      toolConfig: { tools: [EMAIL_TOOL] },
     })
   );
   const t2 = (second.output?.message?.content ?? []).find((b) => "text" in b);
@@ -116,25 +117,40 @@ async function executeEmailTool(
 ): Promise<string> {
   void toolUseId;
   if (!sub) return "ERROR: caller identity unknown, email not sent.";
+  const callerSub: string = sub;
   const needle = (input.recipient ?? "").trim().toLowerCase();
   if (!needle) return "ERROR: no recipient given, email not sent.";
   // Scope: members of the caller's own groups only.
-  const groups = (
-    await client.models.Group.list({ filter: { owner: { eq: sub } } })
-  ).data;
-  let match: { id: string; name: string; email: string; groupId: string; groupName: string } | null = null;
-  for (const g of groups) {
-    const members = (
-      await client.models.Member.list({ filter: { groupId: { eq: g.id } } })
+  async function findMatch() {
+    const groups = (
+      await client.models.Group.list({ filter: { ownerId: { eq: callerSub } } })
     ).data;
-    for (const m of members) {
-      const name = (m.name ?? "").toLowerCase();
-      const email = (m.email ?? "").toLowerCase();
-      if (!match && (email === needle || (needle.length > 2 && name.includes(needle)))) {
-        match = { id: m.id, name: m.name, email: m.email, groupId: g.id, groupName: g.name };
+    log(`TOOL_SCOPE sub=${callerSub.slice(0, 8)}*** groups=${groups.length}`);
+    for (const g of groups) {
+      const members = (
+        await client.models.Member.list({ filter: { groupId: { eq: g.id } } })
+      ).data;
+      for (const m of members) {
+        const name = (m.name ?? "").toLowerCase();
+        const email = (m.email ?? "").toLowerCase();
+        if (email === needle || (needle.length > 2 && name.includes(needle))) {
+          return {
+            id: m.id,
+            name: m.name ?? "?",
+            email: m.email ?? "",
+            groupId: g.id,
+            groupName: g.name ?? "",
+          };
+        }
       }
     }
-    if (match) break;
+    return null;
+  }
+  // DynamoDB reads are eventually consistent — one retry for just-created rows.
+  let match = await findMatch();
+  if (!match) {
+    await new Promise((r) => setTimeout(r, 1200));
+    match = await findMatch();
   }
   if (!match) return `ERROR: no member matching "${input.recipient}" in your groups, email not sent.`;
   if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(match.email)) {

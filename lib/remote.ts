@@ -24,6 +24,7 @@ export function toMember(r: Row): FakeMember {
     trustScore: req<number>(r.trustScore, "Member.trustScore"),
     lateCount: (r.lateCount as number) ?? 0,
     cyclesCompleted: (r.cyclesCompleted as number) ?? 0,
+    ownerId: (r.ownerId as string) ?? undefined,
   };
 }
 
@@ -86,6 +87,7 @@ export function toGroup(r: Row): FakeGroup {
     role: (r.role as "Admin" | "Member") ?? undefined,
     startDate: (r.startDate as string) ?? undefined,
     endDate: (r.endDate as string) ?? undefined,
+    ownerId: (r.ownerId as string) ?? undefined,
     cycleCollected: (r.cycleCollected as number) ?? undefined,
     cycleExpected: (r.cycleExpected as number) ?? undefined,
     openAlerts: (r.openAlerts as number) ?? undefined,
