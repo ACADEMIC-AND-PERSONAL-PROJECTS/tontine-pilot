@@ -346,6 +346,7 @@ export default function DeclarePage() {
           <button
             key={t.id}
             type="button"
+            data-testid={t.id === "ocr" ? "dw-ocr-tab" : undefined}
             onClick={() => {
               setMode(t.id);
               setParsed(null);
@@ -401,6 +402,7 @@ export default function DeclarePage() {
               ))}
             </div>
             <Button
+              data-testid="dw-parse"
               onClick={handleParse}
               disabled={loading}
               className="mt-5 w-full gap-2 sm:w-auto"

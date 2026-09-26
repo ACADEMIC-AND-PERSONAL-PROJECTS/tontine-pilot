@@ -125,7 +125,7 @@ export default function ExportPage() {
         transition={{ delay: 0.1 }}
         className="mt-8 flex flex-wrap gap-3"
       >
-        <Button onClick={exportCsv} className="gap-2">
+        <Button data-testid="dw-export-csv" onClick={exportCsv} className="gap-2">
           {downloaded === "csv" ? (
             <Check className="h-4 w-4" />
           ) : (

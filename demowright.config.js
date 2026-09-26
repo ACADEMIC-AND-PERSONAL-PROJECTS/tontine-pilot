@@ -67,11 +67,11 @@ export default defineDemo({
     { type: 'goto', url: 'http://localhost:3101/declare' },
     { type: 'caption', text: 'Déclarez en langage naturel.', say: SAY.s4, duration: 8000 },
     { type: 'type', selector: 'textarea', text: "J'ai payé 20000 pour Awa ce mois", perChar: 28 },
-    { type: 'click', selector: 'text=Parser avec l\u2019IA' },
-    { type: 'wait', selector: 'text=Résultat structuré', timeout: 20000 },
+    { type: 'click', selector: '[data-testid="dw-parse"]' },
+    { type: 'wait', selector: '[data-testid="dw-declare"] dl', timeout: 20000 },
     { type: 'highlight', selector: 'text=Résultat structuré', duration: 2200 },
     // 5 — declare OCR tab (~9s)
-    { type: 'click', selector: 'text=Reçu Mobile Money' },
+    { type: 'click', selector: '[data-testid="dw-ocr-tab"]' },
     { type: 'caption', text: 'Ou par capture Mobile Money.', say: SAY.s5, duration: 6500 },
     { type: 'highlight', selector: '[data-testid="dw-declare"]', duration: 1500 },
     // 6 — members (~10s)
@@ -82,13 +82,13 @@ export default defineDemo({
     // 7 — alerts + real Polly digest (~17s)
     { type: 'goto', url: 'http://localhost:3101/alerts' },
     { type: 'caption', text: 'Relances douces et digest vocal.', say: SAY.s7, duration: 6200 },
-    { type: 'click', selector: 'text=Lire à voix haute' },
+    { type: 'click', selector: '[data-testid="dw-digest-play"]' },
     { type: 'wait', duration: 6000 },
     { type: 'highlight', selector: '[data-testid="dw-alerts"]', duration: 2000 },
     // 8 — export (~10s)
     { type: 'goto', url: 'http://localhost:3101/export' },
     { type: 'caption', text: 'Un registre qui clôt les disputes.', say: SAY.s8, duration: 5900 },
-    { type: 'click', selector: 'text=Télécharger CSV' },
+    { type: 'click', selector: '[data-testid="dw-export-csv"]' },
     { type: 'wait', duration: 1500 },
     { type: 'highlight', selector: '[data-testid="dw-export"]', duration: 1800 },
     // 9 — assistant (~15s)
