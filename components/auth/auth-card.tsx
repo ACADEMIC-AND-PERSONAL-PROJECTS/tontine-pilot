@@ -226,6 +226,9 @@ export function AuthCard() {
               </div>
               <CodeInput value={code} onChange={setCode} onComplete={(v) => flow.doVerify(v)} />
               {error && <p className="text-center text-xs text-danger">{error}</p>}
+              {flow.notice && !error && (
+                <p className="text-center text-xs text-ok">{flow.notice}</p>
+              )}
               <Button
                 disabled={loading || code.trim().length < 6}
                 className="w-full gap-2"
@@ -249,11 +252,12 @@ export function AuthCard() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => {
-                      flow.doResend();
-                      setCooldown(60);
+                    disabled={loading}
+                    onClick={async () => {
+                      const ok = await flow.doResend();
+                      if (ok) setCooldown(60);
                     }}
-                    className="font-medium text-accent-hover hover:underline"
+                    className="font-medium text-accent-hover hover:underline disabled:opacity-50"
                   >
                     {t("auth.resend")}
                   </button>

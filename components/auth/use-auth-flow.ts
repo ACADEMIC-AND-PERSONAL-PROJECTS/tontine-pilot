@@ -29,6 +29,7 @@ export function useAuthFlow() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const passwordRef = useRef(""); // memory-only, for post-verify auto sign-in
 
   const mapError = useCallback(
@@ -55,6 +56,7 @@ export function useAuthFlow() {
       }
       setLoading(true);
       setError(null);
+      setNotice(null);
       try {
         await fn();
         return true;
@@ -140,18 +142,16 @@ export function useAuthFlow() {
     [email, go, doSignIn]
   );
 
-  const doResend = useCallback(async () => {
-    try {
-      await go(async () => {
-        await resendSignUpCode({ username: email.trim() });
-      });
-    } catch {
-      // error already mapped
-    }
-  }, [email, go]);
+  const doResend = useCallback(async (): Promise<boolean> => {
+    const ok = await go(async () => {
+      await resendSignUpCode({ username: email.trim() });
+    });
+    if (ok) setNotice(t("auth.resentOk"));
+    return ok;
+  }, [email, go, t]);
 
   return {
-    step, setStep, email, setEmail, loading, error, setError,
+    step, setStep, email, setEmail, loading, error, setError, notice,
     doSignIn, doSignUp, doVerify, doResend,
   };
 }
