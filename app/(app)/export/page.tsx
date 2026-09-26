@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -48,6 +49,8 @@ export default function ExportPage() {
   const [downloaded, setDownloaded] = useState<"csv" | "pdf" | null>(null);
   const { active } = useGroups();
   const backendOn = isBackendEnabled();
+  const { groups, synced } = useGroups();
+  const noGroups = backendOn && synced && groups.length === 0;
   const remote = useRemoteCycleData(active.id);
   const contributions = backendOn ? remote.contributions : fakeContributions;
 
@@ -78,6 +81,22 @@ export default function ExportPage() {
     downloadBlob(text, `registre-cycle-${currentCycle.cycleNumber}.txt`, "text/plain");
     setDownloaded("pdf");
     setTimeout(() => setDownloaded(null), 2500);
+  }
+
+  if (noGroups) {
+    return (
+      <div className="mx-auto max-w-4xl">
+        <div className="panel mt-6 rounded-2xl px-5 py-14 text-center">
+          <p className="text-base font-semibold">{fr ? "Aucun groupe pour l'instant" : "No groups yet"}</p>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
+            {fr ? "Crée ton premier groupe pour exporter son registre." : "Create your first group to export its ledger."}
+          </p>
+          <Link href="/group/new" className="mt-5 inline-block">
+            <Button size="sm">{fr ? "Créer un groupe" : "Create a group"}</Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

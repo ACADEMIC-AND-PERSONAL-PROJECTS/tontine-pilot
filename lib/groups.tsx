@@ -9,6 +9,26 @@ import {
   useState,
 } from "react";
 import { fakeGroup, seedGroups, type Group } from "@/lib/fake-data";
+
+// Placeholder when a backend user owns zero groups: all zeros, never demo data.
+export const EMPTY_GROUP: Group = {
+  id: "",
+  name: "",
+  description: "",
+  currency: "FCFA",
+  contributionAmount: 0,
+  frequency: "MONTHLY",
+  memberCount: 0,
+  currentCycleIndex: 0,
+  createdAt: "",
+  emergencyFundBalance: 0,
+  emergencyFundTarget: 1,
+  role: "Admin",
+  cycleCollected: 0,
+  cycleExpected: 1,
+  openAlerts: 0,
+  archived: false,
+};
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toGroup } from "@/lib/remote";
 import { getCurrentUser } from "aws-amplify/auth";
@@ -22,6 +42,7 @@ type Ctx = {
   active: Group;
   ready: boolean;
   synced: boolean;
+  hasGroups: boolean;
   switchGroup: (id: string) => void;
   addGroup: (g: Group) => void;
   archiveGroup: (id: string, archived: boolean) => void;
@@ -157,13 +178,17 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
     [activeId]
   );
 
-  const active = useMemo(
-    () => groups.find((g) => g.id === activeId) ?? groups[0] ?? fakeGroup,
-    [groups, activeId]
-  );
+  const backendOn = isBackendEnabled();
+  const active = useMemo(() => {
+    const found = groups.find((g) => g.id === activeId) ?? groups[0];
+    if (found) return found;
+    // Backend on + synced + empty = real new user: zeros, never demo fakes.
+    if (backendOn && synced) return EMPTY_GROUP;
+    return fakeGroup;
+  }, [groups, activeId, backendOn, synced]);
 
   const value = useMemo(
-    () => ({ groups, activeId, active, ready, synced, switchGroup, addGroup, archiveGroup, removeGroup }),
+    () => ({ groups, activeId, active, ready, synced, hasGroups: groups.length > 0, switchGroup, addGroup, archiveGroup, removeGroup }),
     [groups, activeId, active, ready, switchGroup, addGroup, archiveGroup, removeGroup]
   );
 

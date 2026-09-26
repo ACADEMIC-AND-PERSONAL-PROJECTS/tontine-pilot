@@ -13,12 +13,16 @@ import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
 import { isBackendEnabled } from "@/lib/backend";
 import { useRemoteMembers } from "@/lib/use-remote";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function MembersPage() {
   const { locale } = useLocale();
   const fr = locale === "fr";
   const { active } = useGroups();
   const backendOn = isBackendEnabled();
+  const { groups, synced } = useGroups();
+  const noGroups = backendOn && synced && groups.length === 0;
   const { members: remoteMembers, loaded: membersLoaded } = useRemoteMembers(active.id);
   // Backend on: real rows even when empty. Off: demo dataset.
   const members = backendOn ? remoteMembers : fakeMembers;
@@ -69,7 +73,7 @@ export default function MembersPage() {
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-accent" />
         </div>
       )}
-      {!showSkeleton && members.length === 0 && (
+      {!showSkeleton && !noGroups && members.length === 0 && (
         <p className="panel mt-8 rounded-2xl px-5 py-10 text-center text-sm text-muted">
           {fr
             ? "Aucun membre pour l'instant — ajoute-les depuis la création du groupe."
@@ -77,6 +81,18 @@ export default function MembersPage() {
         </p>
       )}
 
+      {noGroups && (
+        <div className="panel mt-8 rounded-2xl px-5 py-10 text-center">
+          <p className="text-sm font-medium">{fr ? "Aucun groupe pour l'instant" : "No groups yet"}</p>
+          <p className="mx-auto mt-1 max-w-sm text-xs text-muted">
+            {fr ? "Crée ton premier groupe pour voir tes membres ici." : "Create your first group to see members here."}
+          </p>
+          <Link href="/group/new" className="mt-4 inline-block">
+            <Button size="sm">{fr ? "Créer un groupe" : "Create a group"}</Button>
+          </Link>
+        </div>
+      )}
+      {!noGroups && (
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
         {members.map((m, i) => {
           const contrib = fakeContributions.find((c) => c.memberId === m.id);
@@ -156,6 +172,7 @@ export default function MembersPage() {
           );
         })}
       </div>
+      )}
     </div>
   );
 }

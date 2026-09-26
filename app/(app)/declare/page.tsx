@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -104,7 +105,9 @@ export default function DeclarePage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
-  const { active } = useGroups();
+  const { active, groups, synced } = useGroups();
+  const backendOn = isBackendEnabled();
+  const noGroups = backendOn && synced && groups.length === 0;
   const { members: remoteMembers } = useRemoteMembers(active.id);
   const knownMembers = isBackendEnabled() ? remoteMembers : fakeMembers;
   const [receiptKey, setReceiptKey] = useState<string | null>(null);
@@ -246,6 +249,22 @@ export default function DeclarePage() {
     setText("");
     setPreview(null);
     setFileName("");
+  }
+
+  if (noGroups) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <div className="panel mt-6 rounded-2xl px-5 py-14 text-center">
+          <p className="text-base font-semibold">{fr ? "Aucun groupe pour l'instant" : "No groups yet"}</p>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
+            {fr ? "Crée ton premier groupe avant de déclarer une cotisation." : "Create your first group before declaring a contribution."}
+          </p>
+          <Link href="/group/new" className="mt-5 inline-block">
+            <Button size="sm">{fr ? "Créer un groupe" : "Create a group"}</Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
