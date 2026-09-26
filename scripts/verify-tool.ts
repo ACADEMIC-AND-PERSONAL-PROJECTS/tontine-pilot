@@ -9,7 +9,21 @@ const client = generateClient<Schema>();
 
 async function main() {
   await signIn({ username: process.env.SEED_USER!, password: process.env.SEED_PASSWORD! });
-  const email = `testuser${Date.now()}@exemple.sn`;
+  const tag = Date.now().toString(36);
+  const email = `testuser.${tag}@exemple.sn`;
+  // remove leftovers from previous runs so the name is unambiguous (repeat:
+  // list/delete is eventually consistent, one pass may miss rows)
+  for (let round = 0; round < 5; round++) {
+    const pre = await client.models.Member.list({ filter: { groupId: { eq: "group-1" } } });
+    const dups = (pre.data ?? []).filter((m) => (m.name ?? "").toLowerCase() === "test user");
+    if (dups.length === 0) break;
+    for (const d of dups) {
+      const al = await client.models.Alert.list({ filter: { memberId: { eq: d.id } } });
+      for (const a of al.data ?? []) await client.models.Alert.delete({ id: a.id });
+      await client.models.Member.delete({ id: d.id });
+    }
+    await new Promise((r) => setTimeout(r, 2000));
+  }
   const created = await client.models.Member.create({
     groupId: "group-1",
     name: "Test User",
@@ -23,6 +37,13 @@ async function main() {
   const mid = created.data?.id;
   if (!mid) throw new Error("member create failed");
   console.log("temp member:", mid);
+  // wait until the row is visible to LIST (eventual consistency), else the
+  // assistant cannot resolve it
+  for (let i = 0; i < 8; i++) {
+    const chk = await client.models.Member.list({ filter: { groupId: { eq: "group-1" } } });
+    if ((chk.data ?? []).some((m) => m.id === mid)) break;
+    await new Promise((r) => setTimeout(r, 2000));
+  }
 
   const r = await client.queries.askAssistant({
     question: "Envoie un rappel à Test User, il est en retard sur son paiement",
@@ -30,6 +51,15 @@ async function main() {
   });
   console.log("ANSWER:", (r.data?.answer ?? `ERR:${JSON.stringify(r.errors)}`).slice(0, 300));
 
+  // NOTE: actual SES delivery is blocked in SES sandbox (unverified identities)
+  // — assert the platform side-effects (alert + trust), not the inbox.
+  await new Promise((r) => setTimeout(r, 3000));
+  const dump = await client.models.Member.list({ filter: { groupId: { eq: "group-1" } } });
+  for (const m of dump.data ?? []) {
+    if (((m.name ?? "") as string).toLowerCase().includes("test")) {
+      console.log("DUMP", m.id.slice(0, 8), m.name, "late=", m.lateCount, "trust=", m.trustScore);
+    }
+  }
   const after = await client.models.Member.get({ id: mid });
   console.log(
     "trust after:",

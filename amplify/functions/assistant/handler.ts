@@ -31,7 +31,7 @@ const EMAIL_TOOL = {
   toolSpec: {
     name: "send_member_email",
     description:
-      "Send an email to a group member. Use ONLY when the user explicitly asks to contact, nudge, or remind a member (e.g. 'ask X to pay now', 'remind Y they are late', 'send a message to Z'). Recipient must be a member first/last name or email from the conversation.",
+      "Send an email to a group member. Call this tool EVERY time the user asks to contact, nudge, remind, warn, or message a specific person — even if the name looks approximate or incomplete (the tool resolves fuzzy names itself and reports back when nobody matches). Do NOT ask for clarification first when a person's name or email appears in the request; call the tool. Examples: 'ask X to pay now', 'remind Y they are late', 'send a message to Z', 'tell Cheikh the deadline moved'. Only skip the tool when NO person is mentioned at all.",
     inputSchema: {
       json: {
         type: "object",
@@ -146,14 +146,14 @@ async function executeEmailTool(
     }
     return null;
   }
-  // DynamoDB reads are eventually consistent — one retry for just-created rows.
+  // DynamoDB reads are eventually consistent — retry for just-created rows.
   let match = await findMatch();
-  if (!match) {
-    await new Promise((r) => setTimeout(r, 1200));
+  for (let i = 0; !match && i < 2; i++) {
+    await new Promise((r) => setTimeout(r, 2500));
     match = await findMatch();
   }
   if (!match) return `ERROR: no member matching "${input.recipient}" in your groups, email not sent.`;
-  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(match.email)) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(match.email)) {
     return `ERROR: ${match.name} has no valid email on file, email not sent.`;
   }
   const appUrl = process.env.APP_URL ?? "https://main.dhnfua5oyahpy.amplifyapp.com";
@@ -167,6 +167,7 @@ async function executeEmailTool(
       const existing = (
         await client.models.Alert.list({ filter: { dedupeKey: { eq: key }, resolved: { eq: false } } })
       ).data;
+      log(`TOOL_MATCH member=${match.name} group=${match.groupName} alerts_open=${existing.length}`);
       if (existing.length === 0) {
         await client.models.Alert.create({
           groupId: match.groupId, cycleId, memberId: match.id, memberName: match.name,
@@ -175,7 +176,8 @@ async function executeEmailTool(
           messageEn: input.body ?? `Reminder for ${match.name}`,
           createdAt: new Date().toISOString(), resolved: false, dedupeKey: key,
         });
-        await applyLateEvent(client.models, match.id).catch(() => null);
+        const tr = await applyLateEvent(client.models, match.id).catch(() => null);
+        log(`TOOL_TRUST ${JSON.stringify(tr)}`);
       }
       const mail = reminderHtml({
         memberName: match.name, groupName: match.groupName,

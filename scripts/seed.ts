@@ -1,6 +1,6 @@
 import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/data";
-import { signIn } from "aws-amplify/auth";
+import { getCurrentUser, signIn } from "aws-amplify/auth";
 import type { Schema } from "../amplify/data/resource";
 import outputs from "../amplify_outputs.json";
 import {
@@ -27,6 +27,7 @@ const remap = (email: string) => {
 
 type AnyModel = {
   get: (a: { id: string }) => Promise<{ data: unknown }>;
+  update: (a: Record<string, unknown>) => Promise<unknown>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   create: (a: any) => Promise<unknown>;
 };
@@ -40,7 +41,8 @@ async function upsertModel(
   const m = (client.models as unknown as Record<string, AnyModel>)[model];
   const existing = await m.get({ id });
   if (existing.data) {
-    console.log(`  keep ${String(model)} ${id}`);
+    await m.update({ id, ...values });
+    console.log(`  ~ ${String(model)} ${id}`);
     return;
   }
   await m.create({ id, ...values });
@@ -52,7 +54,9 @@ async function main() {
   const pass = process.env.SEED_PASSWORD;
   if (!user || !pass) throw new Error("SEED_USER and SEED_PASSWORD env required");
   await signIn({ username: user, password: pass });
-  console.log("signed in as", user);
+  const me = await getCurrentUser();
+  const ownerId = me.userId;
+  console.log("signed in as", user, ownerId);
 
   let g = 0,
     m = 0,
@@ -78,6 +82,7 @@ async function main() {
       archived: false,
       startDate: grp.startDate,
       endDate: grp.endDate,
+      ownerId,
     });
     g++;
   }

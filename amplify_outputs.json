@@ -140,13 +140,6 @@
               "isRequired": false,
               "attributes": []
             },
-            "ownerId": {
-              "name": "ownerId",
-              "isArray": false,
-              "type": "String",
-              "isRequired": false,
-              "attributes": []
-            },
             "cycleCollected": {
               "name": "cycleCollected",
               "isArray": false,
@@ -172,6 +165,13 @@
               "name": "archived",
               "isArray": false,
               "type": "Boolean",
+              "isRequired": false,
+              "attributes": []
+            },
+            "ownerId": {
+              "name": "ownerId",
+              "isArray": false,
+              "type": "String",
               "isRequired": false,
               "attributes": []
             },

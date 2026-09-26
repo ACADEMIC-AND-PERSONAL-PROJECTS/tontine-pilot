@@ -66,7 +66,7 @@ export const handler: Handler = async (event) => {
       sent++;
     } catch (err) {
       // sandbox rejections (unverified recipient) must never break creation
-      log(`SEND_FAIL welcome member=${m.id} (${(err as Error)?.message})`);
+      log(`SEND_FAIL welcome member=${m.id} platform-side (${(err as Error)?.message})`);
       skipped++;
     }
   }
