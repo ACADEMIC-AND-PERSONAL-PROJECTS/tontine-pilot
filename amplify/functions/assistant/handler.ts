@@ -18,12 +18,14 @@ PLATFORM KNOWLEDGE:
 - Help with: how to declare, read a receipt, understand a late/alert, emergency fund, rotation order, export, audio, manage groups, create an account, log in.
 - Out of scope (decline politely + redirect to a platform topic): anything unrelated to TontinePilot (general knowledge, code, other products). Never invent members, amounts, or pages that don't exist above. Never handle real money — tracking only.`;
 
+import { detectLocale } from "../_shared/locale";
 export const handler: Handler = async (event) => {
   const args = (event as {
     arguments?: { question?: string; locale?: string; history?: Array<{ role?: string; text?: string }> };
   }).arguments ?? {};
   const question = (args.question ?? "").slice(0, 1000).trim();
-  const locale = args.locale === "en" ? "en" : "fr";
+  const uiLocale = args.locale === "en" ? "en" : "fr";
+  const locale = detectLocale(question, uiLocale);
   if (!question) throw new Error("VALIDATION: question required");
   const history = (args.history ?? [])
     .slice(-6)
@@ -43,7 +45,7 @@ export const handler: Handler = async (event) => {
     const answer = await converseText(
       NLU_PROFILE,
       SYSTEM,
-      `${history ? `Conversation so far:\n${history}\n\n` : ""}User language: ${locale === "en" ? "English" : "French"}\nQuestion: """${question}"""`,
+      `${history ? `Conversation so far:\n${history}\n\n` : ""}IMPORTANT: the user wrote in ${locale === "en" ? "ENGLISH — reply in English" : "FRENCH — reply in French"}. Never switch languages mid-answer\nQuestion: """${question}"""`,
       600
     );
     if (!answer.trim()) throw new Error("empty-answer");

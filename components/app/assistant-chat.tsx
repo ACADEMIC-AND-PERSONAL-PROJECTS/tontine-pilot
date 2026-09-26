@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Sparkles } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
@@ -85,6 +85,69 @@ function answer(input: string, fr: boolean): string {
 
 const SUGGESTIONS_FR = ["Comment déclarer ?", "Un retard ?", "Caisse de secours ?"];
 const SUGGESTIONS_EN = ["How to declare?", "A late payment?", "Emergency fund?"];
+
+function renderInline(text: string, key: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*\n]+\*|`[^`]+`)/g);
+  if (parts.length === 1) return <Fragment key={key}>{text}</Fragment>;
+  return (
+    <Fragment key={key}>
+      {parts.map((p, i) => {
+        if (p.length > 4 && p.startsWith("**") && p.endsWith("**"))
+          return <strong key={i}>{p.slice(2, -2)}</strong>;
+        if (p.length > 2 && p.startsWith("*") && p.endsWith("*") && !p.startsWith("**"))
+          return <em key={i}>{p.slice(1, -1)}</em>;
+        if (p.length > 2 && p.startsWith("`") && p.endsWith("`"))
+          return (
+            <code key={i} className="rounded bg-background/60 px-1 font-mono text-[12px]">
+              {p.slice(1, -1)}
+            </code>
+          );
+        return <Fragment key={i}>{p}</Fragment>;
+      })}
+    </Fragment>
+  );
+}
+
+// Tiny markdown renderer for bot replies (bold, italic, code, headings,
+// - / 1. lists, blank lines). No raw HTML is ever injected.
+function renderRich(text: string): React.ReactNode {
+  const lines = text.split("\n");
+  const blocks: React.ReactNode[] = [];
+  let list: string[] = [];
+  const flushList = (key: string) => {
+    if (!list.length) return;
+    blocks.push(
+      <ul key={key} className="ml-4 list-disc space-y-0.5">
+        {list.map((item, i) => (
+          <li key={i}>{renderInline(item, `li-${i}`)}</li>
+        ))}
+      </ul>
+    );
+    list = [];
+  };
+  lines.forEach((line, i) => {
+    const item = line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)$/);
+    if (item) {
+      list.push(item[1]);
+      return;
+    }
+    flushList(`ul-${i}`);
+    const heading = line.match(/^#{1,3}\s+(.*)$/);
+    if (heading) {
+      blocks.push(
+        <p key={i} className="font-semibold">
+          {renderInline(heading[1], `h-${i}`)}
+        </p>
+      );
+    } else if (line.trim() === "") {
+      blocks.push(<div key={i} className="h-1.5" />);
+    } else {
+      blocks.push(<p key={i}>{renderInline(line, `p-${i}`)}</p>);
+    }
+  });
+  flushList("ul-end");
+  return <div className="space-y-1">{blocks}</div>;
+}
 
 export function AssistantChat() {
   const { locale } = useLocale();
@@ -201,7 +264,7 @@ export function AssistantChat() {
                   key={m.id}
                   className={cn("flex", m.from === "user" ? "justify-end" : "justify-start")}
                 >
-                  <p
+                  <div
                     className={cn(
                       "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed",
                       m.from === "user"
@@ -209,8 +272,8 @@ export function AssistantChat() {
                         : "rounded-bl-md border border-border bg-bg-subtle/60 text-foreground"
                     )}
                   >
-                    {m.text}
-                  </p>
+                    {m.from === "user" ? m.text : renderRich(m.text)}
+                  </div>
                 </div>
               ))}
               {typing && (
