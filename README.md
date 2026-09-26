@@ -8,7 +8,6 @@
 [![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Haiku_4.5_%2B_Sonnet_4.5-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/bedrock/)
 [![Amplify Gen 2](https://img.shields.io/badge/Amplify-Gen_2-DD344C?style=flat-square&logo=awsamplify&logoColor=white)](https://docs.amplify.aws)
 [![License MIT](https://img.shields.io/badge/License-MIT-FACC15?style=flat-square&logoColor=white)](LICENSE)
-[![Lang](https://img.shields.io/badge/FR-EN-22D3EE?style=flat-square&logoColor=white)](#)
 
 <img src="assets/hero-banner.jpg" width="100%" alt="TontinePilot — group dashboard, rotation order, contribution tracking, reminders and export registry">
 
