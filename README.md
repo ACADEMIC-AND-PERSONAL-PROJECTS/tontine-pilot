@@ -18,7 +18,6 @@ verifiable ledger — with empathic mediation, an emergency fund, and audio dige
 Built with **Next.js 16** and **AWS Bedrock**, bilingual French/English, designed
 for a real tontine admin — not a throwaway demo.
 
-**[Open the live demo](https://main.dhnfua5oyahpy.amplifyapp.com)** · demo account on request ·
 no real money ever moves, tracking only.
 
 </div>
