@@ -19,13 +19,6 @@ Built for AWS Zero to Shipped · Community lane · bilingual FR/EN · live in us
 
 </div>
 
-## Try it live
-
-- **App:** https://main.dhnfua5oyahpy.amplifyapp.com
-- **Judge account:** `demo@tontinepilot.sn` (pre-confirmed — password in the Builder Center private notes, never in the repo)
-- **Video:** [60-second tour on YouTube](https://youtu.be/Uvtu5lHfShs) · full walkthroughs below
-- No real money ever moves — tracking only.
-
 ## The problem
 
 Across Senegal and West Africa, millions of people save together in tontines:
