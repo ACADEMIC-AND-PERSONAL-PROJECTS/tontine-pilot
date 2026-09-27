@@ -42,7 +42,7 @@ test('fulltour', async ({ page, narration }) => {
   // 4 — group creation wizard (show, don't submit)
   await page.goto('/group/new')
   narration.mark('groupnew')
-  await page.locator('input').first.fill('Tontine Amitié')
+  await page.fill('input >> nth=0', 'Tontine Amitié')
   await page.waitForTimeout(narration.durationFor('groupnew'))
 
   // 5 — members + trust
