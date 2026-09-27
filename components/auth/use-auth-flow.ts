@@ -31,6 +31,7 @@ export function useAuthFlow() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const passwordRef = useRef(""); // memory-only, for post-verify auto sign-in
+  const verifyingRef = useRef(false); // guard: auto-submit + button = one verify, not two
 
   const mapError = useCallback(
     (e: unknown): string => {
@@ -130,16 +131,29 @@ export function useAuthFlow() {
 
   const doVerify = useCallback(
     async (code: string) => {
-      const ok = await go(async () => {
-        await confirmSignUp({ username: email.trim(), confirmationCode: code.trim() });
-      });
-      if (ok) {
-        // chain straight into a session — no second login needed
-        await doSignIn(passwordRef.current);
-        passwordRef.current = "";
+      // The 6th digit auto-submits AND the user may hit Verify: run once.
+      if (verifyingRef.current || code.trim().length < 6) return;
+      verifyingRef.current = true;
+      try {
+        const ok = await go(async () => {
+          await confirmSignUp({ username: email.trim(), confirmationCode: code.trim() });
+        });
+        if (!ok) return;
+        if (passwordRef.current) {
+          // chain straight into a session — no second login needed
+          await doSignIn(passwordRef.current);
+          passwordRef.current = "";
+        } else {
+          // Page reloaded on the verify step: password is gone. The account
+          // IS confirmed — send to sign in instead of showing a failure.
+          setNotice(t("auth.confirmedSignin"));
+          setStep("signin");
+        }
+      } finally {
+        verifyingRef.current = false;
       }
     },
-    [email, go, doSignIn]
+    [email, go, doSignIn, t]
   );
 
   const doResend = useCallback(async (): Promise<boolean> => {

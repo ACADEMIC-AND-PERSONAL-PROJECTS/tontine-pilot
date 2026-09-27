@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,22 +16,29 @@ const inputCls =
 export function AuthCard() {
   const { t } = useLocale();
   const flow = useAuthFlow();
-  const { step, setStep, email, setEmail, loading, error } = flow;
+  const { step, setStep, email, setEmail, loading, error, notice } = flow;
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [code, setCode] = useState("");
   const [cooldown, setCooldown] = useState(0);
+  // Armed once per entry into verify: reaching 0 must ENABLE resend,
+  // never restart the countdown (infinite-60s-loop bug).
+  const timerArmed = useRef(false);
 
   useEffect(() => {
-    if (step === "verify" && cooldown === 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- (re)start 60s resend timer on entering verify
+    if (step !== "verify") {
+      timerArmed.current = false;
+      return;
+    }
+    if (!timerArmed.current && cooldown === 0) {
+      timerArmed.current = true;
       setCooldown(60);
       return;
     }
     if (cooldown <= 0) return;
-    const id = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    const id = setTimeout(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
     return () => clearTimeout(id);
   }, [cooldown, step]);
 
@@ -116,6 +123,7 @@ export function AuthCard() {
                 </button>
               </div>
               {error && <p className="text-xs text-danger">{error}</p>}
+              {notice && !error && <p className="text-xs text-ok">{notice}</p>}
               <Button type="submit" disabled={loading} className="w-full gap-2">
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {t("auth.submitSignin")}
@@ -255,6 +263,8 @@ export function AuthCard() {
                     disabled={loading}
                     onClick={async () => {
                       const ok = await flow.doResend();
+                      // Stale boxes must go: the resent code differs.
+                      setCode("");
                       if (ok) setCooldown(60);
                     }}
                     className="font-medium text-accent-hover hover:underline disabled:opacity-50"
