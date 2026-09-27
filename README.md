@@ -77,7 +77,7 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 |---|---|
 | Natural-language declarations | "I paid 20000 for Awa" → Bedrock extracts amount, member, recipient |
 | Mobile Money OCR | Wave / Orange Money / MTN screenshots → amount, transaction ID, date |
-| Empathic mediation | Gentle nudges, installment plans, tour swaps, anomaly detection |
+| Empathic mediation | Gentle nudges, installment plans, tour swaps, anomaly detection — auto-triggered every morning at 08:00 UTC |
 | Emergency fund | Tontine Flex reserve that unlocks the recipient on critical lates |
 | AI rotation order | Trust − lates + seniority; provisional lottery with no history |
 | Audio digest | Cycle summary read aloud (Polly Léa / Joanna), FR/EN, with countdown |
