@@ -12,7 +12,7 @@ import { formatDate } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
 import { isBackendEnabled } from "@/lib/backend";
-import { useRemoteMembers } from "@/lib/use-remote";
+import { useRemoteCycleData, useRemoteMembers } from "@/lib/use-remote";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AddMemberModal } from "@/components/app/add-member-modal";
@@ -28,6 +28,9 @@ export default function MembersPage() {
   const { groups, synced } = useGroups();
   const noGroups = backendOn && synced && groups.length === 0;
   const { members: remoteMembers, loaded: membersLoaded, refetch } = useRemoteMembers(active.id);
+  const remoteCycle = useRemoteCycleData(active.id);
+  // Live cycle status per member (never the static demo rows in live mode).
+  const cycleContribs = backendOn ? remoteCycle.contributions : fakeContributions;
   const [showAdd, setShowAdd] = useState(false);
   const [addCycles, setAddCycles] = useState<DuesCycle[]>([]);
 
@@ -130,7 +133,7 @@ export default function MembersPage() {
       {!noGroups && (
       <div data-testid="dw-members" className="mt-8 grid gap-3 sm:grid-cols-2">
         {members.map((m, i) => {
-          const contrib = fakeContributions.find((c) => c.memberId === m.id);
+          const contrib = cycleContribs.find((c) => c.memberId === m.id);
           return (
             <motion.div
               key={m.id}

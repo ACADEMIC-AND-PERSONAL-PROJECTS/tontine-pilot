@@ -20,8 +20,9 @@ import { useRemoteCycleData } from "@/lib/use-remote";
 import { useGroups } from "@/lib/groups";
 import { isBackendEnabled } from "@/lib/backend";
 
-function buildCsv(rows: Contribution[]) {
-  const header = "Membre,Montant,Statut,Date,Déclaration\n";
+function buildCsv(rows: Contribution[], locale: string = "fr") {
+  const header =
+    locale === "en" ? "Member,Amount,Status,Date,Declaration\n" : "Membre,Montant,Statut,Date,Déclaration\n";
   return (
     header +
     rows
@@ -53,10 +54,12 @@ export default function ExportPage() {
   const noGroups = backendOn && synced && groups.length === 0;
   const remote = useRemoteCycleData(active.id);
   const contributions = backendOn ? remote.contributions : fakeContributions;
+  // Never export an empty ledger: wait for the remote load first.
+  const ready = !backendOn || remote.loaded;
 
   function exportCsv() {
     downloadBlob(
-      buildCsv(contributions),
+      buildCsv(contributions, locale),
       `registre-cycle-${currentCycle.cycleNumber}.csv`,
       "text/csv;charset=utf-8"
     );
@@ -66,7 +69,7 @@ export default function ExportPage() {
 
   function exportPdfSim() {
     const text = [
-      `TontinePilot — Registre ${fakeGroup.name}`,
+      `TontinePilot — Registre ${active.name}`,
       `Cycle ${currentCycle.cycleNumber} · Bénéficiaire: ${currentCycle.recipientName}`,
       `Période: ${currentCycle.startDate} → ${currentCycle.endDate}`,
       `Collecté: ${currentCycle.totalCollected} / ${currentCycle.totalExpected} ${active.currency === "USD" ? "USD" : "FCFA"}`,
@@ -125,7 +128,7 @@ export default function ExportPage() {
         transition={{ delay: 0.1 }}
         className="mt-8 flex flex-wrap gap-3"
       >
-        <Button data-testid="dw-export-csv" onClick={exportCsv} className="gap-2">
+        <Button data-testid="dw-export-csv" onClick={exportCsv} disabled={!ready} className="gap-2">
           {downloaded === "csv" ? (
             <Check className="h-4 w-4" />
           ) : (
@@ -133,7 +136,7 @@ export default function ExportPage() {
           )}
           {downloaded === "csv" ? "CSV téléchargé" : fr ? "Télécharger CSV" : "Download CSV"}
         </Button>
-        <Button variant="secondary" onClick={exportPdfSim} className="gap-2">
+        <Button variant="secondary" onClick={exportPdfSim} disabled={!ready} className="gap-2">
           {downloaded === "pdf" ? (
             <Check className="h-4 w-4" />
           ) : (
@@ -154,7 +157,7 @@ export default function ExportPage() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold">
-                {fakeGroup.name}
+                {active.name}
               </h2>
               <p className="text-xs text-muted">
                 Cycle {currentCycle.cycleNumber} · {currentCycle.recipientName} ·{" "}
@@ -232,8 +235,8 @@ export default function ExportPage() {
         <Download className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <p>
           {fr ? `Historique : ${pastCycles.length} cycles clos · ` : `History: ${pastCycles.length} closed cycles · `}
-          {fakeMembers.length}{" "}
-          {fr ? "membres · devise" : "members · currency"} {fakeGroup.currency}.{" "}
+          {active.memberCount}{" "}
+          {fr ? "membres · devise" : "members · currency"} {active.currency}.{" "}
           {fr
             ? "Aucun paiement réel n'est traité par TontinePilot."
             : "No real payments are processed by TontinePilot."}
