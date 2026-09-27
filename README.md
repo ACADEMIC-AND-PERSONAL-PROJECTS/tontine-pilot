@@ -63,7 +63,9 @@ and handles the awkward parts with empathy instead of pressure.
 **Full app walkthrough, no voiceover** — login, dashboard, groups, group creation,
 declare, members and trust scores, alerts, export, and the Tonti assistant answering live.
 <br>
-Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/blob/main/videos/tour.mp4).
+Narrated 60-second cut with sound, playing right here:
+<br><br>
+<video src="https://github.com/user-attachments/assets/9660bb18-dffd-4882-82d4-f68b46c2a12f" width="660" controls playsinline preload="metadata"></video>
 
 </div>
 
