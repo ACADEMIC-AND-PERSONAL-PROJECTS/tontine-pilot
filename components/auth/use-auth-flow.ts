@@ -9,18 +9,11 @@ import {
   signUp,
 } from "aws-amplify/auth";
 import { useLocale } from "@/lib/i18n";
+import { isAlreadyConfirmedError, passwordScore } from "@/lib/auth-errors";
 import { isBackendEnabled } from "@/lib/backend";
 
 export type AuthStep = "signin" | "signup" | "verify";
 
-export function passwordScore(pw: string): number {
-  let s = 0;
-  if (pw.length >= 8) s++;
-  if (/\d/.test(pw)) s++;
-  if (/[a-z]/.test(pw)) s++;
-  if (pw.length >= 12) s++;
-  return s;
-}
 
 export function useAuthFlow() {
   const { t } = useLocale();
@@ -145,21 +138,15 @@ export function useAuthFlow() {
       setError(null);
       setNotice(null);
       try {
-        let confirmed = false;
         try {
           await confirmSignUp({ username: email.trim(), confirmationCode: code.trim() });
-          confirmed = true;
         } catch (e) {
-          // Retrying a code on an already-confirmed account throws
-          // NotAuthorizedException — that IS success, not failure.
-          const name = (e as { name?: string })?.name ?? "";
-          const msg = (e as Error)?.message ?? "";
-          if (/NotAuthorized/.test(name) && /already.*confirm/i.test(msg)) {
-            confirmed = true;
-          } else {
+          if (!isAlreadyConfirmedError(e)) {
             setError(mapError(e));
             return;
           }
+          // Retrying a code on an already-confirmed account throws
+          // NotAuthorizedException — that IS success, not failure.
         }
         if (passwordRef.current) {
           // chain straight into a session — no second login needed

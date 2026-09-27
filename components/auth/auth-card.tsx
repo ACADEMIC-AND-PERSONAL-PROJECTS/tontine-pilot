@@ -8,7 +8,8 @@ import { BrandMark } from "@/components/landing/brand-mark";
 import { useLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { CodeInput } from "./code-input";
-import { passwordScore, useAuthFlow } from "./use-auth-flow";
+import { useAuthFlow } from "./use-auth-flow";
+import { passwordScore } from "@/lib/auth-errors";
 
 const inputCls =
   "w-full rounded-xl border border-border bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted/60 focus:border-accent/40 focus:ring-1 focus:ring-accent/30";
