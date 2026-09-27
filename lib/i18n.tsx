@@ -27,7 +27,6 @@ const dictionaries: Record<Locale, Dict> = {
     "nav.back": "Back to site",
     "nav.profile": "Profile",
     "nav.logout": "Log out",
-    "nav.admin": "Signed in as Aïssatou Diallo · Admin",
     "hero.title": "The AI copilot for community tontines",
     "hero.body":
       "NLP declarations, Mobile Money OCR, empathic mediation, emergency fund, and audio digests — so your group stops arguing over WhatsApp.",
@@ -162,7 +161,6 @@ const dictionaries: Record<Locale, Dict> = {
     "nav.back": "Retour au site",
     "nav.profile": "Profil",
     "nav.logout": "Déconnexion",
-    "nav.admin": "Connecté en tant qu'Aïssatou Diallo · Admin",
     "hero.title": "Le copilote IA des tontines communautaires",
     "hero.body":
       "Déclarations NLP, OCR Mobile Money, médiation empathique, caisse de secours et digest audio — pour que votre groupe arrête de se disputer sur WhatsApp.",

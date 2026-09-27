@@ -19,9 +19,9 @@ import {
 import { useEffect, useRef, useState } from "react";
 import {
   fetchUserAttributes,
-  getCurrentUser,
   signOut,
 } from "aws-amplify/auth";
+import { sessionUserId } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { useGroups } from "@/lib/groups";
 import { useLocale } from "@/lib/i18n";
@@ -82,22 +82,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { active } = useGroups();
   useEffect(() => {
     if (!isBackendEnabled()) return;
-    getCurrentUser().then(
-      async () => {
-        try {
-          const attrs = await fetchUserAttributes();
-          if (attrs.name) setUserName(attrs.name);
-          if (attrs.email) setUserEmail(attrs.email);
-        } catch {
-          // keep demo identity
-        }
-      },
-      () => {}
-    );
+    let live = true;
+    (async () => {
+      try {
+        // Robust resolver: getCurrentUser() throws during Amplify's
+        // post-login token hydration, freezing the demo identity forever.
+        await sessionUserId();
+        const attrs = await fetchUserAttributes();
+        if (!live) return;
+        if (attrs.name) setUserName(attrs.name);
+        if (attrs.email) setUserEmail(attrs.email);
+      } catch {
+        // keep demo identity
+      }
+    })();
+    return () => {
+      live = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -178,7 +183,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <p className="hidden text-sm text-muted lg:block">{t("nav.admin")}</p>
+          <p className="hidden text-sm text-muted lg:block">
+            {locale === "fr" ? "Connecté en tant que" : "Signed in as"} {userName}
+            {active.role ? ` · ${active.role}` : ""}
+          </p>
           <p className="text-sm font-semibold lg:hidden">TontinePilot</p>
           <div className="flex items-center gap-2">
             <LangToggle className="lg:hidden" />
