@@ -22,6 +22,7 @@ import { useGroups } from "@/lib/groups";
 import { client, isBackendEnabled } from "@/lib/backend";
 import { useRemoteMembers } from "@/lib/use-remote";
 import { useRemoteCycleData } from "@/lib/use-remote";
+import { AddMemberModal } from "@/components/app/add-member-modal";
 import { uploadData } from "aws-amplify/storage";
 import { fetchAuthSession } from "aws-amplify/auth";
 
@@ -31,6 +32,7 @@ type ParsedText = {
   kind: "text";
   amount: number;
   recipientName: string | null;
+  memberId: string | null;
   memberName: string;
   confidence: number;
   raw: string;
@@ -71,26 +73,35 @@ function fakeParse(text: string): ParsedText {
   }
   if (/vingt\s*mille|20k|20\s*k/i.test(text)) amount = 20000;
 
-  const member =
-    fakeMembers.find((m) =>
-      lower.includes(m.name.split(" ")[0].toLowerCase())
-    ) || fakeMembers[0];
+  // Strict like the backend: unknown names resolve to "" (unknown), never
+  // to another member. The UI blocks and proposes adding them to the group.
+  const words = lower.split(/[^a-zàâäéèêëîïôöùûüç0-9]+/i).filter(Boolean);
+  let member = fakeMembers.find((m) => lower.includes(m.name.toLowerCase())) ?? null;
+  if (!member) {
+    const firsts = fakeMembers.filter((m) =>
+      words.some(
+        (w) =>
+          m.name.split(" ")[0].toLowerCase().startsWith(w) ||
+          w.startsWith(m.name.split(" ")[0].toLowerCase())
+      )
+    );
+    member = firsts.length === 1 ? firsts[0] : null;
+  }
 
-  const recipient =
-    fakeMembers.find(
-      (m) =>
-        m.id !== member.id &&
-        lower.includes(m.name.split(" ")[0].toLowerCase())
-    ) ||
-    fakeMembers.find((m) => m.name === "Cheikh Fall") ||
-    null;
+  const recipient = member
+    ? (fakeMembers.find(
+        (m) =>
+          m.id !== member.id && lower.includes(m.name.toLowerCase())
+      ) ?? null)
+    : null;
 
   return {
     kind: "text",
     amount,
-    recipientName: recipient?.name ?? "Cheikh Fall",
-    memberName: member.name,
-    confidence: 0.86 + Math.random() * 0.12,
+    recipientName: recipient?.name ?? "",
+    memberId: member?.id ?? null,
+    memberName: member?.name ?? "",
+    confidence: member ? 0.86 + Math.random() * 0.12 : 0.35,
     raw: text,
   };
 }
@@ -114,6 +125,19 @@ export default function DeclarePage() {
   const { members: remoteMembers } = useRemoteMembers(active.id);
   const knownMembers = isBackendEnabled() ? remoteMembers : fakeMembers;
   const [receiptKey, setReceiptKey] = useState<string | null>(null);
+  // Backend failure message (shown as a banner). Demo dataset (backend off)
+  // is the only path that uses the canned parsers.
+  const [parseError, setParseError] = useState<string | null>(null);
+  // Unknown payer flow: name typed but no group member matches.
+  const [showAddMember, setShowAddMember] = useState(false);
+  const [addCycles, setAddCycles] = useState<Array<{ id: string; cycleNumber: number; status?: string | null; endDate?: string | null; totalExpected?: number | null }>>([]);
+  // Manual entry after an unreadable receipt.
+  const [manualOpen, setManualOpen] = useState(false);
+  const [manualAmount, setManualAmount] = useState("");
+  const [ocrPayerId, setOcrPayerId] = useState("");
+  const [confirming, setConfirming] = useState(false);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [duplicate, setDuplicate] = useState(false);
 
   async function remoteParse(text: string) {
     const res = await client.queries.parseDeclaration({ text, groupId: active.id });
@@ -123,7 +147,10 @@ export default function DeclarePage() {
     return {
       kind: "text" as const,
       amount: p.amount,
-      recipientName: p.recipientName ?? "Cheikh Fall",
+      // Empty memberName = unknown payer (UI blocks + proposes adding them).
+      // Empty recipient = cycle recipient (resolved at confirm time).
+      recipientName: p.recipientName ?? "",
+      memberId: p.memberId ?? null,
       memberName: p.memberName ?? "",
       confidence: p.confidence ?? 0.5,
       raw: text,
@@ -139,13 +166,19 @@ export default function DeclarePage() {
     setLoading(true);
     setConfirmed(false);
     setParsed(null);
+    setParseError(null);
+    setDuplicate(false);
+    setConfirmError(null);
     try {
       if (isBackendEnabled()) {
         try {
           setParsed(await remoteParse(text));
-        } catch {
-          await new Promise((r) => setTimeout(r, 1100));
-          setParsed(fakeParse(text));
+        } catch (e) {
+          setParseError(
+            fr
+              ? `Analyse impossible : ${(e as Error)?.message ?? "erreur"}. Réessaie ou vérifie la connexion.`
+              : `Parse failed: ${(e as Error)?.message ?? "error"}. Retry or check connection.`
+          );
         }
       } else {
         await new Promise((r) => setTimeout(r, 1100));
@@ -156,6 +189,22 @@ export default function DeclarePage() {
     }
   }
 
+  async function openAddMember() {
+    try {
+      const cycles = await client.models.Cycle.list({
+        filter: { groupId: { eq: active.id } },
+      });
+      setAddCycles(
+        ((cycles.data ?? []) as Array<{ id: string; cycleNumber: number; status?: string | null; endDate?: string | null; totalExpected?: number | null }>).map(
+          (c) => ({ id: c.id, cycleNumber: c.cycleNumber, status: c.status, endDate: c.endDate, totalExpected: c.totalExpected })
+        )
+      );
+    } catch {
+      setAddCycles([]);
+    }
+    setShowAddMember(true);
+  }
+
   async function handleOcrFile(file: File) {
     setFileName(file.name);
     setPreview(URL.createObjectURL(file));
@@ -163,46 +212,63 @@ export default function DeclarePage() {
     setConfirmed(false);
     setParsed(null);
     setReceiptKey(null);
+    setParseError(null);
+    setManualOpen(false);
+    setDuplicate(false);
     try {
       if (isBackendEnabled()) {
-        try {
-          // Storage rule is receipts/{identityId}/* — group id would be rejected.
-          const { identityId } = await fetchAuthSession();
-          if (!identityId) throw new Error("no-identity");
-          const key = `receipts/${identityId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-          await uploadData({ path: key, data: file }).result;
-          setReceiptKey(key);
-          const res = await client.queries.parseReceipt({ s3Key: key, groupId: active.id });
-          if (res.errors?.length) throw new Error(res.errors[0].message);
-          const ocr = res.data;
-          if (!ocr || ocr.amount == null) throw new Error("empty-ocr");
-          setParsed({
-            kind: "ocr",
-            amount: ocr.amount,
-            recipientName: ocr.recipientName ?? "",
-            transactionId: ocr.transactionId ?? "",
-            date: ocr.date ?? "",
-            provider: ocr.provider ?? "",
-            confidence: ocr.confidence ?? 0.5,
-            fileName: file.name,
-          });
+        // Storage rule is receipts/{identityId}/* — group id would be rejected.
+        const { identityId } = await fetchAuthSession();
+        if (!identityId) throw new Error("no-identity");
+        const key = `receipts/${identityId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        await uploadData({ path: key, data: file }).result;
+        setReceiptKey(key);
+        const res = await client.queries.parseReceipt({ s3Key: key, groupId: active.id });
+        if (res.errors?.length) throw new Error(res.errors[0].message);
+        const ocr = res.data;
+        // Unreadable receipt (logo, blurry photo, no amount found): no
+        // fabricated payment — error + manual entry instead.
+        if (!ocr || ocr.amount == null) {
+          setParseError(
+            fr
+              ? "Reçu illisible : aucun montant détecté. Vérifie la photo ou saisis le montant manuellement."
+              : "Unreadable receipt: no amount detected. Check the photo or enter the amount manually."
+          );
+          setManualOpen(true);
           return;
-        } catch {
-          // fall through to demo
         }
+        setParsed({
+          kind: "ocr",
+          amount: ocr.amount,
+          recipientName: ocr.recipientName ?? "",
+          transactionId: ocr.transactionId ?? "",
+          date: ocr.date ?? "",
+          provider: ocr.provider ?? "",
+          confidence: ocr.confidence ?? 0.5,
+          fileName: file.name,
+        });
+        setOcrPayerId("");
+        return;
       }
       await new Promise((r) => setTimeout(r, 1400));
-      const ocr = fakeOcrReceipt(file.name);
+      const demo = fakeOcrReceipt(file.name);
       setParsed({
         kind: "ocr",
-        amount: ocr.amount,
-        recipientName: ocr.recipientName,
-        transactionId: ocr.transactionId,
-        date: ocr.date,
-        provider: ocr.provider,
-        confidence: ocr.confidence,
+        amount: demo.amount,
+        recipientName: demo.recipientName,
+        transactionId: demo.transactionId,
+        date: demo.date,
+        provider: demo.provider,
+        confidence: demo.confidence,
         fileName: file.name,
       });
+    } catch (e) {
+      setParseError(
+        fr
+          ? `Lecture du reçu impossible : ${(e as Error)?.message ?? "erreur"}. Réessaie ou saisis manuellement.`
+          : `Receipt read failed: ${(e as Error)?.message ?? "error"}. Retry or enter manually.`
+      );
+      setManualOpen(true);
     } finally {
       setLoading(false);
     }
@@ -225,12 +291,88 @@ export default function DeclarePage() {
     }
   }
 
+  /** Settle a confirmed payment: resolve the member's open late alerts for
+   *  the cycle, then rebuild trust from unresolved lates + completed cycles.
+   *  Trust heals when members pay — it is not a life sentence. */
+  async function settleMemberAfterPayment(memberId: string, cycleId: string) {
+    try {
+      const alerts = await client.models.Alert.list({
+        filter: { groupId: { eq: active.id } },
+      });
+      const mine = (alerts.data ?? []).filter(
+        (a) => a.memberId === memberId && !a.resolved && a.type === "LATE_PAYMENT"
+      );
+      for (const a of mine.filter((x) => !x.cycleId || x.cycleId === cycleId)) {
+        await client.models.Alert.update({ id: a.id, resolved: true }).catch(() => null);
+      }
+      const remaining = mine.filter((x) => x.cycleId && x.cycleId !== cycleId).length;
+      const row = await client.models.Member.get({ id: memberId });
+      const prev = (row.data ?? {}) as { cyclesCompleted?: number | null };
+      const cyclesCompleted = (prev.cyclesCompleted ?? 0) + 1;
+      const lateCount = remaining;
+      const trustScore = Math.max(
+        50,
+        Math.min(99, 92 - lateCount * 7 + Math.min(6, cyclesCompleted))
+      );
+      await client.models.Member.update({ id: memberId, lateCount, trustScore, cyclesCompleted }).catch(
+        () => null
+      );
+    } catch {
+      // trust rebuild is best-effort; the payment itself is recorded
+    }
+  }
+
   async function handleConfirm() {
-    if (parsed && isBackendEnabled()) {
-      try {
-        const today = new Date().toISOString().slice(0, 10);
-        // Target the group's OPEN cycle (never a hardcoded id).
-        let cycleId = remoteCycle.cycle?.id;
+    if (confirming) return;
+    // Manual entry (unreadable receipt) has no parsed result — payer + amount
+    // come from the manual form.
+    if (!parsed && !manualOpen) return;
+    setConfirmError(null);
+    setDuplicate(false);
+    if (!isBackendEnabled()) {
+      // Demo dataset: confirmation screen is the proof (no writes).
+      setConfirmed(true);
+      return;
+    }
+    // Strict payer resolution — no silent fallback to another member.
+    // Text: the parsed member must exist in this group (unknown payers are
+    // blocked upstream with an add-member CTA). OCR/manual: payer is chosen.
+    let payerId = "";
+    let payerName = "";
+    if (parsed && parsed.kind === "text") {
+      const hit =
+        (parsed as { memberId?: string }).memberId &&
+        knownMembers.some((m) => m.id === (parsed as { memberId?: string }).memberId)
+          ? knownMembers.find((m) => m.id === (parsed as { memberId?: string }).memberId)!
+          : knownMembers.find(
+              (m) => m.name.toLowerCase() === parsed.memberName.toLowerCase()
+            );
+      if (!hit) {
+        setConfirmError(
+          fr
+            ? "Payeur introuvable dans ce groupe. Ajoute-le d'abord."
+            : "Payer not found in this group. Add them first."
+        );
+        return;
+      }
+      payerId = hit.id;
+      payerName = hit.name;
+    } else {
+      const hit = knownMembers.find((m) => m.id === ocrPayerId);
+      if (!hit) {
+        setConfirmError(
+          fr ? "Choisis le payeur avant de confirmer." : "Select the payer before confirming."
+        );
+        return;
+      }
+      payerId = hit.id;
+      payerName = hit.name;
+    }
+    setConfirming(true);
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      // Target the group's OPEN cycle (never a hardcoded id).
+      let cycleId = remoteCycle.cycle?.id;
         if (!cycleId) {
           const cycles = await client.models.Cycle.list({
             filter: { groupId: { eq: active.id }, status: { eq: "OPEN" } },
@@ -250,15 +392,24 @@ export default function DeclarePage() {
           cycleId = created.data?.id;
         }
         if (!cycleId) throw new Error("no-cycle");
-        if (parsed.kind === "text") {
-          const member =
-            knownMembers.find((m) => m.name === parsed.memberName) ??
-            knownMembers[0] ?? { id: "unknown", name: parsed.memberName };
+        // Idempotency: one CONFIRMED contribution per member per cycle.
+        const prior = await client.models.Contribution.list({
+          filter: { cycleId: { eq: cycleId } },
+        });
+        const already = (prior.data ?? []).find(
+          (c) => c.memberId === payerId && c.status === "CONFIRMED"
+        );
+        if (already) {
+          setDuplicate(true);
+          setConfirming(false);
+          return;
+        }
+        if (parsed && parsed.kind === "text") {
           await client.models.Contribution.create({
             groupId: active.id,
             cycleId,
-            memberId: member.id,
-            memberName: parsed.memberName,
+            memberId: payerId,
+            memberName: payerName,
             amount: parsed.amount,
             status: "CONFIRMED",
             dateDeclared: today,
@@ -266,12 +417,30 @@ export default function DeclarePage() {
             rawTextEn: parsed.raw,
             method: "TEXT_NLU",
           });
-        } else {
+        } else if (manualOpen) {
+          const manual = Math.round(Number(manualAmount));
+          if (!manual || manual <= 0) throw new Error("bad-amount");
           await client.models.Contribution.create({
             groupId: active.id,
             cycleId,
-            memberId: "m1",
-            memberName: parsed.recipientName,
+            memberId: payerId,
+            memberName: payerName,
+            amount: manual,
+            status: "CONFIRMED",
+            dateDeclared: today,
+            rawText: fileName || text,
+            method: "MANUAL",
+          });
+        } else if (!parsed) {
+          throw new Error("no-data");
+        } else {
+          // OCR receipt: the payer is chosen (receipts name the recipient,
+          // rarely the payer) — never a hardcoded member id.
+          await client.models.Contribution.create({
+            groupId: active.id,
+            cycleId,
+            memberId: payerId,
+            memberName: payerName,
             amount: parsed.amount,
             status: "CONFIRMED",
             dateDeclared: parsed.date || today,
@@ -280,16 +449,20 @@ export default function DeclarePage() {
             receiptKey: receiptKey ?? undefined,
           });
         }
+        await settleMemberAfterPayment(payerId, cycleId);
         await refreshTotals(cycleId);
-      } catch {
-        // demo mode: confirmation screen is the proof
+        setConfirmed(true);
+        // let the user see the confirmation, then land on refreshed numbers
+        window.setTimeout(() => router.push("/dashboard"), 1800);
+      } catch (e) {
+        setConfirmError(
+          fr
+            ? `Enregistrement impossible : ${(e as Error)?.message ?? "erreur"}.`
+            : `Could not record: ${(e as Error)?.message ?? "error"}.`
+        );
+      } finally {
+        setConfirming(false);
       }
-    }
-    setConfirmed(true);
-    if (isBackendEnabled()) {
-      // let the user see the confirmation, then land on refreshed numbers
-      window.setTimeout(() => router.push("/dashboard"), 1800);
-    }
   }
 
   function reset() {
@@ -298,6 +471,13 @@ export default function DeclarePage() {
     setText("");
     setPreview(null);
     setFileName("");
+    setParseError(null);
+    setManualOpen(false);
+    setManualAmount("");
+    setOcrPayerId("");
+    setDuplicate(false);
+    setConfirmError(null);
+    setShowAddMember(false);
   }
 
   if (noGroups) {
@@ -471,7 +651,54 @@ export default function DeclarePage() {
         )}
 
         <AnimatePresence mode="wait">
-          {parsed && !confirmed && (
+          {parseError && !parsed && !confirmed && (
+            <motion.div
+              key="parse-error"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mt-5 rounded-2xl border border-red-400/30 bg-red-500/10 px-5 py-4 text-sm"
+            >
+              {parseError}
+            </motion.div>
+          )}
+          {parsed && parsed.kind === "text" && !parsed.memberName && !confirmed && (
+            <motion.div
+              key="unknown-member"
+              data-testid="dw-unknown-member"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.4 }}
+              className="mt-5 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-5 sm:p-6"
+            >
+              <h2 className="font-semibold">
+                {fr ? "Payeur inconnu" : "Unknown payer"}
+              </h2>
+              <p className="mt-2 text-sm text-muted">
+                {fr ? (
+                  <>« {parsed.raw} » — cette personne n’est pas membre de <b>{active.name}</b>. Ajoute-la pour enregistrer ce paiement avec rattrapage de ses dus.</>
+                ) : (
+                  <>“{parsed.raw}” — this person is not a member of <b>{active.name}</b>. Add them to record this payment with catch-up of their dues.</>
+                )}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {backendOn ? (
+                  <Button onClick={openAddMember}>
+                    {fr ? "Ajouter au groupe" : "Add to group"}
+                  </Button>
+                ) : (
+                  <span className="text-sm text-muted">
+                    {fr ? "Ajoute ce membre via la création de groupe (mode démo)." : "Add this member via group creation (demo mode)."}
+                  </span>
+                )}
+                <Button variant="ghost" onClick={() => { setParsed(null); setText(""); }}>
+                  {fr ? "Corriger le texte" : "Fix the text"}
+                </Button>
+              </div>
+            </motion.div>
+          )}
+          {parsed && !confirmed && (parsed.kind !== "text" || parsed.memberName) && (
             <motion.div
               key="result"
               data-testid="dw-parse-result"
@@ -521,7 +748,7 @@ export default function DeclarePage() {
                       {fr ? "Bénéficiaire" : "Recipient"}
                     </dt>
                     <dd className="mt-1.5 text-sm font-medium">
-                      {parsed.recipientName}
+                      {parsed.recipientName || remoteCycle.cycle?.recipientName || "—"}
                     </dd>
                   </div>
                   <div>
@@ -564,18 +791,126 @@ export default function DeclarePage() {
                       {fr ? "Destinataire · date" : "Recipient · date"}
                     </dt>
                     <dd className="mt-1.5 text-sm font-medium">
-                      {parsed.recipientName} · {parsed.date}
+                      {parsed.recipientName || remoteCycle.cycle?.recipientName || "—"} · {parsed.date}
                     </dd>
                   </div>
                 </dl>
               )}
+              {parsed.kind === "ocr" && (
+                <div className="mt-5">
+                  <label className="text-xs font-medium uppercase tracking-wider text-muted">
+                    {fr ? "Payeur (reçu = destinataire, pas payeur)" : "Payer (receipts name the recipient, not the payer)"}
+                  </label>
+                  <select
+                    value={ocrPayerId}
+                    onChange={(e) => setOcrPayerId(e.target.value)}
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-accent/40"
+                  >
+                    <option value="">
+                      {fr ? "Choisir le payeur…" : "Select the payer…"}
+                    </option>
+                    {knownMembers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
+              {duplicate && (
+                <p className="mt-4 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm">
+                  {fr
+                    ? "Déjà enregistré : ce membre a une cotisation confirmée pour ce cycle."
+                    : "Already recorded: this member has a confirmed contribution for this cycle."}
+                </p>
+              )}
+              {confirmError && (
+                <p className="mt-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm">
+                  {confirmError}
+                </p>
+              )}
               <div className="mt-6 flex flex-wrap gap-2">
-                <Button onClick={handleConfirm} className="gap-1.5">
-                  <Check className="h-4 w-4" />
+                <Button onClick={handleConfirm} disabled={confirming} className="gap-1.5">
+                  {confirming ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
                   {fr ? "Confirmer l'enregistrement" : "Confirm entry"}
                 </Button>
                 <Button variant="ghost" onClick={() => setParsed(null)}>
+                  {fr ? "Annuler" : "Cancel"}
+                </Button>
+              </div>
+            </motion.div>
+          )}
+          {manualOpen && !parsed && !confirmed && (
+            <motion.div
+              key="manual"
+              data-testid="dw-manual-entry"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.4 }}
+              className="mt-5 rounded-2xl border border-border bg-bg-raised p-5 sm:p-6"
+            >
+              <h2 className="font-semibold">
+                {fr ? "Saisie manuelle" : "Manual entry"}
+              </h2>
+              <p className="mt-1 text-sm text-muted">
+                {fr
+                  ? "Le reçu est illisible : saisis le montant et le payeur, on enregistre proprement."
+                  : "The receipt is unreadable: enter the amount and payer, recorded cleanly."}
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="text-xs font-medium uppercase tracking-wider text-muted">
+                    {fr ? "Montant (FCFA)" : "Amount (FCFA)"}
+                  </label>
+                  <input
+                    inputMode="numeric"
+                    value={manualAmount}
+                    onChange={(e) => setManualAmount(e.target.value.replace(/[^0-9]/g, ""))}
+                    placeholder="20000"
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background/60 px-4 py-2.5 text-sm tabular-nums outline-none focus:border-accent/40"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium uppercase tracking-wider text-muted">
+                    {fr ? "Payeur" : "Payer"}
+                  </label>
+                  <select
+                    value={ocrPayerId}
+                    onChange={(e) => setOcrPayerId(e.target.value)}
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background/60 px-4 py-2.5 text-sm outline-none focus:border-accent/40"
+                  >
+                    <option value="">
+                      {fr ? "Choisir…" : "Select…"}
+                    </option>
+                    {knownMembers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {confirmError && (
+                <p className="mt-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm">
+                  {confirmError}
+                </p>
+              )}
+              <div className="mt-5 flex flex-wrap gap-2">
+                <Button onClick={handleConfirm} disabled={confirming} className="gap-1.5">
+                  {confirming ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                  {fr ? "Enregistrer" : "Record"}
+                </Button>
+                <Button variant="ghost" onClick={() => { setManualOpen(false); setParseError(null); }}>
                   {fr ? "Annuler" : "Cancel"}
                 </Button>
               </div>
@@ -610,6 +945,20 @@ export default function DeclarePage() {
           )}
         </AnimatePresence>
       </motion.div>
+      <AddMemberModal
+        groupId={active.id}
+        groupName={active.name}
+        contributionAmount={active.contributionAmount}
+        cycles={addCycles}
+        initialName={parsed?.kind === "text" && !parsed.memberName ? parsed.raw.slice(0, 40) : ""}
+        open={showAddMember}
+        onClose={() => setShowAddMember(false)}
+        onAdded={() => {
+          // Member now exists: re-parse so the payer resolves, then confirm.
+          setShowAddMember(false);
+          if (text.trim()) void handleParse();
+        }}
+      />
     </div>
   );
 }

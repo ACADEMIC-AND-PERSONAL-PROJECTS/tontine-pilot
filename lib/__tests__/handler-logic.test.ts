@@ -15,11 +15,15 @@ describe("textractParse", () => {
     expect(r.provider).toBe("Wave");
     expect(r.confidence).toBeGreaterThanOrEqual(0.7);
   });
-  it("falls back to standard amount with low confidence", () => {
+  it("returns null amount on unreadable input (never a fabricated payment)", () => {
     const r = textractParse(["hello world"], 20000, "Cheikh Fall", "2024-09-24");
-    expect(r.amount).toBe(20000);
-    expect(r.confidence).toBe(0.4);
+    expect(r.amount).toBeNull();
+    expect(r.confidence).toBeLessThan(0.5);
     expect(r.provider).toBe("Unknown");
+  });
+  it("returns null amount for a logo with no figures", () => {
+    const r = textractParse(["TontinePilot", "Community savings"], 20000, "", "2024-09-24");
+    expect(r.amount).toBeNull();
   });
 });
 

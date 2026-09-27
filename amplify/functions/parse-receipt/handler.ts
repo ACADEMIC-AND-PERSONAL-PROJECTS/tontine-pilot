@@ -44,6 +44,12 @@ export const handler: Handler = async (event) => {
   const openCycle = (
     await client.models.Cycle.list({ filter: { groupId: { eq: args.groupId }, status: { eq: "OPEN" } } })
   ).data[0];
+  // Member roster for the strict recipient guard below.
+  const memberNames = new Set(
+    (
+      await client.models.Member.list({ filter: { groupId: { eq: args.groupId } } })
+    ).data.map((m) => m.name.toLowerCase())
+  );
 
   const engine = process.env.OCR_ENGINE ?? "textract";
   if (engine === "bedrock" && (process.env.USE_MOCK ?? "true").toLowerCase() === "false") {
@@ -66,13 +72,26 @@ export const handler: Handler = async (event) => {
       const text = first && "text" in first ? (first.text ?? "") : "";
       const p = extractJson(text) as Record<string, unknown>;
       log("CONVERSE_OK vision receipt");
+      // Honest failure: no readable amount -> null (never the standard
+      // contribution). Recipient must be a group member or empty.
+      const amount =
+        typeof p.amount === "number" ? Math.round(p.amount) : null;
+      const rawRec = ((p.recipientName as string) ?? "").trim();
+      const cycleRec = openCycle?.recipientName ?? "";
+      const recipientName =
+        !rawRec || rawRec.toLowerCase() === cycleRec.toLowerCase()
+          ? cycleRec
+          : memberNames.has(rawRec.toLowerCase())
+            ? (p.recipientName as string)
+            : "";
       return {
-        amount: typeof p.amount === "number" ? Math.round(p.amount) : group.contributionAmount,
+        amount,
         transactionId: (p.transactionId as string) ?? null,
-        recipientName: (p.recipientName as string) ?? openCycle?.recipientName ?? "",
+        recipientName,
         date: (p.date as string) ?? new Date().toISOString().slice(0, 10),
         provider: (p.provider as string) ?? "Unknown",
-        confidence: typeof p.confidence === "number" ? p.confidence : 0.5,
+        confidence:
+          typeof p.confidence === "number" ? p.confidence : amount ? 0.5 : 0.3,
       };
     } catch (err) {
       log(`FALLBACK: Bedrock vision failed (${(err as Error)?.message}), Textract next`);
@@ -91,14 +110,16 @@ export const handler: Handler = async (event) => {
     log(`TEXTRACT_OK lines=${lines.length}`);
     return textractParse(lines, group.contributionAmount, openCycle?.recipientName ?? "");
   } catch (err) {
-    log(`FALLBACK: Textract failed (${(err as Error)?.message}), defaults`);
+    log(`FALLBACK: Textract failed (${(err as Error)?.message}), unreadable receipt`);
+    // Unreadable receipt: null amount so the UI offers manual entry instead
+    // of recording a fabricated payment.
     return {
-      amount: group.contributionAmount,
+      amount: null,
       transactionId: null,
-      recipientName: openCycle?.recipientName ?? "",
+      recipientName: "",
       date: new Date().toISOString().slice(0, 10),
       provider: "Unknown",
-      confidence: 0.4,
+      confidence: 0.3,
     };
   }
 };

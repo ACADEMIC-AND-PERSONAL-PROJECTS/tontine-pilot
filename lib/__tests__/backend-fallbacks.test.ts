@@ -3,6 +3,7 @@ import {
   dedupeKey,
   heuristicParse,
   lottery,
+  resolveMember,
   templateNudge,
   trustFor,
 } from "../../amplify/functions/_shared/fallbacks";
@@ -21,14 +22,48 @@ describe("heuristicParse", () => {
     { id: "m1", name: "Aïssatou Diallo" },
     { id: "m4", name: "Cheikh Fall" },
   ];
-  it("extracts amount and recipient", () => {
+  it("extracts amount and member (named person = member of record)", () => {
     const r = heuristicParse("J'ai payé 20000 pour Cheikh", members, 20000, "Cheikh Fall");
     expect(r.amount).toBe(20000);
-    expect(r.recipientName).toBe("Cheikh Fall");
+    expect(r.memberId).toBe("m4");
+    expect(r.memberName).toBe("Cheikh Fall");
+    expect(r.recipientName).toBe("");
   });
   it("expands 20k and small amounts", () => {
     expect(heuristicParse("payé 20k", members, 20000, "Cheikh Fall").amount).toBe(20000);
     expect(heuristicParse("payé 20", members, 20000, "Cheikh Fall").amount).toBe(20000);
+  });
+  it("never maps an unknown payer to another member", () => {
+    const r = heuristicParse("John paid 20000 this month", members, 20000, "Cheikh Fall");
+    expect(r.memberId).toBeNull();
+    expect(r.memberName).toBe("");
+    expect(r.confidence).toBeLessThan(0.5);
+  });
+  it("resolves a unique first name", () => {
+    const r = heuristicParse("Aïssatou a payé 20000", members, 20000, "Cheikh Fall");
+    expect(r.memberId).toBe("m1");
+    expect(r.memberName).toBe("Aïssatou Diallo");
+  });
+});
+
+describe("resolveMember", () => {
+  const members = [
+    { id: "m1", name: "Aïssatou Diallo" },
+    { id: "m2", name: "Awa Ndiaye" },
+    { id: "m3", name: "Awa Sarr" },
+  ];
+  it("matches exact full names case-insensitively", () => {
+    expect(resolveMember(members, "awa ndiaye")?.id).toBe("m2");
+  });
+  it("matches a unique first name", () => {
+    expect(resolveMember(members, "Aïssatou")?.id).toBe("m1");
+  });
+  it("returns null on ambiguity", () => {
+    expect(resolveMember(members, "Awa")).toBeNull();
+  });
+  it("returns null for strangers and empties", () => {
+    expect(resolveMember(members, "John")).toBeNull();
+    expect(resolveMember(members, "  ")).toBeNull();
   });
 });
 

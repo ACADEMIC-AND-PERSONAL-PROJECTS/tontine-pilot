@@ -68,11 +68,13 @@ export function useRemoteGroup(groupId: string): {
 export function useRemoteMembers(groupId: string): {
   members: FakeMember[];
   loaded: boolean;
+  refetch: () => void;
 } {
   const [state, setState] = useState<{ members: FakeMember[]; loaded: boolean }>({
     members: [],
     loaded: false,
   });
+  const [tick, setTick] = useState(0);
   useEffect(() => {
     if (!isBackendEnabled()) return;
     let live = true;
@@ -98,8 +100,8 @@ export function useRemoteMembers(groupId: string): {
     return () => {
       live = false;
     };
-  }, [groupId]);
-  return state;
+  }, [groupId, tick]);
+  return { ...state, refetch: () => setTick((t) => t + 1) };
 }
 
 export function useRemoteCycleData(groupId: string): {

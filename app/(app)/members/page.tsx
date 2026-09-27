@@ -15,6 +15,10 @@ import { isBackendEnabled } from "@/lib/backend";
 import { useRemoteMembers } from "@/lib/use-remote";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { AddMemberModal } from "@/components/app/add-member-modal";
+import { client } from "@/lib/backend";
+import { useState } from "react";
+import type { DuesCycle } from "@/lib/catchup";
 
 export default function MembersPage() {
   const { locale } = useLocale();
@@ -23,7 +27,31 @@ export default function MembersPage() {
   const backendOn = isBackendEnabled();
   const { groups, synced } = useGroups();
   const noGroups = backendOn && synced && groups.length === 0;
-  const { members: remoteMembers, loaded: membersLoaded } = useRemoteMembers(active.id);
+  const { members: remoteMembers, loaded: membersLoaded, refetch } = useRemoteMembers(active.id);
+  const [showAdd, setShowAdd] = useState(false);
+  const [addCycles, setAddCycles] = useState<DuesCycle[]>([]);
+
+  async function openAdd() {
+    if (backendOn) {
+      try {
+        const cycles = await client.models.Cycle.list({
+          filter: { groupId: { eq: active.id } },
+        });
+        setAddCycles(
+          ((cycles.data ?? []) as DuesCycle[]).map((c) => ({
+            id: c.id,
+            cycleNumber: c.cycleNumber,
+            status: c.status,
+            endDate: c.endDate,
+            totalExpected: c.totalExpected,
+          }))
+        );
+      } catch {
+        setAddCycles([]);
+      }
+    }
+    setShowAdd(true);
+  }
   // Backend on: real rows even when empty. Off: demo dataset.
   const members = backendOn ? remoteMembers : fakeMembers;
   const showSkeleton = backendOn && !membersLoaded;
@@ -42,11 +70,18 @@ export default function MembersPage() {
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
           {fr ? "Membres & scores" : "Members & scores"}
         </h1>
-        <p className="mt-2 text-sm text-muted">
-          {fr
-            ? "Ordre de rotation et score de confiance — base de la recommandation IA."
-            : "Rotation order and trust scores — the basis of the AI recommendation."}
-        </p>
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm text-muted">
+            {fr
+              ? "Ordre de rotation et score de confiance — base de la recommandation IA."
+              : "Rotation order and trust scores — the basis of the AI recommendation."}
+          </p>
+          {backendOn && !noGroups && (
+            <Button size="sm" onClick={openAdd}>
+              {fr ? "+ Ajouter un membre" : "+ Add member"}
+            </Button>
+          )}
+        </div>
       </motion.div>
 
       <motion.div
@@ -173,6 +208,15 @@ export default function MembersPage() {
         })}
       </div>
       )}
+      <AddMemberModal
+        groupId={active.id}
+        groupName={active.name}
+        contributionAmount={active.contributionAmount}
+        cycles={addCycles}
+        open={showAdd}
+        onClose={() => setShowAdd(false)}
+        onAdded={() => refetch()}
+      />
     </div>
   );
 }

@@ -1,5 +1,8 @@
 // Pure receipt-text parsing (Textract LINES -> OcrResult fields).
 // Testable without AWS; handler in parse-receipt/handler.ts calls this.
+// Honest failure: when no amount is readable the amount is null (never the
+// standard contribution) so the UI shows "unreadable receipt" instead of a
+// fabricated payment.
 export function textractParse(
   lines: string[],
   standardAmount: number,
@@ -20,11 +23,11 @@ export function textractParse(
         ? "MTN"
         : "Unknown";
   return {
-    amount: amounts[0] ?? standardAmount,
+    amount: amounts[0] ?? null,
     transactionId: txn,
     recipientName: recipient,
     date: today,
     provider,
-    confidence: amounts[0] ? 0.75 : 0.4,
+    confidence: amounts[0] ? 0.75 : 0.3,
   };
 }

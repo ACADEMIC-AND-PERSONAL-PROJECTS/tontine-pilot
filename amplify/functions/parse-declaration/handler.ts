@@ -13,8 +13,9 @@ console.log("HANDLER_REV=3");
 const client = dataClient();
 
 const SYSTEM = `You parse informal tontine payment declarations (French, English, Wolof-inflected French).
-Return ONLY valid JSON, no markdown: {"memberId": "<best match id or null>", "memberName": "<as written or matched>", "amount": <integer FCFA>, "recipientName": "<matched or current recipient>", "confidence": <0..1>, "rawTextEn": "<English translation of the raw declaration>"}
-Rules: extract first plausible amount ("20k","vingt mille","20000" -> 20000); amounts <1000 are multiplied by 1000; confidence 0.95 exact amount+name, 0.8 partial, 0.5 guess.`;
+Return ONLY valid JSON, no markdown: {"memberId": "<best match id or null>", "memberName": "<matched name or empty string>", "amount": <integer FCFA>, "recipientName": "<matched name or empty string>", "confidence": <0..1>, "rawTextEn": "<English translation of the raw declaration>"}
+Rules: extract first plausible amount ("20k","vingt mille","20000" -> 20000); amounts <1000 are multiplied by 1000; confidence 0.95 exact amount+name, 0.8 partial, 0.5 guess.
+STRICT: match names ONLY against the known members list. If the payer is not a known member, return memberId null, memberName "" and confidence <= 0.4 — never invent or substitute another member. Same for recipientName: matched name or "".`;
 
 export const handler: Handler = async (event) => {
   // AppSync custom-query event: { arguments: { text, groupId } }
@@ -43,12 +44,30 @@ export const handler: Handler = async (event) => {
     const raw = await converseText(NLU_PROFILE, SYSTEM, prompt, 800);
     const p = extractJson(raw) as Record<string, unknown>;
     if (typeof p.amount !== "number") throw new Error("no-amount");
+    // Server-side membership guard: Bedrock must never resolve a payer or
+    // recipient who is not in the group. Unknown -> empty (UI blocks + offers
+    // to add the person), never another member's identity.
+    const byId = new Map(members.map((m) => [m.id, m]));
+    const byName = new Map(members.map((m) => [m.name.toLowerCase(), m]));
+    const bedId = p.memberId as string | null;
+    const bedName = ((p.memberName as string) ?? "").trim();
+    const memberHit =
+      (bedId && byId.get(bedId)) ??
+      (bedName ? byName.get(bedName.toLowerCase()) : undefined) ??
+      null;
+    const bedRec = ((p.recipientName as string) ?? "").trim();
+    const cycleRec = openCycle?.recipientName ?? "";
+    const recipientHit =
+      !bedRec || bedRec.toLowerCase() === cycleRec.toLowerCase()
+        ? cycleRec
+        : (byName.get(bedRec.toLowerCase())?.name ?? "");
     return {
-      memberId: (p.memberId as string) ?? null,
-      memberName: (p.memberName as string) ?? text.slice(0, 40),
+      memberId: memberHit?.id ?? null,
+      memberName: memberHit?.name ?? "",
       amount: Math.round(p.amount as number),
-      recipientName: (p.recipientName as string) ?? openCycle?.recipientName ?? "",
-      confidence: typeof p.confidence === "number" ? p.confidence : 0.5,
+      recipientName: recipientHit,
+      confidence:
+        typeof p.confidence === "number" ? p.confidence : memberHit ? 0.5 : 0.35,
       rawTextEn: (p.rawTextEn as string) ?? text,
     };
   } catch (err) {

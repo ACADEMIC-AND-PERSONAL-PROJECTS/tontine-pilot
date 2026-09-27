@@ -7,6 +7,25 @@ export function trustFor(lateCount: number, cycles: number): number {
 
 export type KnownMember = { id: string; name: string };
 
+/** Strict member resolution: exact full-name match (case-insensitive), else a
+ *  unique first-name match. Ambiguous or unknown -> null, never a guess.
+ *  Unknown names must surface as "unknown member", not as someone else. */
+export function resolveMember(
+  members: KnownMember[],
+  rawName: string
+): KnownMember | null {
+  const want = rawName.trim().toLowerCase();
+  if (!want) return null;
+  const exact = members.find((m) => m.name.toLowerCase() === want);
+  if (exact) return exact;
+  const firstMatches = members.filter(
+    (m) =>
+      m.name.split(" ")[0].toLowerCase().includes(want) ||
+      want.includes(m.name.split(" ")[0].toLowerCase())
+  );
+  return firstMatches.length === 1 ? firstMatches[0] : null;
+}
+
 export function heuristicParse(
   text: string,
   members: KnownMember[],
@@ -21,19 +40,41 @@ export function heuristicParse(
     if (amount < 1000) amount = amount * 1000;
   }
   if (/vingt\s*mille|20k|20\s*k/i.test(text)) amount = standardAmount;
-  const member =
-    members.find((m) => lower.includes(m.name.split(" ")[0].toLowerCase())) ??
-    members[0];
-  const recipient =
-    members.find(
-      (m) => m.id !== member.id && lower.includes(m.name.split(" ")[0].toLowerCase())
-    ) ?? null;
+  // Payer: strict resolution — unknown names resolve to null, never to a
+  // random member. The UI blocks and proposes adding them to the group.
+  const words = lower.split(/[^a-zàâäéèêëîïôöùûüç0-9]+/i).filter(Boolean);
+  let member: KnownMember | null = null;
+  for (const m of members) {
+    if (lower.includes(m.name.toLowerCase())) {
+      member = m;
+      break;
+    }
+  }
+  if (!member) {
+    const firsts = members.filter((m) =>
+      words.some(
+        (w) =>
+          m.name.split(" ")[0].toLowerCase().startsWith(w) ||
+          w.startsWith(m.name.split(" ")[0].toLowerCase())
+      )
+    );
+    member = firsts.length === 1 ? firsts[0] : null;
+  }
+  const recipient = member
+    ? (members.find(
+        (m) =>
+          m.id !== member!.id &&
+          (lower.includes(m.name.toLowerCase()) ||
+            words.some((w) => m.name.split(" ")[0].toLowerCase().startsWith(w)))
+      ) ?? null)
+    : null;
   return {
     memberId: member?.id ?? null,
-    memberName: member?.name ?? text.slice(0, 40),
+    // Empty (not a guess) when nobody matches — the caller blocks on this.
+    memberName: member?.name ?? "",
     amount,
-    recipientName: recipient?.name ?? recipientName,
-    confidence: 0.7,
+    recipientName: recipient?.name ?? "",
+    confidence: member ? 0.7 : 0.35,
     rawTextEn: text, // translators offline: keep original; Bedrock fills this when live
   };
 }

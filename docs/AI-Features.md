@@ -8,10 +8,15 @@ retry throttling/timeouts; never retry validation/access errors.
 ## Natural-language declarations
 Haiku parses FR/EN/Wolof-inflected text → `{memberId, amount, recipientName,
 confidence, rawTextEn}`. Heuristic fallback mirrors the same contract.
+Strictness rule (both paths + server-side guard): names resolve ONLY against
+group members — unknown payers return empty (never another member), the UI
+blocks and proposes adding them with catch-up.
 
 ## Receipt OCR
 S3 upload → Sonnet vision extracts amount, transaction ID, date, provider.
 Textract `DetectDocumentText` is the quota-free fallback path.
+Honest failure: unreadable receipts return `amount: null` (never the standard
+contribution) — the UI shows an error and switches to manual entry.
 
 ## Mediation & reminders
 Haiku drafts warm ≤40-word FR+EN nudges; installment/swap/emergency proposals
