@@ -6,8 +6,6 @@ import { motion } from "framer-motion";
 import {
   currentCycle,
   fakeContributions,
-  fakeGroup,
-  fakeMembers,
   pastCycles,
 } from "@/lib/fake-data";
 import { formatDate, formatMoney } from "@/lib/utils";

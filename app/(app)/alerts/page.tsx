@@ -87,11 +87,17 @@ export default function AlertsPage() {
   const [nudging, setNudging] = useState<string | null>(null);
   const [accepting, setAccepting] = useState<string | null>(null);
   const [acceptError, setAcceptError] = useState<{ id: string; msg: string } | null>(null);
+  // Reset loading on group switch during render (not in the effect below):
+  // render-phase adjustment is the React-endorsed pattern here.
+  const [loadedFor, setLoadedFor] = useState(active.id);
+  if (loadedFor !== active.id) {
+    setLoadedFor(active.id);
+    setAlertsLoaded(false);
+  }
 
   useEffect(() => {
     if (!backendOn) return;
     let live = true;
-    setAlertsLoaded(false);
     client.models.Alert.list({ filter: { groupId: { eq: active.id } } }).then(
       ({ data, errors }) => {
         if (!live) return;

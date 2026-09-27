@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import { defineDemo } from '@matte97p/demowright'
 
 // Full product tour, French captions + Léa voiceovers (public/voiceover/scene-NN.mp3).
