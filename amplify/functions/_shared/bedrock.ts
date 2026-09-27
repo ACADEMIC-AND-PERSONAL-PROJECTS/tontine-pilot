@@ -56,3 +56,34 @@ export function extractJson(text: string): unknown {
   if (start < 0 || end <= start) throw new Error("no-json");
   return JSON.parse(text.slice(start, end + 1));
 }
+
+/** Invoke a Bedrock Prompt Management version directly: the prompt ARN goes
+ *  in modelId, variables fill the {{...}} template server-side (needs
+ *  bedrock:RenderPrompt). No inferenceConfig here: the variant already
+ *  carries temperature/maxTokens and the API rejects overrides.
+ *  The caller owns parsing + fallbacks. */
+export async function conversePrompt(
+  promptArn: string,
+  variables: Record<string, string>,
+  maxTokens = 800
+): Promise<string> {
+  void maxTokens;
+  const started = Date.now();
+  try {
+    const promptVariables: Record<string, { text: string }> = {};
+    for (const [k, v] of Object.entries(variables)) promptVariables[k] = { text: v };
+    const res = await bedrock.send(
+      new ConverseCommand({
+        modelId: promptArn,
+        promptVariables,
+      })
+    );
+    log(`CONVERSE_OK ms=${Date.now() - started} prompt=${promptArn.split("/").pop()}`);
+    const first: ContentBlock | undefined = res.output?.message?.content?.[0];
+    return first && "text" in first ? (first.text ?? "") : "";
+  } catch (err) {
+    const name = (err as { name?: string })?.name ?? "Unknown";
+    log(`CONVERSE_FAIL name=${name} prompt=${promptArn.split("/").pop()} err=${(err as Error)?.message}`);
+    throw err;
+  }
+}

@@ -3,12 +3,18 @@ import { dataClient } from "../_shared/data-client";
 import {
   NLU_PROFILE,
   USE_MOCK,
+  conversePrompt,
   converseText,
   extractJson,
   log,
 } from "../_shared/bedrock";
 import { heuristicParse } from "../_shared/fallbacks";
 console.log("HANDLER_REV=3");
+
+// Managed few-shot prompt (notebooks/tontine-fewshot.ipynb): when set, the
+// versioned prompt runs instead of the inline text — same contract, same
+// membership guard below. Unset = current inline behavior.
+const DECLARATION_PROMPT_ARN = process.env.DECLARATION_PROMPT_ARN ?? "";
 
 const client = dataClient();
 
@@ -40,10 +46,26 @@ export const handler: Handler = async (event) => {
     return heuristicParse(text, members, group.contributionAmount, openCycle?.recipientName ?? "", group.currency);
   }
   try {
-    const currency = group.currency === "USD" ? "USD" : "FCFA";
-    const prompt = `Known members: ${JSON.stringify(members)}. Group: ${group.name}, standard contribution ${group.contributionAmount} ${currency}, current recipient ${openCycle?.recipientName ?? "?"}.${currency === "USD" ? " Amounts are in USD — keep small amounts as-is, never apply any ×1000 rule." : ""} Declaration: """${text}"""`;
-    const raw = await converseText(NLU_PROFILE, SYSTEM, prompt, 800);
-    const p = extractJson(raw) as Record<string, unknown>;
+    let p: Record<string, unknown>;
+    if (DECLARATION_PROMPT_ARN) {
+      log("MANAGED_PROMPT: invoking versioned prompt");
+      const rendered = await conversePrompt(
+        DECLARATION_PROMPT_ARN,
+        {
+          members: JSON.stringify(members),
+          standard: String(group.contributionAmount),
+          recipient: openCycle?.recipientName ?? "",
+          declaration: text,
+        },
+        800
+      );
+      p = extractJson(rendered) as Record<string, unknown>;
+    } else {
+      const currency = group.currency === "USD" ? "USD" : "FCFA";
+      const prompt = `Known members: ${JSON.stringify(members)}. Group: ${group.name}, standard contribution ${group.contributionAmount} ${currency}, current recipient ${openCycle?.recipientName ?? "?"}.${currency === "USD" ? " Amounts are in USD — keep small amounts as-is, never apply any ×1000 rule." : ""} Declaration: """${text}"""`;
+      const raw = await converseText(NLU_PROFILE, SYSTEM, prompt, 800);
+      p = extractJson(raw) as Record<string, unknown>;
+    }
     if (typeof p.amount !== "number") throw new Error("no-amount");
     // Server-side membership guard: Bedrock must never resolve a payer or
     // recipient who is not in the group. Unknown -> empty (UI blocks + offers

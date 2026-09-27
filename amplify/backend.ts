@@ -58,11 +58,14 @@ for (const fn of [
   fn.addEnvironment("BEDROCK_REGION", "us-east-1");
   fn.resources.lambda.addToRolePolicy(
     new PolicyStatement({
-      actions: ["bedrock:InvokeModel"],
+      actions: ["bedrock:InvokeModel", "bedrock:RenderPrompt"],
       resources: [
         `arn:aws:bedrock:us-east-1:${ACCOUNT}:inference-profile/us.anthropic.*`,
         `arn:aws:bedrock:us-east-1:${ACCOUNT}:application-inference-profile/*`,
         `arn:aws:bedrock:*::foundation-model/anthropic.claude-*`,
+        // Managed prompts (Prompt Management render + invoke, e.g. the
+        // tontine-declaration-parser used via DECLARATION_PROMPT_ARN).
+        `arn:aws:bedrock:us-east-1:${ACCOUNT}:prompt/*`,
       ],
     })
   );
