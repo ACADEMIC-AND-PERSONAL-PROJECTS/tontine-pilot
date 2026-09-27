@@ -8,7 +8,7 @@ import outputs from "../amplify_outputs.json";
 // ownerId stamped. Never touches other users' rows (unlike a blind
 // unfiltered backfill). Safe to run as any user:
 //   SEED_USER=... SEED_PASSWORD=... npx tsx scripts/backfill-owned.ts
-Amplify.configure(outputs as any);
+Amplify.configure(outputs);
 const client = generateClient<Schema>();
 
 async function main() {
