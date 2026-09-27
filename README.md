@@ -65,7 +65,7 @@ declare, members and trust scores, alerts, export, and the Tonti assistant answe
 <br>
 Narrated 60-second cut with sound, playing right here:
 <br><br>
-<video src="https://github.com/user-attachments/assets/9660bb18-dffd-4882-82d4-f68b46c2a12f" width="660" controls playsinline preload="metadata"></video>
+<video src="https://github.com/user-attachments/assets/f62aa42b-74d0-4e16-8590-9ada7beec5f4" width="660" controls playsinline preload="metadata"></video>
 
 </div>
 
