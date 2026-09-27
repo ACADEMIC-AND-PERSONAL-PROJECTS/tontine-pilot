@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatFCFA, formatMoney, cn } from "@/lib/utils";
+import { formatDate, formatMoney, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
 import { useRemoteCycleData } from "@/lib/use-remote";

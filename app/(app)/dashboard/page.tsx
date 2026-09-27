@@ -12,7 +12,7 @@ import {
   contributionText,
   alertMessageText,
 } from "@/lib/fake-data";
-import { formatDate, formatFCFA, formatMoney } from "@/lib/utils";
+import { formatDate, formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { AnimatedNumber } from "@/components/ui/animated-number";

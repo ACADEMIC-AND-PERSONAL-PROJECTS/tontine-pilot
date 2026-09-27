@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n";
 import { addMemberToGroup, splitCycles, type DuesCycle } from "@/lib/catchup";
-import { formatFCFA, formatMoney } from "@/lib/utils";
+import { formatMoney } from "@/lib/utils";
 
 export type AddedMember = { memberId: string; name: string; totalDue: number };
 

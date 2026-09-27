@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useGroups } from "@/lib/groups";
 import { groupDescriptionText } from "@/lib/fake-data";
-import { formatFCFA, formatMoney, cn } from "@/lib/utils";
+import { formatMoney, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import {
   Plus,

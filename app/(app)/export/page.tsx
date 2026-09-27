@@ -10,7 +10,7 @@ import {
   fakeMembers,
   pastCycles,
 } from "@/lib/fake-data";
-import { formatDate, formatFCFA, formatMoney } from "@/lib/utils";
+import { formatDate, formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, FileSpreadsheet, FileText, Check } from "lucide-react";

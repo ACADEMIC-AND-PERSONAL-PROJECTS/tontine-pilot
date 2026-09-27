@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { fakeMembers, fakeGroup, fakeOcrReceipt } from "@/lib/fake-data";
-import { formatFCFA, formatMoney, cn } from "@/lib/utils";
+import { formatMoney, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useRouter } from "next/navigation";
 import { useGroups } from "@/lib/groups";
