@@ -165,7 +165,8 @@ export default function DashboardPage() {
             {t("dash.title")}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Cycle {cycle.cycleNumber} · {cycle.recipientName} ·{" "}
+            Cycle {cycle.cycleNumber}
+            {cycle.recipientName ? ` · ${cycle.recipientName}` : ""} ·{" "}
             {formatDate(cycle.startDate, locale)} → {formatDate(cycle.endDate, locale)}
           </p>
           {(active.startDate || active.endDate) && (

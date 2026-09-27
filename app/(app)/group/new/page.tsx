@@ -11,7 +11,7 @@ import { client, isBackendEnabled } from "@/lib/backend";
 import { sessionUserId } from "@/lib/session";
 import { ArrowRight, ArrowLeft, Check, Plus, X, Sparkles, MailWarning, History } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
+import { cn, cycleWindow } from "@/lib/utils";
 
 type MemberDraft = {
   name: string;
@@ -237,12 +237,18 @@ export default function NewGroupPage() {
             () => null
           );
           if (!existingCycle?.data) {
+            // Cycle 1 = the first savings period: real window from the group
+            // start date, not a single-day placeholder.
+            const range = cycleWindow(
+              form.startDate || new Date().toISOString().slice(0, 10),
+              form.frequency
+            );
             const cr = await client.models.Cycle.create({
               id: `${g.id}-cycle-1`,
               groupId: g.id,
               cycleNumber: 1,
-              startDate: new Date().toISOString().slice(0, 10),
-              endDate: new Date().toISOString().slice(0, 10),
+              startDate: range.startDate,
+              endDate: range.endDate,
               status: "OPEN",
               totalExpected: amount * form.members.length,
               totalCollected: 0,

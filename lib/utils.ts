@@ -40,6 +40,28 @@ export function formatDate(date: string, locale: string = "fr") {
   }).format(new Date(date));
 }
 
+/** First-cycle window for a group: cycle 1 IS the first savings period, so
+ *  it spans a real duration from the group start (weekly: +7 days, monthly:
+ *  same day next month, clamped to month length) — never start=end=today. */
+export function cycleWindow(
+  startIso: string,
+  frequency?: string | null
+): { startDate: string; endDate: string } {
+  const valid = /^\d{4}-\d{2}-\d{2}$/.test(startIso ?? "");
+  const start = valid ? (startIso as string) : new Date().toISOString().slice(0, 10);
+  const [y, m, d] = start.split("-").map(Number);
+  let end: Date;
+  if (frequency === "WEEKLY") {
+    end = new Date(Date.UTC(y, m - 1, d + 7));
+  } else {
+    const ny = m === 12 ? y + 1 : y;
+    const nm = m % 12;
+    const lastDay = new Date(Date.UTC(ny, nm + 1, 0)).getUTCDate();
+    end = new Date(Date.UTC(ny, nm, Math.min(d, lastDay)));
+  }
+  return { startDate: start, endDate: end.toISOString().slice(0, 10) };
+}
+
 export function initials(name: string) {
   return name
     .split(" ")

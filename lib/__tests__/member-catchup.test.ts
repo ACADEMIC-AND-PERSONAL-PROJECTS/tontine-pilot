@@ -110,3 +110,18 @@ describe("formatMoney", () => {
     expect(formatMoney(30, "USD", "fr")).toContain("30");
   });
 });
+
+describe("cycleWindow", () => {
+  it("spans a real month from the group start", async () => {
+    const { cycleWindow } = await import("../utils");
+    expect(cycleWindow("2024-09-01", "MONTHLY")).toEqual({ startDate: "2024-09-01", endDate: "2024-10-01" });
+    expect(cycleWindow("2024-09-01", "WEEKLY")).toEqual({ startDate: "2024-09-01", endDate: "2024-09-08" });
+  });
+  it("clamps month overflow and defaults sanely", async () => {
+    const { cycleWindow } = await import("../utils");
+    expect(cycleWindow("2024-01-31", "MONTHLY").endDate).toBe("2024-02-29");
+    expect(cycleWindow("2025-01-31", "MONTHLY").endDate).toBe("2025-02-28");
+    const w = cycleWindow("not-a-date", "MONTHLY");
+    expect(w.startDate).not.toBe(w.endDate);
+  });
+});
