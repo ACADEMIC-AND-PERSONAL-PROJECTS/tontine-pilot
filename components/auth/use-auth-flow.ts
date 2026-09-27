@@ -44,6 +44,9 @@ export function useAuthFlow() {
       if (/CodeMismatch/.test(name)) return t("auth.errBadCode");
       if (/ExpiredCode/.test(name)) return t("auth.errExpiredCode");
       if (/UserNotConfirmed/.test(name)) return t("auth.errNotConfirmed");
+      if (/TooManyRequests|LimitExceeded|TooManyFailedAttempts/.test(name))
+        return t("auth.errThrottled");
+      if (/PasswordResetRequired/.test(name)) return t("auth.errResetRequired");
       return t("auth.errGeneric");
     },
     [t]
@@ -133,12 +136,31 @@ export function useAuthFlow() {
     async (code: string) => {
       // The 6th digit auto-submits AND the user may hit Verify: run once.
       if (verifyingRef.current || code.trim().length < 6) return;
+      if (!isBackendEnabled()) {
+        setError(t("auth.noBackend"));
+        return;
+      }
       verifyingRef.current = true;
+      setLoading(true);
+      setError(null);
+      setNotice(null);
       try {
-        const ok = await go(async () => {
+        let confirmed = false;
+        try {
           await confirmSignUp({ username: email.trim(), confirmationCode: code.trim() });
-        });
-        if (!ok) return;
+          confirmed = true;
+        } catch (e) {
+          // Retrying a code on an already-confirmed account throws
+          // NotAuthorizedException — that IS success, not failure.
+          const name = (e as { name?: string })?.name ?? "";
+          const msg = (e as Error)?.message ?? "";
+          if (/NotAuthorized/.test(name) && /already.*confirm/i.test(msg)) {
+            confirmed = true;
+          } else {
+            setError(mapError(e));
+            return;
+          }
+        }
         if (passwordRef.current) {
           // chain straight into a session — no second login needed
           await doSignIn(passwordRef.current);
@@ -151,9 +173,10 @@ export function useAuthFlow() {
         }
       } finally {
         verifyingRef.current = false;
+        setLoading(false);
       }
     },
-    [email, go, doSignIn, t]
+    [email, doSignIn, mapError, t]
   );
 
   const doResend = useCallback(async (): Promise<boolean> => {

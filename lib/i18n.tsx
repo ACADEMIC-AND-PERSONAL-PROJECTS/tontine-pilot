@@ -145,6 +145,8 @@ const dictionaries: Record<Locale, Dict> = {
     "auth.errBadCode": "Wrong code. Check and retry.",
     "auth.errExpiredCode": "Code expired. Request a new one.",
     "auth.errNotConfirmed": "Account not verified — code resent.",
+    "auth.errThrottled": "Too many attempts — wait a minute and retry.",
+    "auth.errResetRequired": "Password reset required — contact support.",
     "auth.noBackend": "Demo mode — login activates with the live backend.",
   },
   fr: {
@@ -278,6 +280,8 @@ const dictionaries: Record<Locale, Dict> = {
     "auth.errBadCode": "Code incorrect. Vérifie et réessaie.",
     "auth.errExpiredCode": "Code expiré. Demande-en un nouveau.",
     "auth.errNotConfirmed": "Compte non vérifié — code renvoyé.",
+    "auth.errThrottled": "Trop de tentatives — attends une minute et réessaie.",
+    "auth.errResetRequired": "Réinitialisation requise — contacte le support.",
     "auth.noBackend": "Mode démo — la connexion s'active avec le backend live.",
   },
 };
