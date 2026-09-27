@@ -10,7 +10,10 @@ Today this runs on notebooks and WhatsApp threads — disputes over "I paid / no
 | Natural-language declarations | "I paid 20000 for Cheikh" → Bedrock NLU extracts amount, member, recipient |
 | Mobile Money OCR | Wave / Orange Money / MTN screenshots → Bedrock Vision (Textract fallback) |
 | Empathic mediation | Warm FR/EN reminders, installment and tour-swap proposals, anomaly detection |
-| Emergency fund (Tontine Flex) | Optional reserve covering critical lates, repaid over ~2 cycles |
+| Emergency fund (Tontine Flex) | Reserve with its own menu: top-ups, safety-net payouts on Accept, repayments, history; target per group |
+| Dual currency | FCFA or USD per group — formatting, parsing, OCR, emails and digests follow |
+| Mid-group members | Add members anytime with full catch-up (late dues + alerts, honest trust) |
+| Cycle close | Close a complete/overdue cycle → next opens automatically, rotation advances |
 | AI rotation order | Trust − lates + seniority; provisional lottery when no history exists |
 | Audio digest | Real Polly neural voices (Léa FR / Joanna EN), adaptive per language |
 | Assistant chatbot (Tonti) | Bedrock-powered, answers + sends member emails/reminders in natural language |

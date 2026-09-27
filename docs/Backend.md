@@ -37,8 +37,8 @@ plain env-var credentials are unreliable in Lambda.
 
 ## Bedrock usage
 Converse API only, explicit `maxTokens`, temperature 0.2–0.3.
-NLU/mediation/chat: `us.anthropic.claude-haiku-4-5-20251001-v1:0`;
-Vision OCR: `us.anthropic.claude-sonnet-4-5-20250929-v1:0`.
+NLU/mediation/chat/vision: `us.anthropic.claude-haiku-4-5-20251001-v1:0` (Haiku does vision too;
+the Sonnet 4.5 profile is marketplace-blocked on this account — CloudWatch proved both OCR engines denied on 2026-09-27).
 Full prompts + JSON contracts in `backend-plan/05-functions-prompts.md`.
 
 ## Storage & schedule
@@ -46,7 +46,7 @@ S3: `receipts/<identityId>/*` (auth-scoped), `digests/*`.
 EventBridge Scheduler cron `0 8 * * ? *` → reminders-worker (dedupe-guarded fan-out).
 
 ## Full data model (enums verbatim)
-- **Group**: name*, description(+En), currency=FCFA, contributionAmount*, frequency
+- **Group**: name*, description(+En), currency FCFA|USD (chosen in the wizard), contributionAmount*, frequency
   WEEKLY|MONTHLY, memberCount*, currentCycleIndex*, emergencyFundBalance/Target*,
   role Admin|Member, cycleCollected/Expected, openAlerts, archived, startDate,
   endDate, ownerId. Secondary index: ownerId.
@@ -69,9 +69,9 @@ EventBridge Scheduler cron `0 8 * * ? *` → reminders-worker (dedupe-guarded fa
 ## IAM table (backend.ts)
 | Grantee | Actions | Resources |
 |---|---|---|
-| 4 Bedrock functions | bedrock:InvokeModel | us-east-1 inference profiles `us.anthropic.*` + app profiles + `arn:aws:bedrock:*::foundation-model/anthropic.claude-*` |
-| parse-receipt | s3:GetObject | receipts/* |
-| digest-audio | polly:SynthesizeSpeech (no resource scoping exists → `*`), s3:Get/Put digests/*, textract:DetectDocumentText (`*`, account-scoped) |
+| 5 Bedrock functions (declaration, receipt, mediate, rotation, assistant) | bedrock:InvokeModel | us-east-1 inference profiles `us.anthropic.*` + app profiles + `arn:aws:bedrock:*::foundation-model/anthropic.claude-*` |
+| parse-receipt | s3:GetObject receipts/* + textract:DetectDocumentText (`*`, account-scoped — grant was misplaced on digest-audio, fixed 2026-09-27) |
+| digest-audio | polly:SynthesizeSpeech (no resource scoping exists → `*`), s3:Get/Put digests/* |
 | reminders-worker, notify, assistant | ses:SendEmail/SendRawEmail (`*`, identities verified at send), sns:Publish (worker) | — |
 | Scheduler role | lambda:InvokeFunction | reminders-worker ARN |
 

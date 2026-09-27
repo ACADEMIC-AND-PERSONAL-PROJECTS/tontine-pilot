@@ -11,10 +11,11 @@ Design is frozen — backend/integration work must not change pixels.
 | `/dashboard` | KPIs, contributions, outstanding, AI alerts, fund, audio, past cycles |
 | `/groups` | Multi-group management, switch active, archive |
 | `/group/new` | 5-step wizard: group, amount, members+history, AI rotation, confirm |
-| `/declare` | Text NLU tab + OCR receipt tab, confirm writes live rows + recomputes totals |
-| `/members` | Trust scores, rotation preview |
-| `/alerts` | Filter/search/paginate, accept/resolve/nudge, audio digest |
-| `/export` | Live CSV + printable preview |
+| `/declare` | Text NLU tab (unknown payer blocked + add-member CTA) + OCR receipt tab (payer select, manual entry on unreadable), strict confirm (idempotent, resolves alerts, rebuilds trust) |
+| `/members` | Trust scores, rotation preview, add member to ongoing group (full catch-up) |
+| `/alerts` | Filter/search/paginate, accept (applies swap/installment/emergency)/resolve/nudge, audio digest |
+| `/export` | Live CSV + printable preview (downloads gated on load, bilingual headers) |
+| `/fund` | Safety reserve per group (dropdown): top-ups, payouts, repayments, history |
 
 ## Key client modules (`lib/`)
 - `backend.ts` — typed AppSync client + `isBackendEnabled()` (outputs present?)
@@ -32,14 +33,21 @@ Design is frozen — backend/integration work must not change pixels.
 - **dashboard**: active group (or onboarding when none) → KPI cards (collected,
   completion, members, alerts), contributions list (OK/Late/Pending badges),
   outstanding, AI alerts preview, fund bar, audio digest (real mp3 or local synth),
-  past cycles (remote, open cycle excluded).
-- **declare**: text → `parseDeclaration` → confirm writes Contribution + recomputes
-  cycle/group totals → auto-redirect to dashboard. OCR → S3 upload under
-  `receipts/<identityId>/` → `parseReceipt` → confirm with receiptKey.
+  past cycles (remote, open cycle excluded). **Close cycle** CTA when complete or
+  overdue → closes + opens next (rotation advances, idempotent).
+- **declare**: text → `parseDeclaration` (strict: unknown names return empty, never
+  another member) → unknown-payer panel with add-member CTA; confirm resolves the payer
+  strictly, blocks duplicates, writes Contribution, resolves the cycle alerts,
+  rebuilds trust. OCR → S3 upload under `receipts/<identityId>/` → `parseReceipt`
+  (null amount on unreadable → manual entry); payer chosen explicitly, never hardcoded.
 - **alerts**: search + status/type filters + newest/oldest + 4-per-page pager;
-  resolve writes through; nudge fires `sendNudge`; digest uses the real open cycle.
-- **group/new**: 5 steps; email blur auto-fills history from previous groups;
-  final step writes Group + Members + Cycle 1, fires welcome emails, redirects.
+  resolve writes through; **accept executes the proposal** (tour swap, installment
+  halves, emergency payout with balance check); nudge fires `sendNudge` (real send);
+  digest uses the real open cycle.
+- **group/new**: 5 steps (incl. FCFA|USD selector); email blur auto-fills history
+  from previous groups; final step writes Group + Members + Cycle 1 (real window
+  from group start, recipient = rotation head), fires welcome emails, redirects.
+  Partial saves surface per-member errors with same-id retry (no hollow groups).
 - **groups**: remote list with progress bars, open/archive/restore/delete (all mirrored).
 - **members/export**: remote rows; empty states when blank.
 - **login**: animated card, strength meter, 6-box OTP, resend cooldown only on

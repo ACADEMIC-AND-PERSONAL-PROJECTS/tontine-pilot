@@ -83,6 +83,10 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 | Audio digest | Cycle summary read aloud (Polly Léa / Joanna), FR/EN, with countdown |
 | Tonti assistant | Answers and acts: emails and reminds members in natural language |
 | Welcome emails | Branded bilingual email on member add (SES sandbox — custom domain is a perspective) |
+| Dual currency | FCFA or USD per group, end to end (display, parsing, OCR, emails, digests) |
+| Mid-group members | Add anytime with full catch-up of late dues |
+| Cycle close | Complete/overdue cycle → next opens, rotation advances |
+| Fund menu | Top-ups, payouts, repayments and history per group |
 | Exportable ledger | CSV + printable preview to end disputes |
 
 <div align="center">

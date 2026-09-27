@@ -15,6 +15,15 @@ Every `LATE_PAYMENT` creation (cron, manual nudge, chatbot) runs `applyLateEvent
 lateCount+1, recompute, persist — so the next rotation prices fresh behavior.
 Unit-tested (`lib/__tests__/trust.test.ts`).
 
+## Membership changes
+- **Mid-group join** (`lib/catchup.ts`): missed cycles → LATE contributions +
+  one alert each, open cycles → PENDING, `memberCount` and cycle expectations
+  bumped, trust initialized from missed count. Idempotent per cycle.
+- **Cycle close** (dashboard CTA, human-confirmed): current → CLOSED, next opens
+  with anchored dates and the next recipient in rotation order; replays reuse
+  the existing N+1 instead of duplicating.
+- **Group delete** cascades (children first) — no orphan members/cycles/ledger rows.
+
 ## Cold start
 First cycle with zero history → provisional lottery order, labeled as such —
 matching how real tontines draw lots. Typing a known email at group creation
