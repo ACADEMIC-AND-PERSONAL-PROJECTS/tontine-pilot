@@ -1,0 +1,59 @@
+{
+  "demo": "landingtour",
+  "createdAt": "2026-09-27T22:51:31.755Z",
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "browser": "chromium",
+    "deviceScaleFactor": 1
+  },
+  "tts": {
+    "engine": "kokoro",
+    "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+    "dtype": "q8"
+  },
+  "scenes": [
+    {
+      "scene": "hero",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 7425
+    },
+    {
+      "scene": "features",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 8675
+    },
+    {
+      "scene": "film",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 5475
+    },
+    {
+      "scene": "demo",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 6850
+    },
+    {
+      "scene": "how",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 6000
+    },
+    {
+      "scene": "outro",
+      "voice": "af_heart",
+      "speed": 1,
+      "durationMs": 2975
+    }
+  ],
+  "export": {
+    "preset": "medium",
+    "crf": 18
+  },
+  "output": "videos/landingtour.mp4"
+}

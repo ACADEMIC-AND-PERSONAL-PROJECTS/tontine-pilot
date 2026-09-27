@@ -54,14 +54,9 @@ and handles the awkward parts with empathy instead of pressure.
 
 **Demo on YouTube** — [watch here](https://youtu.be/Uvtu5lHfShs).
 <br><br>
-<img src="videos/landing.gif" width="800" alt="TontinePilot landing page walkthrough">
+<video src="https://github.com/user-attachments/assets/5caf28dc-acd9-4668-9fa0-7c5531cd6b13" width="800" controls playsinline preload="metadata"></video>
 
-**Landing page** — hero, features, product film, live demo, how it works.
-<br><br>
-<img src="videos/app.gif" width="800" alt="TontinePilot app walkthrough: login and all menus">
-
-**Full app walkthrough, no voiceover** — login, dashboard, groups, group creation,
-declare, members and trust scores, alerts, export, and the Tonti assistant answering live.
+**Landing tour, narrated** — hero, features, product film, live demo, how it works.
 <br>
 Narrated 60-second cut with sound, playing right here:
 <br><br>
