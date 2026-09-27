@@ -246,10 +246,13 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
     (id: string) => {
       setGroups((prev) => {
         const next = prev.filter((g) => g.id !== id);
-        if (next.length === 0) return prev;
-        if (activeId === id) setActiveId(next[0].id);
         return next;
       });
+      if (activeId === id) {
+        // Active group deleted: fall back elsewhere ("" resolves to the
+        // empty onboarding group via the active memo below).
+        setActiveId("");
+      }
       if (backendOn) {
         // Cascade: children first so no orphan members/cycles/ledger rows
         // survive the group (hollow-group bug class).

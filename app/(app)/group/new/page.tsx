@@ -239,16 +239,27 @@ export default function NewGroupPage() {
           if (!existingCycle?.data) {
             // Cycle 1 = the first savings period: real window from the group
             // start date, not a single-day placeholder.
-            const range = cycleWindow(
+            const window = cycleWindow(
               form.startDate || new Date().toISOString().slice(0, 10),
               form.frequency
+            );
+            // First beneficiary = head of the rotation preview (AI or manual
+            // order), so cycle 1 never starts recipient-less.
+            const first = displayOrder[0];
+            const firstIdx = Math.max(
+              0,
+              form.members.findIndex(
+                (m) => m.name.trim().toLowerCase() === String(first?.name ?? "").toLowerCase()
+              )
             );
             const cr = await client.models.Cycle.create({
               id: `${g.id}-cycle-1`,
               groupId: g.id,
               cycleNumber: 1,
-              startDate: range.startDate,
-              endDate: range.endDate,
+              recipientMemberId: `${g.id}-m${firstIdx}`,
+              recipientName: first?.name ?? "",
+              startDate: window.startDate,
+              endDate: window.endDate,
               status: "OPEN",
               totalExpected: amount * form.members.length,
               totalCollected: 0,

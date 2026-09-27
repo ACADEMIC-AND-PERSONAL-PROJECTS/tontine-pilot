@@ -90,7 +90,13 @@ export default function GroupsPage() {
 
       {filtered.length === 0 && (
         <p className="mt-6 rounded-2xl border border-border px-5 py-8 text-center text-sm text-muted">
-          {fr ? "Aucun groupe ne correspond à cette recherche." : "No group matches this search."}
+          {query.trim()
+            ? fr
+              ? "Aucun groupe ne correspond à cette recherche."
+              : "No group matches this search."
+            : fr
+              ? "Aucun groupe pour l'instant — crée le premier ci-dessus."
+              : "No groups yet — create the first one above."}
         </p>
       )}
 
