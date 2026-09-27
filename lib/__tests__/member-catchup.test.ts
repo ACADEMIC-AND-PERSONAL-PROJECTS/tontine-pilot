@@ -78,3 +78,25 @@ describe("deleteGroupCascade", () => {
     expect(calls[calls.length - 1]).toBe("g1");
   });
 });
+
+describe("subFromStorage", () => {
+  it("reads the sub when tokens were persisted", async () => {
+    const { subFromStorage } = await import("../session");
+    const store: Record<string, string> = {
+      "CognitoIdentityServiceProvider.abc123.LastAuthUser": "sub-1",
+      "CognitoIdentityServiceProvider.abc123.sub-1.idToken": "jwt",
+      "CognitoIdentityServiceProvider.abc123.sub-1.accessToken": "jwt",
+    };
+    const storage = {
+      getItem: (k: string) => store[k] ?? null,
+      key: (i: number) => Object.keys(store)[i] ?? null,
+      length: Object.keys(store).length,
+    };
+    expect(subFromStorage(storage)).toBe("sub-1");
+  });
+  it("returns null without persisted tokens", async () => {
+    const { subFromStorage } = await import("../session");
+    const storage = { getItem: () => null, key: () => null, length: 0 };
+    expect(subFromStorage(storage)).toBeNull();
+  });
+});

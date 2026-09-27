@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { recommendRotationOrder, type Member, type Group } from "@/lib/fake-data";
 import { useGroups } from "@/lib/groups";
 import { client, isBackendEnabled } from "@/lib/backend";
-import { getCurrentUser } from "aws-amplify/auth";
+import { sessionUserId } from "@/lib/session";
 import { ArrowRight, ArrowLeft, Check, Plus, X, Sparkles, MailWarning, History } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -105,11 +105,11 @@ export default function NewGroupPage() {
   async function lookupHistory(i: number, email: string) {
     if (!isBackendEnabled() || !EMAIL_RE.test(email)) return;
     try {
-      const me = await getCurrentUser().catch(() => null);
+      const me = await sessionUserId().catch((): string | null => null);
       const res = await client.models.Member.list({
         filter: {
           email: { eq: email.trim().toLowerCase() },
-          ...(me ? { ownerId: { eq: me.userId } } : {}),
+          ...(me ? { ownerId: { eq: me } } : {}),
         },
       });
       const rows = (res.data ?? []) as Array<Record<string, unknown>>;
@@ -196,7 +196,7 @@ export default function NewGroupPage() {
       if (isBackendEnabled()) {
         const trust = (late: number, cycles: number) =>
           Math.max(50, Math.min(99, 92 - late * 7 + Math.min(6, cycles)));
-        const meNow = await getCurrentUser().catch(() => null);
+        const meNow = await sessionUserId().catch((): string | null => null);
         // Resume-safe: skip members/cycle already persisted by a previous
         // attempt, collect failures instead of swallowing them (a silent
         // partial save is how hollow groups are born).
@@ -217,7 +217,7 @@ export default function NewGroupPage() {
             const r = await client.models.Member.create({
               id: `${g.id}-m${i}`,
               groupId: g.id,
-              ownerId: meNow?.userId ?? undefined,
+              ownerId: meNow ?? undefined,
               name: md.name.trim(),
               email: md.email.trim().toLowerCase(),
               phone: md.phone.trim() || undefined,

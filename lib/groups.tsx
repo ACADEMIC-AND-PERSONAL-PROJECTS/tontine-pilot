@@ -34,22 +34,7 @@ export const EMPTY_GROUP: Group = {
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toGroup } from "@/lib/remote";
 import { deleteGroupCascade } from "@/lib/catchup";
-import { fetchAuthSession } from "aws-amplify/auth";
-
-/** getCurrentUser() throws UserUnAuthenticatedException when Amplify has not
- *  finished hydrating tokens from storage yet (race right after login /
- *  navigation). Poll until the session carries tokens — GraphQL auth uses
- *  this same path, so whatever it can do, we can read. */
-async function sessionUserId(): Promise<string> {
-  const deadline = Date.now() + 10000;
-  for (;;) {
-    const session = await fetchAuthSession();
-    const sub = session.tokens?.idToken?.payload?.sub as string | undefined;
-    if (sub) return sub;
-    if (Date.now() > deadline) throw new Error("no-session");
-    await new Promise((r) => setTimeout(r, 400));
-  }
-}
+import { sessionUserId } from "@/lib/session";
 
 const keyFor = (base: string, userId: string | null) =>
   userId ? `${base}-${userId}` : base;
@@ -200,6 +185,12 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
       setGroups((prev) => (prev.some((x) => x.id === g.id) ? prev : [...prev, g]));
       setActiveId(g.id);
       if (!backendOn) return true;
+      const rollback = () => {
+        setGroups((prev) => {
+          const next = prev.filter((x) => x.id !== g.id);
+          return next;
+        });
+      };
       try {
         const me = await sessionUserId().catch(() => null);
         const { errors } = await client.models.Group.create({
@@ -221,8 +212,20 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
           openAlerts: g.openAlerts,
           archived: false,
         });
-        return !errors?.length;
+        if (errors?.length) {
+          rollback();
+          return false;
+        }
+        // Verify-after-write: the row must be readable back, otherwise other
+        // browsers/sessions will never see this group (phantom-group bug).
+        const back = await client.models.Group.get({ id: g.id }).catch(() => null);
+        if (!back?.data) {
+          rollback();
+          return false;
+        }
+        return true;
       } catch {
+        rollback();
         return false;
       }
     },
