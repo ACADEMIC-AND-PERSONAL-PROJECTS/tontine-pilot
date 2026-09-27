@@ -1,0 +1,26 @@
+[
+  {
+    "scene": "hero",
+    "text": "TontinePilot — the AI copilot for community savings groups. Rotating savings, minus the drama."
+  },
+  {
+    "scene": "features",
+    "text": "Everything a treasurer needs: natural declarations, Mobile Money OCR, empathic mediation, and trust-based rotation."
+  },
+  {
+    "scene": "film",
+    "text": "Watch the product film: sixty seconds, from first declaration to closed cycle."
+  },
+  {
+    "scene": "demo",
+    "text": "A live preview of a real cycle: eighty-three percent collected, every single payment accounted for."
+  },
+  {
+    "scene": "how",
+    "text": "Three steps, that's the whole manual: create your group, declare in plain words, close the cycle."
+  },
+  {
+    "scene": "outro",
+    "text": "TontinePilot. Start your group today."
+  }
+]
