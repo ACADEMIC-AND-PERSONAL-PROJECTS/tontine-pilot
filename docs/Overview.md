@@ -24,6 +24,17 @@ Today this runs on notebooks and WhatsApp threads — disputes over "I paid / no
 Community savings groups in Senegal and beyond (12-member pilot: "Tontine Quartier Liberté"),
 admins who reconcile payments, members with low literacy (audio-first inclusive design).
 
+## How a group uses it (single-pilot model)
+One treasurer pilots the app; members need no account. She creates the group
+(name, amount, currency, frequency, member emails) — cycle 1 opens with its first
+recipient and everyone gets a bilingual welcome email. During the cycle, real money
+moves outside the app (Wave, Orange Money, cash); payments are declared in plain
+language or receipt screenshots and confirmed by the treasurer, so the dashboard
+tracks collection live. Late payers get automatic gentle reminders; the audio digest
+summarizes the cycle for everyone, including non-readers. At month end the treasurer
+closes the cycle, the next opens with the rotation advanced, and the CSV ledger
+settles any dispute in seconds. New members join anytime with automatic catch-up.
+
 ## Product principles
 1. **Real zeros, never fake data** — new accounts start empty with onboarding, not demo figures.
 2. **Bilingual FR/EN everywhere**, including AI outputs and emails.
