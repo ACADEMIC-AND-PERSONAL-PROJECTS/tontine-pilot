@@ -48,12 +48,6 @@ and handles the awkward parts with empathy instead of pressure.
 ## Demo
 
 <div align="center">
-<a href="https://youtu.be/Uvtu5lHfShs">
-<img src="https://img.youtube.com/vi/Uvtu5lHfShs/maxresdefault.jpg" width="800" alt="Watch the TontinePilot demo on YouTube">
-</a>
-
-**Demo on YouTube** — [watch here](https://youtu.be/Uvtu5lHfShs).
-<br><br>
 <video src="https://github.com/user-attachments/assets/5caf28dc-acd9-4668-9fa0-7c5531cd6b13" width="800" controls playsinline preload="metadata"></video>
 
 **Landing tour, narrated** — hero, features, product film, live demo, how it works.
