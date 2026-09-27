@@ -21,7 +21,7 @@ const client = dataClient();
 const SYSTEM = `You parse informal tontine payment declarations (French, English, Wolof-inflected French).
 Return ONLY valid JSON, no markdown: {"memberId": "<best match id or null>", "memberName": "<matched name or empty string>", "amount": <integer FCFA>, "recipientName": "<matched name or empty string>", "confidence": <0..1>, "rawTextEn": "<English translation of the raw declaration>"}
 Rules: extract first plausible amount ("20k","vingt mille","20000" -> 20000); amounts <1000 are multiplied by 1000; confidence 0.95 exact amount+name, 0.8 partial, 0.5 guess.
-STRICT: match names ONLY against the known members list. If the payer is not a known member, return memberId null, memberName "" and confidence <= 0.4 — never invent or substitute another member. Same for recipientName: matched name or "".`;
+STRICT: match names ONLY against the known members list. If no named person matches any member, return memberId null, memberName "" and confidence <= 0.4 — never invent or substitute another member. When the declaration names a known member as beneficiary ("I paid 20000 for Awa") and no other payer is identifiable, that member IS the payer of record. First distinct named member = payer, second distinct named member = recipient.`;
 
 export const handler: Handler = async (event) => {
   // AppSync custom-query event: { arguments: { text, groupId } }

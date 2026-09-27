@@ -46,6 +46,34 @@ describe("heuristicParse", () => {
     expect(r.memberId).toBe("m1");
     expect(r.memberName).toBe("Aïssatou Diallo");
   });
+  it("treats the named beneficiary as payer of record", () => {
+    const roster = [
+      { id: "m1", name: "Aïssatou Diallo" },
+      { id: "m3", name: "Awa Sarr" },
+      { id: "m4", name: "Cheikh Fall" },
+    ];
+    const r = heuristicParse("I paid 20000 for Awa this month", roster, 20000, "");
+    expect(r.memberId).toBe("m3");
+    expect(r.memberName).toBe("Awa Sarr");
+  });
+  it("orders payer before recipient by appearance", () => {
+    const roster = [
+      { id: "m2", name: "Moussa Ndiaye" },
+      { id: "m4", name: "Cheikh Fall" },
+    ];
+    const r = heuristicParse("Moussa a payé 20000 pour Cheikh", roster, 20000, "");
+    expect(r.memberId).toBe("m2");
+    expect(r.recipientName).toBe("Cheikh Fall");
+  });
+  it("matches nobody on ambiguous first names", () => {
+    const roster = [
+      { id: "m2", name: "Awa Ndiaye" },
+      { id: "m3", name: "Awa Sarr" },
+    ];
+    const r = heuristicParse("Awa paid 20000", roster, 20000, "");
+    expect(r.memberId).toBeNull();
+    expect(r.memberName).toBe("");
+  });
 });
 
 describe("resolveMember", () => {

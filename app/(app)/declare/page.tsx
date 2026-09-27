@@ -74,27 +74,34 @@ function fakeParse(text: string, currency?: string | null): ParsedText {
   }
   if (currency !== "USD" && /vingt\s*mille|20k|20\s*k/i.test(text)) amount = 20000;
 
-  // Strict like the backend: unknown names resolve to "" (unknown), never
-  // to another member. The UI blocks and proposes adding them to the group.
+  // Strict like the backend: every name must be a real member (full name,
+  // else a first name matching exactly one member for that word). First
+  // distinct match = payer of record, second = recipient. Zero matches ->
+  // unknown (UI blocks + proposes adding).
   const words = lower.split(/[^a-zàâäéèêëîïôöùûüç0-9]+/i).filter(Boolean);
-  let member = fakeMembers.find((m) => lower.includes(m.name.toLowerCase())) ?? null;
-  if (!member) {
-    const firsts = fakeMembers.filter((m) =>
-      words.some(
-        (w) =>
-          m.name.split(" ")[0].toLowerCase().startsWith(w) ||
-          w.startsWith(m.name.split(" ")[0].toLowerCase())
-      )
-    );
-    member = firsts.length === 1 ? firsts[0] : null;
+  const hits: Array<{ m: (typeof fakeMembers)[number]; at: number }> = [];
+  const seen = new Set<string>();
+  const add = (m: (typeof fakeMembers)[number], at: number) => {
+    if (!seen.has(m.id)) {
+      seen.add(m.id);
+      hits.push({ m, at });
+    }
+  };
+  for (const m of fakeMembers) {
+    const at = lower.indexOf(m.name.toLowerCase());
+    if (at >= 0) add(m, at);
   }
-
-  const recipient = member
-    ? (fakeMembers.find(
-        (m) =>
-          m.id !== member.id && lower.includes(m.name.toLowerCase())
-      ) ?? null)
-    : null;
+  for (const w of words) {
+    const who = fakeMembers.filter((m) => {
+      if (seen.has(m.id)) return false;
+      const first = m.name.split(" ")[0].toLowerCase();
+      return first.startsWith(w) || w.startsWith(first);
+    });
+    if (who.length === 1) add(who[0], lower.indexOf(w));
+  }
+  hits.sort((a, b) => a.at - b.at);
+  const member = hits[0]?.m ?? null;
+  const recipient = hits.find((x) => x.m.id !== member?.id)?.m ?? null;
 
   return {
     kind: "text",

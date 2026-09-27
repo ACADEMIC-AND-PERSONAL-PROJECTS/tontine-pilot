@@ -56,34 +56,36 @@ export function heuristicParse(
     }
   }
   if (currency !== "USD" && /vingt\s*mille|20k|20\s*k/i.test(text)) amount = standardAmount;
-  // Payer: strict resolution — unknown names resolve to null, never to a
-  // random member. The UI blocks and proposes adding them to the group.
+  // Strict multi-name resolution, in order of appearance in the text:
+  // every name must be a real roster member (full name, else a first name
+  // matching exactly ONE member for that word — "Awa" with two Awas matches
+  // nobody). First distinct match = payer of record ("I paid 20000 for Awa"
+  // settles Awa's share), second distinct match = recipient. Zero matches ->
+  // null (unknown payer, UI blocks + proposes adding).
   const words = lower.split(/[^a-zàâäéèêëîïôöùûüç0-9]+/i).filter(Boolean);
-  let member: KnownMember | null = null;
-  for (const m of members) {
-    if (lower.includes(m.name.toLowerCase())) {
-      member = m;
-      break;
+  const hits: Array<{ m: KnownMember; at: number }> = [];
+  const seen = new Set<string>();
+  const add = (m: KnownMember, at: number) => {
+    if (!seen.has(m.id)) {
+      seen.add(m.id);
+      hits.push({ m, at });
     }
+  };
+  for (const m of members) {
+    const at = lower.indexOf(m.name.toLowerCase());
+    if (at >= 0) add(m, at);
   }
-  if (!member) {
-    const firsts = members.filter((m) =>
-      words.some(
-        (w) =>
-          m.name.split(" ")[0].toLowerCase().startsWith(w) ||
-          w.startsWith(m.name.split(" ")[0].toLowerCase())
-      )
-    );
-    member = firsts.length === 1 ? firsts[0] : null;
+  for (const w of words) {
+    const who = members.filter((m) => {
+      if (seen.has(m.id)) return false;
+      const first = m.name.split(" ")[0].toLowerCase();
+      return first.startsWith(w) || w.startsWith(first);
+    });
+    if (who.length === 1) add(who[0], lower.indexOf(w));
   }
-  const recipient = member
-    ? (members.find(
-        (m) =>
-          m.id !== member!.id &&
-          (lower.includes(m.name.toLowerCase()) ||
-            words.some((w) => m.name.split(" ")[0].toLowerCase().startsWith(w)))
-      ) ?? null)
-    : null;
+  hits.sort((a, b) => a.at - b.at);
+  const member = hits[0]?.m ?? null;
+  const recipient = hits.find((x) => x.m.id !== member?.id)?.m ?? null;
   return {
     memberId: member?.id ?? null,
     // Empty (not a guess) when nobody matches — the caller blocks on this.
