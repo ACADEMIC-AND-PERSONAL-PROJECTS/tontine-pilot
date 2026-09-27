@@ -1,0 +1,8 @@
+# Generated build output is full of false positives (hashes in bundles).
+# Source of truth for secrets is the tracked source tree.
+[allowlist]
+paths = [
+  '''\.next/''',
+  '''node_modules/''',
+  '''\.amplify/artifacts''',
+]
