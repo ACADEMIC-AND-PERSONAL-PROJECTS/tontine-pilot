@@ -86,6 +86,7 @@ export default function AlertsPage() {
   const cycleLabelEn = remote.cycle ? ` of cycle ${remote.cycle.cycleNumber}` : "";
   const [nudging, setNudging] = useState<string | null>(null);
   const [accepting, setAccepting] = useState<string | null>(null);
+  const [acceptError, setAcceptError] = useState<{ id: string; msg: string } | null>(null);
 
   useEffect(() => {
     if (!backendOn) return;
@@ -200,6 +201,17 @@ export default function AlertsPage() {
               });
             }
           } else {
+            // Emergency cover comes OUT of the reserve: refuse when the
+            // fund cannot cover, instead of writing fiction.
+            const g = await client.models.Group.get({ id: active.id });
+            const balance = g.data?.emergencyFundBalance ?? 0;
+            if (balance < amount) {
+              throw new Error(
+                locale === "fr"
+                  ? `Caisse insuffisante (${formatFCFA(balance, locale)}). Propose un étalement plutôt.`
+                  : `Insufficient fund (${formatFCFA(balance, locale)}). Propose installments instead.`
+              );
+            }
             await client.models.FundMovement.create({
               groupId: active.id,
               cycleId,
@@ -220,10 +232,16 @@ export default function AlertsPage() {
               rawText: `Covered by emergency fund (${a.id.slice(0, 8)})`,
               method: "EMERGENCY_FUND",
             });
+            await client.models.Group.update({
+              id: active.id,
+              emergencyFundBalance: Math.max(0, balance - amount),
+            }).catch(() => null);
           }
         }
       }
       await resolve(a.id);
+    } catch (e) {
+      setAcceptError({ id: a.id, msg: (e as Error)?.message ?? "apply-failed" });
     } finally {
       setAccepting(null);
     }
@@ -556,7 +574,10 @@ export default function AlertsPage() {
                             size="sm"
                             className="gap-1.5"
                             disabled={accepting === a.id}
-                            onClick={() => acceptProposal(a)}
+                            onClick={() => {
+                              setAcceptError(null);
+                              acceptProposal(a);
+                            }}
                           >
                             <Check className="h-3.5 w-3.5" />
                             {accepting === a.id
@@ -594,6 +615,11 @@ export default function AlertsPage() {
                               : "Nudge"}
                         </Button>
                       </div>
+                    )}
+                    {acceptError?.id === a.id && (
+                      <p className="mt-3 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-2.5 text-sm">
+                        {acceptError.msg}
+                      </p>
                     )}
                   </div>
                 </div>
