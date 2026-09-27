@@ -10,6 +10,7 @@ import {
   Users,
   BellRing,
   FileDown,
+  Landmark,
   PlusCircle,
   Menu,
   X,
@@ -141,6 +142,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { href: "/declare", label: t("app.declare"), icon: MessageSquareText },
     { href: "/members", label: t("app.members"), icon: Users },
     { href: "/alerts", label: t("app.alerts"), icon: BellRing },
+    { href: "/fund", label: t("app.fund"), icon: Landmark },
     { href: "/export", label: t("app.export"), icon: FileDown },
     { href: "/group/new", label: t("app.newGroup"), icon: PlusCircle },
   ];
