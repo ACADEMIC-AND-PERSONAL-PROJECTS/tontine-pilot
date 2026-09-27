@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { fakeMembers, fakeGroup, fakeOcrReceipt } from "@/lib/fake-data";
-import { formatFCFA, cn } from "@/lib/utils";
+import { formatFCFA, formatMoney, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useRouter } from "next/navigation";
 import { useGroups } from "@/lib/groups";
@@ -63,15 +63,16 @@ const examplesEn = [
   "Moussa gave his 20k to Aïssatou",
 ];
 
-function fakeParse(text: string): ParsedText {
+function fakeParse(text: string, currency?: string | null): ParsedText {
   const lower = text.toLowerCase();
   const amountMatch = text.match(/(\d[\d\s]*\d|\d+)/);
   let amount = fakeGroup.contributionAmount;
   if (amountMatch) {
     amount = parseInt(amountMatch[1].replace(/\s/g, ""), 10);
-    if (amount < 1000) amount = amount * 1000;
+    // FCFA-only conventions: small USD figures stay as-is.
+    if (currency !== "USD" && amount < 1000) amount = amount * 1000;
   }
-  if (/vingt\s*mille|20k|20\s*k/i.test(text)) amount = 20000;
+  if (currency !== "USD" && /vingt\s*mille|20k|20\s*k/i.test(text)) amount = 20000;
 
   // Strict like the backend: unknown names resolve to "" (unknown), never
   // to another member. The UI blocks and proposes adding them to the group.
@@ -182,7 +183,7 @@ export default function DeclarePage() {
         }
       } else {
         await new Promise((r) => setTimeout(r, 1100));
-        setParsed(fakeParse(text));
+        setParsed(fakeParse(text, active.currency));
       }
     } finally {
       setLoading(false);
@@ -740,7 +741,7 @@ export default function DeclarePage() {
                       {fr ? "Montant" : "Amount"}
                     </dt>
                     <dd className="mt-1.5 text-xl font-semibold tabular-nums">
-                      {formatFCFA(parsed.amount, locale)}
+                      {formatMoney(parsed.amount, active.currency, locale)}
                     </dd>
                   </div>
                   <div>
@@ -775,7 +776,7 @@ export default function DeclarePage() {
                       {fr ? "Montant" : "Amount"}
                     </dt>
                     <dd className="mt-1.5 text-xl font-semibold tabular-nums">
-                      {formatFCFA(parsed.amount, locale)}
+                      {formatMoney(parsed.amount, active.currency, locale)}
                     </dd>
                   </div>
                   <div>
@@ -949,6 +950,7 @@ export default function DeclarePage() {
         groupId={active.id}
         groupName={active.name}
         contributionAmount={active.contributionAmount}
+        currency={active.currency}
         cycles={addCycles}
         initialName={parsed?.kind === "text" && !parsed.memberName ? parsed.raw.slice(0, 40) : ""}
         open={showAddMember}

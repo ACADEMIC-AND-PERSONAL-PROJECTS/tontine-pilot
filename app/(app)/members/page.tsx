@@ -212,6 +212,7 @@ export default function MembersPage() {
         groupId={active.id}
         groupName={active.name}
         contributionAmount={active.contributionAmount}
+        currency={active.currency}
         cycles={addCycles}
         open={showAdd}
         onClose={() => setShowAdd(false)}

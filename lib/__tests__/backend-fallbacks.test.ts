@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  currencyLabel,
   dedupeKey,
+  formatAmount,
   heuristicParse,
   lottery,
   resolveMember,
@@ -86,5 +88,22 @@ describe("templateNudge", () => {
     const t = templateNudge("Ibrahima", 20000, "septembre", "late");
     expect(t.message_fr).toContain("Ibrahima");
     expect(t.message_en).toContain("Ibrahima");
+  });
+});
+
+describe("USD handling", () => {
+  const members = [{ id: "m1", name: "Awa Sarr" }];
+  it("never multiplies small USD amounts", () => {
+    expect(heuristicParse("I paid 30 for Awa", members, 30, "", "USD").amount).toBe(30);
+    expect(heuristicParse("paid 20", members, 30, "", "USD").amount).toBe(20);
+  });
+  it("keeps FCFA conventions for FCFA groups", () => {
+    expect(heuristicParse("payé 20", members, 20000, "", "FCFA").amount).toBe(20000);
+  });
+  it("formats backend amounts per currency", () => {
+    expect(formatAmount(20000, "FCFA")).toBe("20\u202f000 FCFA");
+    expect(formatAmount(30, "USD")).toBe("$30");
+    expect(currencyLabel("USD")).toBe("USD");
+    expect(currencyLabel(undefined)).toBe("FCFA");
   });
 });

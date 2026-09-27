@@ -17,9 +17,9 @@ const MOCK_SEND = (process.env.MOCK_SEND ?? "true").toLowerCase() !== "false";
 
 type AlertRow = NonNullable<Awaited<ReturnType<typeof client.models.Alert.get>>["data"]>;
 
-async function draftFor(alert: AlertRow, memberName: string, amount: number) {
+async function draftFor(alert: AlertRow, memberName: string, amount: number, currency?: string | null) {
   if (USE_MOCK) {
-    const t = templateNudge(memberName, amount, "septembre", alert.type === "REMINDER" ? "reminder" : "late");
+    const t = templateNudge(memberName, amount, "septembre", alert.type === "REMINDER" ? "reminder" : "late", currency);
     return { fr: t.message_fr, en: t.message_en };
   }
   try {
@@ -28,7 +28,7 @@ async function draftFor(alert: AlertRow, memberName: string, amount: number) {
     return { fr: p.message_fr, en: p.message_en };
   } catch (err) {
     log(`FALLBACK: draft failed (${(err as Error)?.message})`);
-    const t = templateNudge(memberName, amount, "septembre", "late");
+    const t = templateNudge(memberName, amount, "septembre", "late", currency);
     return { fr: t.message_fr, en: t.message_en };
   }
 }
@@ -121,7 +121,7 @@ export const handler: Handler = async (event) => {
       member = (await client.models.Member.get({ id: alert.memberId })).data;
     }
     const group = alert.groupId ? (await client.models.Group.get({ id: alert.groupId })).data : null;
-    const d = await draftFor(alert, alert.memberName ?? "?", group?.contributionAmount ?? 20000);
+    const d = await draftFor(alert, alert.memberName ?? "?", group?.contributionAmount ?? 20000, group?.currency ?? undefined);
     const mail = brandedReminder({
       memberName: alert.memberName ?? "?",
       groupName: group?.name ?? "",
@@ -157,7 +157,8 @@ export const handler: Handler = async (event) => {
           ).data;
           if (existing.length > 0) continue; // idempotent: never double-alert
           const d = await draftFor(
-            { type: "LATE_PAYMENT" } as AlertRow, m.name, group.contributionAmount
+            { type: "LATE_PAYMENT" } as AlertRow, m.name, group.contributionAmount,
+            group.currency ?? undefined
           );
           await client.models.Alert.create({
             groupId: group.id, cycleId: cycle.id, memberId: m.id, memberName: m.name,

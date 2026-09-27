@@ -10,7 +10,7 @@ import {
   fakeMembers,
   pastCycles,
 } from "@/lib/fake-data";
-import { formatDate, formatFCFA } from "@/lib/utils";
+import { formatDate, formatFCFA, formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, FileSpreadsheet, FileText, Check } from "lucide-react";
@@ -163,8 +163,8 @@ export default function ExportPage() {
               </p>
             </div>
             <Badge tone="accent">
-              {formatFCFA(currentCycle.totalCollected, locale)} /{" "}
-              {formatFCFA(currentCycle.totalExpected, locale)}
+              {formatMoney(currentCycle.totalCollected, active.currency, locale)} /{" "}
+              {formatMoney(currentCycle.totalExpected, active.currency, locale)}
             </Badge>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function ExportPage() {
                 >
                   <td className="px-5 py-3 font-medium sm:px-6">{c.memberName}</td>
                   <td className="px-3 py-3 tabular-nums text-muted">
-                    {c.amount ? formatFCFA(c.amount, locale) : "—"}
+                    {c.amount ? formatMoney(c.amount, active.currency, locale) : "—"}
                   </td>
                   <td className="px-3 py-3">
                     <Badge

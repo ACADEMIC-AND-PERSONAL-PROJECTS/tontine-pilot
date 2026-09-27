@@ -34,7 +34,8 @@ export const handler: Handler = async (event) => {
       alert.memberName ?? "?",
       group?.contributionAmount ?? 20000,
       "septembre",
-      alert.type === "REMINDER" ? "reminder" : "late"
+      alert.type === "REMINDER" ? "reminder" : "late",
+      group?.currency ?? undefined
     );
     return { message: t.message_fr, messageEn: t.message_en, details: "", detailsEn: "" };
   }
@@ -59,7 +60,8 @@ export const handler: Handler = async (event) => {
       alert.memberName ?? "?",
       group?.contributionAmount ?? 20000,
       "septembre",
-      alert.type === "REMINDER" ? "reminder" : "late"
+      alert.type === "REMINDER" ? "reminder" : "late",
+      group?.currency ?? undefined
     );
     return { message: t.message_fr, messageEn: t.message_en, details: "", detailsEn: "" };
   }

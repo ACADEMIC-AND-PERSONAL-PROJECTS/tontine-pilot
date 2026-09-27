@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n";
 import { addMemberToGroup, splitCycles, type DuesCycle } from "@/lib/catchup";
-import { formatFCFA } from "@/lib/utils";
+import { formatFCFA, formatMoney } from "@/lib/utils";
 
 export type AddedMember = { memberId: string; name: string; totalDue: number };
 
@@ -17,6 +17,7 @@ export function AddMemberModal({
   groupName,
   ownerId,
   contributionAmount,
+  currency,
   cycles,
   initialName = "",
   open,
@@ -27,6 +28,7 @@ export function AddMemberModal({
   groupName: string;
   ownerId?: string;
   contributionAmount: number;
+  currency?: string | null;
   cycles: DuesCycle[];
   initialName?: string;
   open: boolean;
@@ -158,7 +160,7 @@ export function AddMemberModal({
                   {fr ? "Total dû" : "Total due"}
                 </dt>
                 <dd className="mt-0.5 text-lg font-semibold tabular-nums">
-                  {formatFCFA(totalDue, locale)}
+                  {formatMoney(totalDue, currency ?? "FCFA", locale)}
                 </dd>
               </div>
             </dl>

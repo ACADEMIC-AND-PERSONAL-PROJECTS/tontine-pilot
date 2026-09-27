@@ -12,6 +12,25 @@ export function formatFCFA(amount: number, locale: string = "fr") {
   );
 }
 
+export type Currency = "FCFA" | "USD";
+
+/** Locale-aware money formatting. FCFA keeps the historic rendering;
+ *  USD uses standard currency formatting without decimals. */
+export function formatMoney(
+  amount: number,
+  currency?: string | null,
+  locale: string = "fr"
+): string {
+  if (currency === "USD") {
+    return new Intl.NumberFormat(locale === "en" ? "en-US" : "fr-FR", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+  return formatFCFA(amount, locale);
+}
+
 export function formatDate(date: string, locale: string = "fr") {
   if (!date) return "—";
   return new Intl.DateTimeFormat(locale === "en" ? "en-US" : "fr-FR", {

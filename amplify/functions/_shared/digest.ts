@@ -17,8 +17,13 @@ export function scriptFor(
   late: number,
   pending: number,
   fund: number,
-  groupEndDate?: string
+  groupEndDate?: string,
+  currency?: string | null
 ) {
+  const money = (n: number) =>
+    currency === "USD" ? `$${n.toLocaleString("en-US")}` : `${n} FCFA`;
+  const moneyFr = (n: number) =>
+    currency === "USD" ? `$${n.toLocaleString("en-US")}` : `${n} francs CFA`;
   const left = daysLeft(groupEndDate);
   const deadlineFr =
     groupEndDate && left !== null
@@ -29,6 +34,6 @@ export function scriptFor(
       ? ` Tontine deadline: ${groupEndDate} — ${left} day${left === 1 ? "" : "s"} left.`
       : "";
   if (locale === "en")
-    return `Cycle ${cycleNumber} summary, ${groupName}. Recipient: ${recipient}. Collected: ${collected} FCFA of ${expected}. ${ok} members paid, ${late} late, ${pending} pending. Emergency fund: ${fund} FCFA.${deadlineEn}`;
-  return `Bilan cycle ${cycleNumber}, ${groupName}. Bénéficiaire : ${recipient}. Collecté : ${collected} francs CFA sur ${expected}. ${ok} membres à jour, ${late} en retard, ${pending} en attente. Caisse de secours : ${fund} francs.${deadlineFr}`;
+    return `Cycle ${cycleNumber} summary, ${groupName}. Recipient: ${recipient}. Collected: ${money(collected)} of ${money(expected)}. ${ok} members paid, ${late} late, ${pending} pending. Emergency fund: ${money(fund)}.${deadlineEn}`;
+  return `Bilan cycle ${cycleNumber}, ${groupName}. Bénéficiaire : ${recipient}. Collecté : ${moneyFr(collected)} sur ${moneyFr(expected)}. ${ok} membres à jour, ${late} en retard, ${pending} en attente. Caisse de secours : ${moneyFr(fund)}.${deadlineFr}`;
 }

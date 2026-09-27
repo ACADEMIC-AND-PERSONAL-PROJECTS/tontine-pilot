@@ -100,3 +100,13 @@ describe("subFromStorage", () => {
     expect(subFromStorage(storage)).toBeNull();
   });
 });
+
+describe("formatMoney", () => {
+  it("keeps FCFA rendering and formats USD", async () => {
+    const { formatMoney } = await import("../utils");
+    expect(formatMoney(20000, "FCFA", "en")).toBe("20,000 FCFA");
+    expect(formatMoney(20000, undefined, "en")).toBe("20,000 FCFA");
+    expect(formatMoney(30, "USD", "en")).toBe("$30");
+    expect(formatMoney(30, "USD", "fr")).toContain("30");
+  });
+});

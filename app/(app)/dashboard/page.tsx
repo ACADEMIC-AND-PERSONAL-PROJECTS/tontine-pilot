@@ -12,7 +12,7 @@ import {
   contributionText,
   alertMessageText,
 } from "@/lib/fake-data";
-import { formatDate, formatFCFA } from "@/lib/utils";
+import { formatDate, formatFCFA, formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { AnimatedNumber } from "@/components/ui/animated-number";
@@ -192,7 +192,7 @@ export default function DashboardPage() {
             label: t("dash.collected"),
             value: collected,
             format: "money" as const,
-            hint: `/ ${formatFCFA(expected, locale)}`,
+            hint: `/ ${formatMoney(expected, active.currency, locale)}`,
           },
           {
             label: t("dash.completion"),
@@ -204,7 +204,7 @@ export default function DashboardPage() {
             label: t("dash.members"),
             value: active.memberCount,
             format: "num" as const,
-            hint: `${formatFCFA(active.contributionAmount, locale)} / ${fr ? "mois" : "month"}`,
+            hint: `${formatMoney(active.contributionAmount, active.currency, locale)} / ${fr ? "mois" : "month"}`,
           },
           {
             label: t("dash.alerts"),
@@ -257,7 +257,7 @@ export default function DashboardPage() {
           </p>
           <p className="mt-1 text-xs text-muted">
             {t("dash.fundHint")} · {fr ? "cible" : "target"}{" "}
-            {formatFCFA(active.emergencyFundTarget, locale)}
+            {formatMoney(active.emergencyFundTarget, active.currency, locale)}
           </p>
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-bg-subtle">
             <motion.div
@@ -349,7 +349,7 @@ export default function DashboardPage() {
                 <div className="flex shrink-0 items-center gap-2">
                   {c.status === "CONFIRMED" && (
                     <span className="hidden font-mono text-xs tabular-nums text-muted sm:inline">
-                      {formatFCFA(c.amount, locale)}
+                      {formatMoney(c.amount, active.currency, locale)}
                     </span>
                   )}
                   <Badge
@@ -497,7 +497,7 @@ export default function DashboardPage() {
               </div>
               <p className="mt-2 text-xs text-muted">→ {c.recipientName}</p>
               <p className="mt-1 font-mono text-lg font-semibold tabular-nums">
-                {formatFCFA("totalCollected" in c ? (c.totalCollected as number) : 0, locale)}
+                {formatMoney("totalCollected" in c ? (c.totalCollected as number) : 0, active.currency, locale)}
               </p>
             </div>
           ))}

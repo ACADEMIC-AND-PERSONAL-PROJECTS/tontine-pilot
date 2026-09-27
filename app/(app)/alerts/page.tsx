@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatFCFA, cn } from "@/lib/utils";
+import { formatDate, formatFCFA, formatMoney, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
 import { useRemoteCycleData } from "@/lib/use-remote";
@@ -208,8 +208,8 @@ export default function AlertsPage() {
             if (balance < amount) {
               throw new Error(
                 locale === "fr"
-                  ? `Caisse insuffisante (${formatFCFA(balance, locale)}). Propose un étalement plutôt.`
-                  : `Insufficient fund (${formatFCFA(balance, locale)}). Propose installments instead.`
+                  ? `Caisse insuffisante (${formatMoney(balance, active.currency, locale)}). Propose un étalement plutôt.`
+                  : `Insufficient fund (${formatMoney(balance, active.currency, locale)}). Propose installments instead.`
               );
             }
             await client.models.FundMovement.create({
@@ -399,8 +399,8 @@ export default function AlertsPage() {
           </p>
           <p className="mt-1 text-xs text-muted">
             {fr
-              ? `Caisse de secours : ${formatFCFA(active.emergencyFundBalance, locale)}`
-              : `Emergency fund: ${formatFCFA(active.emergencyFundBalance, locale)}`}
+              ? `Caisse de secours : ${formatMoney(active.emergencyFundBalance, active.currency, locale)}`
+              : `Emergency fund: ${formatMoney(active.emergencyFundBalance, active.currency, locale)}`}
           </p>
         </div>
         {speaking ? (

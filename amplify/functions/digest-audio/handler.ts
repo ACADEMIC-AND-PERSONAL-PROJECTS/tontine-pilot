@@ -34,7 +34,8 @@ export const handler: Handler = async (event) => {
   const script = scriptFor(
     locale, cycle.cycleNumber, group?.name ?? "", cycle.recipientName ?? "",
     cycle.totalCollected, cycle.totalExpected, ok, late, pending,
-    group?.emergencyFundBalance ?? 0, group?.endDate ?? undefined
+    group?.emergencyFundBalance ?? 0, group?.endDate ?? undefined,
+    group?.currency ?? undefined
   );
 
   if ((process.env.USE_POLLY ?? "false").toLowerCase() !== "true") {

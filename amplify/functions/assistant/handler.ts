@@ -240,6 +240,7 @@ async function executeEmailTool(
       const mail = reminderHtml({
         memberName: match.name, groupName: match.groupName,
         amount: group?.contributionAmount ?? 20000,
+        currency: group?.currency ?? undefined,
         cycleLabel: `cycle ${group?.currentCycleIndex ?? 1}`,
         late: true, appUrl, logoUrl,
       });

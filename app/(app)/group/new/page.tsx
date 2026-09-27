@@ -27,6 +27,7 @@ type Form = {
   startDate: string;
   endDate: string;
   amount: string;
+  currency: "FCFA" | "USD";
   frequency: "WEEKLY" | "MONTHLY";
   members: MemberDraft[];
   useAiOrder: boolean;
@@ -79,6 +80,7 @@ export default function NewGroupPage() {
     startDate: "",
     endDate: "",
     amount: "20000",
+    currency: "FCFA",
     frequency: "MONTHLY",
     members: seedMembers,
     useAiOrder: true,
@@ -171,7 +173,7 @@ export default function NewGroupPage() {
         name: form.name.trim(),
         description: form.description.trim() || (fr ? "Nouveau groupe de tontine" : "New tontine group"),
         descriptionEn: form.description.trim() || "New tontine group",
-        currency: "FCFA",
+        currency: form.currency,
         startDate: form.startDate || undefined,
         endDate: form.endDate || undefined,
         contributionAmount: amount,
@@ -406,7 +408,7 @@ export default function NewGroupPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs uppercase tracking-wider text-muted">
-                    {fr ? "Montant (FCFA)" : "Amount (FCFA)"}
+                    {fr ? `Montant (${form.currency})` : `Amount (${form.currency})`}
                   </label>
                   <input
                     type="number"
@@ -416,6 +418,29 @@ export default function NewGroupPage() {
                     }
                     className="mt-1.5 w-full rounded-xl border border-border bg-background/50 px-4 py-2.5 text-sm outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/30"
                   />
+                </div>
+                <div>
+                  <label className="text-xs uppercase tracking-wider text-muted">
+                    {fr ? "Devise" : "Currency"}
+                  </label>
+                  <div className="mt-2 flex gap-2">
+                    {(["FCFA", "USD"] as const).map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() =>
+                          setForm((prev) => ({ ...prev, currency: c }))
+                        }
+                        className={`rounded-xl border px-4 py-2 text-sm font-medium transition-colors ${
+                          form.currency === c
+                            ? "border-accent/40 bg-accent-glow text-accent-hover"
+                            : "border-border text-muted hover:text-foreground"
+                        }`}
+                      >
+                        {c === "FCFA" ? "FCFA" : "USD ($)"}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs uppercase tracking-wider text-muted">

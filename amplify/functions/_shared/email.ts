@@ -8,6 +8,12 @@ const MUTED = "#a1a1aa";
 const ACCENT = "#8b5cf6";
 const GOLD = "#facc15";
 
+/** Backend amount rendering: "20 000 FCFA" vs "$30". */
+export function emailAmount(amount: number, currency?: string | null): string {
+  if (currency === "USD") return `$${amount.toLocaleString("en-US")}`;
+  return `${amount.toLocaleString("fr-FR")} FCFA`;
+}
+
 export function shell(opts: {
   lang: string;
   preheader: string;
@@ -53,6 +59,7 @@ export function welcomeHtml(opts: {
   memberName: string;
   groupName: string;
   amount: number;
+  currency?: string | null;
   frequency: string;
   memberCount: number;
   members: string[];
@@ -60,7 +67,8 @@ export function welcomeHtml(opts: {
   appUrl: string;
   logoUrl: string;
 }): { subject: string; html: string; text: string } {
-  const { memberName, groupName, amount, frequency, memberCount, members, fundTarget, appUrl, logoUrl } = opts;
+  const { memberName, groupName, amount, currency, frequency, memberCount, members, fundTarget, appUrl, logoUrl } = opts;
+  const money = (n: number) => emailAmount(n, currency);
   const freq = frequency === "WEEKLY" ? "hebdomadaire / weekly" : "mensuelle / monthly";
   const list = members
     .map((m) => `<li style="font-size:14px;margin:2px 0;">${m}</li>`)
@@ -68,10 +76,10 @@ export function welcomeHtml(opts: {
   const body = `<p style="font-size:15px;line-height:1.6;">Bonjour ${memberName} 👋<br/>Tu as été ajouté(e) à la tontine <strong>${groupName}</strong>.</p>
 <p style="font-size:15px;line-height:1.6;">Hello ${memberName} 👋<br/>You were added to the <strong>${groupName}</strong> tontine.</p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0;">
-${row("Cotisation / Contribution", `${amount.toLocaleString("fr-FR")} FCFA`)}
+${row("Cotisation / Contribution", money(amount))}
 ${row("Fréquence / Frequency", freq)}
 ${row("Membres / Members", String(memberCount))}
-${row("Caisse de secours / Safety fund", `${fundTarget.toLocaleString("fr-FR")} FCFA`)}
+${row("Caisse de secours / Safety fund", money(fundTarget))}
 </table>
 <p style="font-size:14px;color:${MUTED};">Membres / Members :</p>
 <ul style="margin:4px 0 0 0;padding-left:20px;">${list}</ul>`;
@@ -83,7 +91,7 @@ ${row("Caisse de secours / Safety fund", `${fundTarget.toLocaleString("fr-FR")} 
       ctaUrl: `${appUrl}/dashboard`, ctaLabel: "Ouvrir mon dashboard · Open dashboard",
       logoUrl, appUrl,
     }),
-    text: `Bonjour ${memberName}, tu as rejoint ${groupName} (${amount} FCFA, ${freq}, ${memberCount} membres). Hello ${memberName}, you joined ${groupName}. ${appUrl}/dashboard`,
+    text: `Bonjour ${memberName}, tu as rejoint ${groupName} (${money(amount)}, ${freq}, ${memberCount} membres). Hello ${memberName}, you joined ${groupName}. ${appUrl}/dashboard`,
   };
 }
 
@@ -115,18 +123,20 @@ export function reminderHtml(opts: {
   memberName: string;
   groupName: string;
   amount: number;
+  currency?: string | null;
   cycleLabel: string;
   late: boolean;
   appUrl: string;
   logoUrl: string;
 }): { subject: string; html: string; text: string } {
-  const { memberName, groupName, amount, cycleLabel, late, appUrl, logoUrl } = opts;
+  const { memberName, groupName, amount, currency, cycleLabel, late, appUrl, logoUrl } = opts;
+  const money = emailAmount(amount, currency);
   const fr = late
-    ? `${memberName}, rappel amical : ta cotisation de ${amount.toLocaleString("fr-FR")} FCFA pour ${groupName} (${cycleLabel}) est en retard. Peux-tu régulariser rapidement ? Merci !`
-    : `${memberName}, petit rappel : ta cotisation de ${amount.toLocaleString("fr-FR")} FCFA pour ${groupName} (${cycleLabel}) arrive à échéance. Merci !`;
+    ? `${memberName}, rappel amical : ta cotisation de ${money} pour ${groupName} (${cycleLabel}) est en retard. Peux-tu régulariser rapidement ? Merci !`
+    : `${memberName}, petit rappel : ta cotisation de ${money} pour ${groupName} (${cycleLabel}) arrive à échéance. Merci !`;
   const en = late
-    ? `${memberName}, friendly reminder: your ${amount.toLocaleString("en-US")} FCFA contribution to ${groupName} (${cycleLabel}) is late. Can you settle it soon? Thank you!`
-    : `${memberName}, quick reminder: your ${amount.toLocaleString("en-US")} FCFA contribution to ${groupName} (${cycleLabel}) is due soon. Thank you!`;
+    ? `${memberName}, friendly reminder: your ${money} contribution to ${groupName} (${cycleLabel}) is late. Can you settle it soon? Thank you!`
+    : `${memberName}, quick reminder: your ${money} contribution to ${groupName} (${cycleLabel}) is due soon. Thank you!`;
   const body = `<p style="font-size:15px;line-height:1.6;">${fr}</p><p style="font-size:15px;line-height:1.6;color:${MUTED};">${en}</p>`;
   return {
     subject: late

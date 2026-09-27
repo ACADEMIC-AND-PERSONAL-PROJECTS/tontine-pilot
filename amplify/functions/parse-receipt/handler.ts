@@ -52,6 +52,7 @@ export const handler: Handler = async (event) => {
   );
 
   const engine = process.env.OCR_ENGINE ?? "textract";
+  const currency = group.currency === "USD" ? "USD" : "FCFA";
   if (engine === "bedrock" && (process.env.USE_MOCK ?? "true").toLowerCase() === "false") {
     try {
       const { bytes, format } = await readBytes(bucket, args.s3Key);
@@ -62,7 +63,7 @@ export const handler: Handler = async (event) => {
             role: "user",
             content: [
               { image: { format, source: { bytes } } },
-              { text: "You read West-African Mobile Money receipts (Wave, Orange Money, MTN). Return ONLY JSON: {\"amount\": <int FCFA>, \"transactionId\": \"<as printed or null>\", \"recipientName\": \"<or null>\", \"date\": \"<YYYY-MM-DD or null>\", \"provider\": \"<Wave|Orange Money|MTN|Unknown>\", \"confidence\": <0..1>}" },
+              { text: `You read Mobile Money receipts (Wave, Orange Money, MTN, CashApp). Return ONLY JSON: {"amount": <integer ${currency}>, "transactionId": "<as printed or null>", "recipientName": "<or null>", "date": "<YYYY-MM-DD or null>", "provider": "<Wave|Orange Money|MTN|Unknown>", "confidence": <0..1>}` },
             ],
           }],
           inferenceConfig: { maxTokens: 800, temperature: 0.2 },
@@ -108,7 +109,7 @@ export const handler: Handler = async (event) => {
       .filter((b) => b.BlockType === "LINE" && b.Text)
       .map((b) => b.Text as string);
     log(`TEXTRACT_OK lines=${lines.length}`);
-    return textractParse(lines, group.contributionAmount, openCycle?.recipientName ?? "");
+    return textractParse(lines, group.contributionAmount, openCycle?.recipientName ?? "", undefined, currency);
   } catch (err) {
     log(`FALLBACK: Textract failed (${(err as Error)?.message}), unreadable receipt`);
     // Unreadable receipt: null amount so the UI offers manual entry instead

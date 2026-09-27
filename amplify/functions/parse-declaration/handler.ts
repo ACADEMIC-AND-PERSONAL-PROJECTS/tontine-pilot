@@ -37,10 +37,11 @@ export const handler: Handler = async (event) => {
 
   if (USE_MOCK) {
     log("FALLBACK: USE_MOCK=true, heuristic parse");
-    return heuristicParse(text, members, group.contributionAmount, openCycle?.recipientName ?? "");
+    return heuristicParse(text, members, group.contributionAmount, openCycle?.recipientName ?? "", group.currency);
   }
   try {
-    const prompt = `Known members: ${JSON.stringify(members)}. Group: ${group.name}, standard contribution ${group.contributionAmount} FCFA, current recipient ${openCycle?.recipientName ?? "?"}. Declaration: """${text}"""`;
+    const currency = group.currency === "USD" ? "USD" : "FCFA";
+    const prompt = `Known members: ${JSON.stringify(members)}. Group: ${group.name}, standard contribution ${group.contributionAmount} ${currency}, current recipient ${openCycle?.recipientName ?? "?"}.${currency === "USD" ? " Amounts are in USD — keep small amounts as-is, never apply any ×1000 rule." : ""} Declaration: """${text}"""`;
     const raw = await converseText(NLU_PROFILE, SYSTEM, prompt, 800);
     const p = extractJson(raw) as Record<string, unknown>;
     if (typeof p.amount !== "number") throw new Error("no-amount");
@@ -49,12 +50,11 @@ export const handler: Handler = async (event) => {
     // to add the person), never another member's identity.
     const byId = new Map(members.map((m) => [m.id, m]));
     const byName = new Map(members.map((m) => [m.name.toLowerCase(), m]));
-    const bedId = p.memberId as string | null;
-    const bedName = ((p.memberName as string) ?? "").trim();
+    const bedId = (p.memberId as string | null) ?? null;
+    const bedName = ((p.memberName as string) ?? "").trim().toLowerCase();
     const memberHit =
-      (bedId && byId.get(bedId)) ??
-      (bedName ? byName.get(bedName.toLowerCase()) : undefined) ??
-      null;
+      (bedId ? (byId.get(bedId) ?? null) : null) ??
+      (bedName ? (byName.get(bedName) ?? null) : null);
     const bedRec = ((p.recipientName as string) ?? "").trim();
     const cycleRec = openCycle?.recipientName ?? "";
     const recipientHit =
@@ -72,6 +72,6 @@ export const handler: Handler = async (event) => {
     };
   } catch (err) {
     log(`FALLBACK: Bedrock failed (${(err as Error)?.message}), heuristic parse`);
-    return heuristicParse(text, members, group.contributionAmount, openCycle?.recipientName ?? "");
+    return heuristicParse(text, members, group.contributionAmount, openCycle?.recipientName ?? "", group.currency);
   }
 };

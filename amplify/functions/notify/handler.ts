@@ -38,6 +38,7 @@ export const handler: Handler = async (event) => {
         memberName: m.name,
         groupName: group.name,
         amount: group.contributionAmount,
+        currency: group.currency ?? undefined,
         frequency: group.frequency ?? "MONTHLY",
         memberCount: group.memberCount,
         members: members.map((x) => x.name),

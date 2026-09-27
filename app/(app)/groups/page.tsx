@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useGroups } from "@/lib/groups";
 import { groupDescriptionText } from "@/lib/fake-data";
-import { formatFCFA, cn } from "@/lib/utils";
+import { formatFCFA, formatMoney, cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n";
 import {
   Plus,
@@ -131,7 +131,7 @@ export default function GroupsPage() {
                   {g.memberCount} {fr ? "membres" : "members"}
                 </span>
                 <span>
-                  {formatFCFA(g.contributionAmount, locale)} /{" "}
+                  {formatMoney(g.contributionAmount, g.currency, locale)} /{" "}
                   {g.frequency === "MONTHLY" ? (fr ? "mois" : "month") : fr ? "semaine" : "week"}
                 </span>
                 {(g.openAlerts ?? 0) > 0 && (
@@ -160,7 +160,7 @@ export default function GroupsPage() {
                   />
                 </div>
                 <p className="mt-1 font-mono text-[11px] tabular-nums text-muted-dim">
-                  {formatFCFA(collected, locale)} / {formatFCFA(expected, locale)}
+                  {formatMoney(collected, g.currency, locale)} / {formatMoney(expected, g.currency, locale)}
                 </p>
               </div>
 

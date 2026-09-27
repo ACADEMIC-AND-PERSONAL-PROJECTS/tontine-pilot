@@ -40,3 +40,14 @@ describe("scriptFor", () => {
     expect(daysLeft(undefined)).toBeNull();
   });
 });
+
+describe("textractParse currency", () => {
+  it("accepts small USD figures with markers, rejects date soup", () => {
+    const r = textractParse(["CashApp", "Sent $45.00", "ID TXN-1", "01/02/2024"], 30, "", "2024-02-01", "USD");
+    expect(r.amount).toBe(45);
+  });
+  it("returns null for USD text without marked amounts", () => {
+    const r = textractParse(["Meeting notes", "Date 01/02/2024"], 30, "", "2024-02-01", "USD");
+    expect(r.amount).toBeNull();
+  });
+});
