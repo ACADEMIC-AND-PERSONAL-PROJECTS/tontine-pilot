@@ -1,0 +1,42 @@
+[
+  {
+    "scene": "dashboard",
+    "text": "Meet TontinePilot, the AI copilot for community savings groups. The dashboard shows this cycle's collection, who paid, and who still owes."
+  },
+  {
+    "scene": "declare",
+    "text": "Declare a payment in plain English. Just type: I paid twenty thousand for Awa. The AI extracts the amount and the recipient — and refuses to guess when it cannot read."
+  },
+  {
+    "scene": "groups",
+    "text": "Run several savings groups side by side. Switch in one click, archive the paused ones, or create a new group in two minutes."
+  },
+  {
+    "scene": "groupnew",
+    "text": "Creating a group takes two minutes: name, amount in francs or dollars, members with history, AI rotation preview, done."
+  },
+  {
+    "scene": "members",
+    "text": "Every member gets a trust score that heals when they pay. Reliable payers collect early. New members join mid-group with automatic catch-up."
+  },
+  {
+    "scene": "alerts",
+    "text": "Late payments trigger kind, automatic reminders. And the audio digest reads the whole cycle summary out loud."
+  },
+  {
+    "scene": "fund",
+    "text": "The emergency fund is a real menu now: top it up, cover critical lates from it, track every repayment."
+  },
+  {
+    "scene": "export",
+    "text": "Export the full ledger to a spreadsheet in one click. No more arguments about who paid what."
+  },
+  {
+    "scene": "assistant",
+    "text": "And Tonti, the built-in assistant, answers live questions and nudges late members for you."
+  },
+  {
+    "scene": "outro",
+    "text": "TontinePilot. Community savings, minus the drama."
+  }
+]

@@ -234,6 +234,7 @@ export default function FundPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08 }}
+        data-testid="dw-fund"
         className="panel-luminous mt-6 rounded-2xl p-5 sm:p-6"
       >
         <div className="flex flex-wrap items-end justify-between gap-3">
