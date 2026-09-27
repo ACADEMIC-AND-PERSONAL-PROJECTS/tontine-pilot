@@ -110,6 +110,7 @@ export function useRemoteCycleData(groupId: string): {
   contributions: FakeContribution[];
   alerts: FakeAlert[];
   loaded: boolean;
+  refetch: () => void;
 } {
   const [state, setState] = useState<{
     cycle: CycleRow | null;
@@ -118,6 +119,7 @@ export function useRemoteCycleData(groupId: string): {
     alerts: FakeAlert[];
     loaded: boolean;
   }>({ cycle: null, cycles: [], contributions: [], alerts: [], loaded: false });
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (!isBackendEnabled()) return;
@@ -167,7 +169,7 @@ export function useRemoteCycleData(groupId: string): {
     return () => {
       live = false;
     };
-  }, [groupId]);
+  }, [groupId, tick]);
 
-  return state;
+  return { ...state, refetch: () => setTick((t) => t + 1) };
 }

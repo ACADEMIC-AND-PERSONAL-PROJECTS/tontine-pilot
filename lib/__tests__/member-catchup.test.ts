@@ -125,3 +125,68 @@ describe("cycleWindow", () => {
     expect(w.startDate).not.toBe(w.endDate);
   });
 });
+
+describe("cycleWindowN", () => {
+  it("anchors every window on the group start without drift", async () => {
+    const { cycleWindowN } = await import("../catchup");
+    expect(cycleWindowN("2024-09-01", "MONTHLY", 1)).toEqual({ startDate: "2024-09-01", endDate: "2024-10-01" });
+    expect(cycleWindowN("2024-09-01", "MONTHLY", 2)).toEqual({ startDate: "2024-10-01", endDate: "2024-11-01" });
+    expect(cycleWindowN("2024-09-01", "WEEKLY", 1)).toEqual({ startDate: "2024-09-01", endDate: "2024-09-08" });
+    expect(cycleWindowN("2024-09-01", "WEEKLY", 3)).toEqual({ startDate: "2024-09-15", endDate: "2024-09-22" });
+    expect(cycleWindowN("2024-01-31", "MONTHLY", 2).startDate).toBe("2024-02-29");
+  });
+});
+
+describe("nextRecipientId", () => {
+  it("advances and wraps around", async () => {
+    const { nextRecipientId } = await import("../catchup");
+    const order = [{ id: "a" }, { id: "b" }, { id: "c" }];
+    expect(nextRecipientId(order, "a")).toBe("b");
+    expect(nextRecipientId(order, "c")).toBe("a");
+    expect(nextRecipientId(order, "zzz")).toBe("a");
+    expect(nextRecipientId(order)).toBe("a");
+    expect(nextRecipientId([])).toBeNull();
+  });
+});
+
+describe("rolloverCycle", () => {
+  it("closes current, opens next with rotation, reuses existing N+1", async () => {
+    const { rolloverCycle } = await import("../catchup");
+    const store: Record<string, Array<Record<string, unknown>>> = {
+      Cycle: [{ id: "c4", cycleNumber: 4, status: "OPEN" }],
+    };
+    const calls: string[] = [];
+    const models = {
+      Cycle: {
+        list: async () => ({ data: store.Cycle }),
+        update: async (a: Record<string, unknown>) => {
+          calls.push(`update:${a.id}:${a.status}`);
+          const r = store.Cycle.find((c) => c.id === a.id);
+          if (r) Object.assign(r, a);
+        },
+        create: async (a: Record<string, unknown>) => {
+          const row = { ...a, id: "c5" };
+          store.Cycle.push(row);
+          calls.push("create:c5");
+          return { data: { id: "c5" } };
+        },
+      },
+      Group: { update: async () => undefined },
+    };
+    const base = {
+      groupId: "g1", currentCycle: { id: "c4", cycleNumber: 4 }, currentRecipientId: "m4",
+      groupStartIso: "2024-09-01", frequency: "MONTHLY", contributionAmount: 20000,
+      memberCount: 12, currentCycleIndex: 4,
+      order: [{ id: "m9", name: "K" }, { id: "m4", name: "C" }, { id: "m1", name: "A" }],
+    };
+    const r1 = await rolloverCycle(models as never, base);
+    expect(r1).toEqual({ closedCycleId: "c4", openCycleId: "c5", recipientId: "m1" });
+    expect(calls).toContain("update:c4:CLOSED");
+    const created = store.Cycle.find((c) => c.id === "c5")!;
+    expect(created).toMatchObject({ cycleNumber: 5, status: "OPEN", totalExpected: 240000 });
+    // idempotent retry reuses c5
+    const r2 = await rolloverCycle(models as never, base);
+    expect(r2.openCycleId).toBe("c5");
+    expect(store.Cycle.filter((c) => Number(c.cycleNumber) === 5)).toHaveLength(1);
+  });
+});

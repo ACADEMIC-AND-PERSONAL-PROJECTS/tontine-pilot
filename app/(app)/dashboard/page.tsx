@@ -11,6 +11,7 @@ import {
   audioDigestScript,
   contributionText,
   alertMessageText,
+  recommendRotationOrder,
 } from "@/lib/fake-data";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,8 @@ import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n";
 import { useGroups } from "@/lib/groups";
 import { client, isBackendEnabled } from "@/lib/backend";
-import { useRemoteCycleData, useRemoteGroup } from "@/lib/use-remote";
+import { useRemoteCycleData, useRemoteGroup, useRemoteMembers } from "@/lib/use-remote";
+import { rolloverCycle } from "@/lib/catchup";
 import {
   ArrowRight,
   AlertTriangle,
@@ -39,6 +41,11 @@ export default function DashboardPage() {
   const remoteGroup = useRemoteGroup(localActive.id);
   const active = remoteGroup.group ?? localActive;
   const remote = useRemoteCycleData(localActive.id);
+  const { members: remoteMembers } = useRemoteMembers(localActive.id);
+  const [armingClose, setArmingClose] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [closeError, setCloseError] = useState<string | null>(null);
+  const [closeDone, setCloseDone] = useState(false);
   // Backend on: trust remote rows even when empty (real zeros, never fakes).
   // Backend off / unreachable: demo dataset.
   const useRemote = backendOn && (remote.loaded || remoteGroup.loaded);
@@ -58,7 +65,65 @@ export default function DashboardPage() {
   const expected = active.cycleExpected ?? currentCycle.totalExpected;
   const pct = Math.round((collected / expected) * 100);
   const unpaid = contributions.filter((c) => c.status !== "CONFIRMED");
+  const moneyAffix =
+    active.currency === "USD" ? { prefix: "$", suffix: "" } : { prefix: "", suffix: " FCFA" };
   const openAlerts = allAlerts.filter((a) => !a.resolved);
+  // Cycle ready to close: every member settled, or past its end date.
+  // Closing archives this cycle and opens the next one (rotation advances).
+  const members = backendOn ? remoteMembers : [];
+  const settledIds = new Set(
+    contributions
+      .filter((c) => c.status === "CONFIRMED" || c.status === "COVERED_BY_EMERGENCY_FUND")
+      .map((c) => c.memberId)
+  );
+  const allSettled =
+    backendOn && members.length > 0 && members.every((m) => settledIds.has(m.id));
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const overdue = backendOn && !!cycle.endDate && cycle.endDate < todayIso;
+  const closeReady = backendOn && remote.cycle != null && (allSettled || overdue);
+
+  async function closeCycle() {
+    if (!armingClose) {
+      setArmingClose(true);
+      setCloseError(null);
+      return;
+    }
+    setClosing(true);
+    setCloseError(null);
+    try {
+      const cycles = await client.models.Cycle.list({
+        filter: { groupId: { eq: active.id } },
+      });
+      const open = ((cycles.data ?? []) as Array<Record<string, unknown>>).find(
+        (c) => c.status === "OPEN"
+      );
+      if (!open?.id) throw new Error(fr ? "aucun cycle ouvert" : "no open cycle");
+      const freshGroup = await client.models.Group.get({ id: active.id });
+      const order = recommendRotationOrder(members).map((m) => ({ id: m.id, name: m.name }));
+      const r = await rolloverCycle(client.models, {
+        groupId: active.id,
+        currentCycle: { id: String(open.id), cycleNumber: Number(open.cycleNumber ?? 1) },
+        currentRecipientId: (open.recipientMemberId as string) ?? null,
+        groupStartIso: active.startDate || todayIso,
+        frequency: active.frequency,
+        contributionAmount: active.contributionAmount,
+        memberCount: members.length || active.memberCount,
+        currentCycleIndex:
+          Number((freshGroup.data as { currentCycleIndex?: number } | null)?.currentCycleIndex ?? active.currentCycleIndex ?? 1),
+        order,
+      });
+      void r;
+      setArmingClose(false);
+      setCloseDone(true);
+      remote.refetch();
+      window.setTimeout(() => setCloseDone(false), 6000);
+    } catch (e) {
+      setCloseError((e as Error)?.message ?? "close-failed");
+      setArmingClose(false);
+    } finally {
+      setClosing(false);
+    }
+  }
   const fundPct = Math.round(
     (active.emergencyFundBalance / active.emergencyFundTarget) * 100
   );
@@ -184,7 +249,42 @@ export default function DashboardPage() {
               {t("dash.export")}
             </Button>
           </Link>
+          {closeReady && (
+            <Button
+              variant={armingClose ? "primary" : "secondary"}
+              size="sm"
+              disabled={closing}
+              onClick={closeCycle}
+              title={
+                allSettled
+                  ? fr
+                    ? "Tout est payé : clôturer et ouvrir le cycle suivant"
+                    : "All paid: close and open the next cycle"
+                  : fr
+                    ? `Cycle dépassé (${unpaid.length} impayés — leurs dus restent sur ce cycle)`
+                    : `Overdue cycle (${unpaid.length} unpaid — their dues stay on this cycle)`
+              }
+            >
+              {closing
+                ? fr
+                  ? "Clôture…"
+                  : "Closing…"
+                : armingClose
+                  ? fr
+                    ? "Confirmer la clôture ?"
+                    : "Confirm close?"
+                  : fr
+                    ? "Clore le cycle"
+                    : "Close cycle"}
+            </Button>
+          )}
         </div>
+        {closeDone && (
+          <p className="mt-2 text-sm text-ok">
+            {fr ? "Cycle clôturé, suivant ouvert." : "Cycle closed, next one open."}
+          </p>
+        )}
+        {closeError && <p className="mt-2 text-sm text-red-400">{closeError}</p>}
       </motion.div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -224,7 +324,7 @@ export default function DashboardPage() {
             <p className="text-xs text-muted">{s.label}</p>
             <p className="mt-2 font-mono text-2xl font-semibold tabular-nums tracking-tight sm:text-3xl">
               {s.format === "money" ? (
-                <AnimatedNumber value={s.value} suffix=" FCFA" />
+                <AnimatedNumber value={s.value} prefix={moneyAffix.prefix} suffix={moneyAffix.suffix} />
               ) : s.format === "pct" ? (
                 <AnimatedNumber value={s.value} suffix="%" />
               ) : (
@@ -253,7 +353,8 @@ export default function DashboardPage() {
           <p className="mt-3 font-mono text-2xl font-semibold tabular-nums">
             <AnimatedNumber
               value={active.emergencyFundBalance}
-              suffix=" FCFA"
+              prefix={moneyAffix.prefix}
+              suffix={moneyAffix.suffix}
             />
           </p>
           <p className="mt-1 text-xs text-muted">

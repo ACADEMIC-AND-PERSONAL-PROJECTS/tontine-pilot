@@ -11,7 +11,7 @@ import { client, isBackendEnabled } from "@/lib/backend";
 import { sessionUserId } from "@/lib/session";
 import { ArrowRight, ArrowLeft, Check, Plus, X, Sparkles, MailWarning, History } from "lucide-react";
 import { useLocale } from "@/lib/i18n";
-import { cn, cycleWindow } from "@/lib/utils";
+import { cn, cycleWindow, formatMoney } from "@/lib/utils";
 
 type MemberDraft = {
   name: string;
@@ -675,7 +675,7 @@ export default function NewGroupPage() {
                 <div className="flex justify-between border-b border-border py-2">
                   <span className="text-muted">{fr ? "Cotisation" : "Contribution"}</span>
                   <span className="font-medium">
-                    {Number(form.amount).toLocaleString(fr ? "fr-FR" : "en-US")} FCFA /{" "}
+                    {formatMoney(Number(form.amount) || 0, form.currency, locale)} /{" "}
                     {form.frequency === "MONTHLY" ? (fr ? "mois" : "month") : fr ? "semaine" : "week"}
                   </span>
                 </div>

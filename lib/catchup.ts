@@ -89,6 +89,109 @@ export async function deleteGroupCascade(
   return counts;
 }
 
+/** Window of the n-th cycle anchored on the group start (no drift: every
+ *  window derives from the start, never chained). n starts at 1. */
+export function cycleWindowN(
+  groupStartIso: string,
+  frequency: string | null | undefined,
+  n: number
+): { startDate: string; endDate: string } {
+  const valid = /^\d{4}-\d{2}-\d{2}$/.test(groupStartIso ?? "");
+  const start = valid ? groupStartIso : new Date().toISOString().slice(0, 10);
+  const [y, m, d] = start.split("-").map(Number);
+  if (frequency === "WEEKLY") {
+    const s = new Date(Date.UTC(y, m - 1, d + 7 * (n - 1)));
+    const e = new Date(Date.UTC(y, m - 1, d + 7 * n));
+    return { startDate: s.toISOString().slice(0, 10), endDate: e.toISOString().slice(0, 10) };
+  }
+  const totalMonths = m - 1 + (n - 1);
+  const ny = y + Math.floor(totalMonths / 12);
+  const nm = totalMonths % 12;
+  const lastStart = new Date(Date.UTC(ny, nm + 1, 0)).getUTCDate();
+  const s = new Date(Date.UTC(ny, nm, Math.min(d, lastStart)));
+  const totalEnd = totalMonths + 1;
+  const ey = y + Math.floor(totalEnd / 12);
+  const em = totalEnd % 12;
+  const lastEnd = new Date(Date.UTC(ey, em + 1, 0)).getUTCDate();
+  const e = new Date(Date.UTC(ey, em, Math.min(d, lastEnd)));
+  return { startDate: s.toISOString().slice(0, 10), endDate: e.toISOString().slice(0, 10) };
+}
+
+/** Next recipient in rotation order after the current one (wraps around).
+ *  Null when the order is empty. Unknown current id restarts at the top. */
+export function nextRecipientId(
+  order: Array<{ id: string }>,
+  currentId?: string | null
+): string | null {
+  if (order.length === 0) return null;
+  const idx = currentId ? order.findIndex((m) => m.id === currentId) : -1;
+  return order[(idx + 1) % order.length]?.id ?? null;
+}
+
+export type RolloverInput = {
+  groupId: string;
+  currentCycle: { id: string; cycleNumber: number };
+  currentRecipientId?: string | null;
+  groupStartIso: string;
+  frequency?: string | null;
+  contributionAmount: number;
+  memberCount: number;
+  currentCycleIndex: number;
+  order: Array<{ id: string; name: string }>;
+};
+
+/** Close the finished cycle and open the next one. Idempotent: if cycle N+1
+ *  is already OPEN (double click, retry), it is reused, never duplicated.
+ *  The next recipient follows the rotation order (wrap-around). */
+export async function rolloverCycle(
+  models: typeof client.models,
+  input: RolloverInput
+): Promise<{ closedCycleId: string; openCycleId: string; recipientId: string | null }> {
+  const tables = models as unknown as Record<
+    string,
+    {
+      list: (args: { filter: unknown }) => Promise<{ data?: Array<Record<string, unknown>> | null; errors?: unknown }>;
+      update: (args: Record<string, unknown>) => Promise<unknown>;
+      create: (args: Record<string, unknown>) => Promise<{ data?: { id: string } | null; errors?: unknown }>;
+    }
+  >;
+  const nextNumber = input.currentCycle.cycleNumber + 1;
+  const existing = await tables.Cycle.list({ filter: { groupId: { eq: input.groupId } } });
+  const rows = (existing.data ?? []) as Array<Record<string, unknown>>;
+  const already = rows.find(
+    (c) => Number(c.cycleNumber) === nextNumber && c.status === "OPEN"
+  );
+  await tables.Cycle.update({ id: input.currentCycle.id, status: "CLOSED" }).catch(() => null);
+  if (already?.id) {
+    return {
+      closedCycleId: input.currentCycle.id,
+      openCycleId: String(already.id),
+      recipientId: (already.recipientMemberId as string) ?? null,
+    };
+  }
+  const window = cycleWindowN(input.groupStartIso, input.frequency, nextNumber);
+  // Rotation advances every cycle: after the current recipient (wrap-around).
+  const recipientId = nextRecipientId(input.order, input.currentRecipientId ?? null);
+  const recipient = input.order.find((m) => m.id === recipientId) ?? null;
+  const created = await tables.Cycle.create({
+    groupId: input.groupId,
+    cycleNumber: nextNumber,
+    recipientMemberId: recipient?.id,
+    recipientName: recipient?.name ?? "",
+    startDate: window.startDate,
+    endDate: window.endDate,
+    status: "OPEN",
+    totalExpected: input.contributionAmount * Math.max(input.memberCount, 1),
+    totalCollected: 0,
+  });
+  if (!created.data?.id) throw new Error("cycle-create-failed");
+  await tables.Group.update({
+    id: input.groupId,
+    currentCycleIndex: input.currentCycleIndex + 1,
+  }).catch(() => null);
+  return { closedCycleId: input.currentCycle.id, openCycleId: created.data.id, recipientId };
+}
+
 export type AddMemberInput = {
   groupId: string;
   ownerId?: string;

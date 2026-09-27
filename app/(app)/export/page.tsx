@@ -69,7 +69,7 @@ export default function ExportPage() {
       `TontinePilot — Registre ${fakeGroup.name}`,
       `Cycle ${currentCycle.cycleNumber} · Bénéficiaire: ${currentCycle.recipientName}`,
       `Période: ${currentCycle.startDate} → ${currentCycle.endDate}`,
-      `Collecté: ${currentCycle.totalCollected} / ${currentCycle.totalExpected} FCFA`,
+      `Collecté: ${currentCycle.totalCollected} / ${currentCycle.totalExpected} ${active.currency === "USD" ? "USD" : "FCFA"}`,
       "",
       ...contributions.map(
         (c) =>

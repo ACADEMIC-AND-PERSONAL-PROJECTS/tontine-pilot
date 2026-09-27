@@ -868,7 +868,7 @@ export default function DeclarePage() {
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div>
                   <label className="text-xs font-medium uppercase tracking-wider text-muted">
-                    {fr ? "Montant (FCFA)" : "Amount (FCFA)"}
+                    {fr ? `Montant (${active.currency})` : `Amount (${active.currency})`}
                   </label>
                   <input
                     inputMode="numeric"
