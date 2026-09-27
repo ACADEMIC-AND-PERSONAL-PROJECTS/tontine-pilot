@@ -52,3 +52,29 @@ describe("nextOpenCycleId", () => {
     expect(nextOpenCycleId([], "c1")).toBeNull();
   });
 });
+
+describe("deleteGroupCascade", () => {
+  it("deletes children before the group and reports counts", async () => {
+    const { deleteGroupCascade } = await import("../catchup");
+    const calls: string[] = [];
+    const table = (ids: string[]) => ({
+      list: async () => ({ data: ids.map((id) => ({ id })) }),
+      delete: async ({ id }: { id: string }) => {
+        calls.push(id);
+      },
+    });
+    const models = {
+      Contribution: table(["c1", "c2"]),
+      Alert: table(["a1"]),
+      Digest: table([]),
+      FundMovement: table([]),
+      Cycle: table(["cy1"]),
+      Member: table(["m1"]),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Group: { list: async () => ({ data: [] }), delete: async ({ id }: { id: string }) => { calls.push(id); } } as any,
+    };
+    const counts = await deleteGroupCascade(models as never, "g1");
+    expect(counts).toEqual({ Contribution: 2, Alert: 1, Digest: 0, FundMovement: 0, Cycle: 1, Member: 1, Group: 1 });
+    expect(calls[calls.length - 1]).toBe("g1");
+  });
+});

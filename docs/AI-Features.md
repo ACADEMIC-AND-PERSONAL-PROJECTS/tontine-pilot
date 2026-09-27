@@ -13,8 +13,11 @@ group members — unknown payers return empty (never another member), the UI
 blocks and proposes adding them with catch-up.
 
 ## Receipt OCR
-S3 upload → Sonnet vision extracts amount, transaction ID, date, provider.
-Textract `DetectDocumentText` is the quota-free fallback path.
+S3 upload → Bedrock vision (Haiku 4.5, subscribed in this account) extracts
+amount, transaction ID, date, provider. Textract `DetectDocumentText` is the
+quota-free fallback path (IAM grant lives on the parse-receipt Lambda —
+a misplaced grant on digest-audio was fixed 2026-09-27 after CloudWatch
+showed both engines denied).
 Honest failure: unreadable receipts return `amount: null` (never the standard
 contribution) — the UI shows an error and switches to manual entry.
 

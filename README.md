@@ -8,7 +8,7 @@
 [![Docs](https://img.shields.io/badge/DOCS-14_pages-0EA5E9?style=flat-square&logo=gitbook&logoColor=white)](docs/README.md)
 [![CI](https://img.shields.io/github/actions/workflow/status/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/ci.yml?label=CI&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/actions)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org)
-[![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Haiku_4.5_%2B_Sonnet_4.5-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/bedrock/)
+[![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Haiku_4.5-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/bedrock/)
 [![Amplify Gen 2](https://img.shields.io/badge/Amplify-Gen_2-DD344C?style=flat-square&logo=awsamplify&logoColor=white)](https://docs.amplify.aws)
 [![License MIT](https://img.shields.io/badge/License-MIT-FACC15?style=flat-square&logoColor=white)](LICENSE)
 
@@ -143,7 +143,7 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 |---|---|
 | Frontend | Next.js 16.3.6 · React 19.2.8 · Tailwind CSS 4 · Framer Motion 13.4.4 |
 | Backend | Amplify Gen 2 · Cognito · AppSync GraphQL · DynamoDB · Lambda Node 22 · S3 |
-| AI | Bedrock Converse: Claude Haiku 4.5 (NLU, mediation, chat) · Sonnet 4.5 (vision) · Polly (Léa, Joanna) · Textract (OCR fallback) |
+| AI | Bedrock Converse: Claude Haiku 4.5 (NLU, mediation, chat, vision OCR) · Polly (Léa, Joanna) · Textract (OCR fallback) |
 | Infra | EventBridge Scheduler · SES · SNS · Amplify Hosting · CDK 2.271.0 |
 | Quality | Strict TypeScript · Vitest (33 tests) · ESLint · GitHub Actions · Gitleaks |
 

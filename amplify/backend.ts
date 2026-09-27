@@ -75,6 +75,13 @@ backend.parseReceipt.resources.lambda.addToRolePolicy(
     resources: [`${bucket.bucketArn}/receipts/*`],
   })
 );
+// Textract belongs to parseReceipt (receipt OCR), not digestAudio.
+backend.parseReceipt.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    actions: ["textract:DetectDocumentText"],
+    resources: ["*"], // Textract is account-scoped, no resource ARNs
+  })
+);
 // Polly SynthesizeSpeech has no resource-level scoping -> "*" required.
 backend.digestAudio.resources.lambda.addToRolePolicy(
   new PolicyStatement({ actions: ["polly:SynthesizeSpeech"], resources: ["*"] })
@@ -83,12 +90,6 @@ backend.digestAudio.resources.lambda.addToRolePolicy(
   new PolicyStatement({
     actions: ["s3:GetObject", "s3:PutObject"],
     resources: [`${bucket.bucketArn}/digests/*`],
-  })
-);
-backend.digestAudio.resources.lambda.addToRolePolicy(
-  new PolicyStatement({
-    actions: ["textract:DetectDocumentText"],
-    resources: ["*"], // Textract is account-scoped, no resource ARNs
   })
 );
 backend.remindersWorker.resources.lambda.addToRolePolicy(

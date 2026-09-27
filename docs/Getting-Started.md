@@ -31,7 +31,7 @@ With `amplify_outputs.json` (from `npx ampx sandbox`) + login, it talks to live 
 ## Prerequisites
 - Node 20+ (repo runs 24), npm 11 (`npm install`, NOT `npm ci` — arborist drift, see Deployment).
 - AWS CLI v2 with a profile that can deploy Amplify + invoke Bedrock.
-- Bedrock model access granted (console): Haiku 4.5 + Sonnet 4.5, us-east-1.
+- Bedrock model access granted (console): Haiku 4.5 (NLU + vision), us-east-1.
 - Service quotas (user-side console steps): Bedrock inference TPM raised from 0.
 - GitHub account (private repo + Actions work on Pro).
 

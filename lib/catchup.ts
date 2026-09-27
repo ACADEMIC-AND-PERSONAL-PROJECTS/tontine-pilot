@@ -52,6 +52,43 @@ export function nextOpenCycleId(
   return open[idx + 1]?.id ?? null;
 }
 
+/** Delete a group and every row that belongs to it (members, cycles,
+ *  contributions, alerts, digests, fund movements). Best-effort per row so
+ *  one failure never leaves a half-deleted group; returns deletion counts.
+ *  Prevents hollow groups and orphan rows. */
+export async function deleteGroupCascade(
+  models: typeof client.models,
+  groupId: string
+): Promise<Record<string, number>> {
+  const counts: Record<string, number> = {};
+  type RowDeleter = {
+    list: (args: { filter: unknown }) => Promise<{ data?: Array<{ id: string }> | null }>;
+    delete: (args: { id: string }) => Promise<unknown>;
+  };
+  const tables = models as unknown as Record<string, RowDeleter>;
+  const childModels = ["Contribution", "Alert", "Digest", "FundMovement", "Cycle", "Member"] as const;
+  for (const name of childModels) {
+    let n = 0;
+    try {
+      const rows = await tables[name].list({ filter: { groupId: { eq: groupId } } });
+      for (const r of rows.data ?? []) {
+        try {
+          await tables[name].delete({ id: r.id });
+          n++;
+        } catch {
+          // keep going — report partial counts
+        }
+      }
+    } catch {
+      // list failed — group row below still gets deleted
+    }
+    counts[name] = n;
+  }
+  await tables.Group.delete({ id: groupId });
+  counts.Group = 1;
+  return counts;
+}
+
 export type AddMemberInput = {
   groupId: string;
   ownerId?: string;

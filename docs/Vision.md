@@ -20,7 +20,7 @@ for low-literacy members) that a spreadsheet never provides.
    members with trust scores, alerts, export — all on fake data to lock UX and storytelling.
 2. **Mock-first backend**: Amplify Gen 2 (Cognito, AppSync, DynamoDB, Lambda, S3) with
    deterministic fallbacks behind flags, so the product works with zero AI quota.
-3. **Real AI, proven live**: Bedrock Converse (Haiku NLU/mediation/chat, Sonnet vision),
+3. **Real AI, proven live**: Bedrock Converse (Haiku NLU/mediation/chat/vision),
    verified 9/9 against production with zero fallbacks in logs.
 4. **SaaS hardening**: per-account isolation, empty onboarding instead of demo figures,
    password policy == UI message, branded emails, Polly audio digests.

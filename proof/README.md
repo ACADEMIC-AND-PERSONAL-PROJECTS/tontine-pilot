@@ -43,7 +43,7 @@
 ## AWS services used
 Cognito (email+password+code auth) · AppSync + DynamoDB (Amplify Data) ·
 Lambda ×6 (Bedrock NLU, Vision OCR, mediation, rotation, Polly digest, reminders) ·
-Bedrock Converse (Haiku 4.5, Sonnet 4.5) · S3 (receipts, digests) ·
+Bedrock Converse (Haiku 4.5 for NLU + vision) · S3 (receipts, digests) ·
 EventBridge Scheduler (daily reminders) · SES + SNS (notifications) ·
 Polly (Léa/Joanna audio digests) · Textract (OCR fallback) · Amplify Hosting.
 

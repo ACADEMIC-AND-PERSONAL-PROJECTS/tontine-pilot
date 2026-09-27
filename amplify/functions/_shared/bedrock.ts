@@ -15,7 +15,7 @@ export const USE_MOCK = (process.env.USE_MOCK ?? "true").toLowerCase() !== "fals
 export const NLU_PROFILE =
   process.env.BEDROCK_NLU_PROFILE ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0";
 export const VISION_PROFILE =
-  process.env.BEDROCK_VISION_PROFILE ?? "us.anthropic.claude-sonnet-4-5-20250929-v1:0";
+  process.env.BEDROCK_VISION_PROFILE ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0"; // Haiku does vision; Sonnet profile is marketplace-blocked here
 
 export function log(...args: unknown[]) {
   console.log(...args);

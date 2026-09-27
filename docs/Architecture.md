@@ -22,7 +22,7 @@ Amplify Hosting: main → https://main.dhnfua5oyahpy.amplifyapp.com
 
 ## Request flows
 - **Declare by text**: UI → `parseDeclaration` (Haiku Converse, JSON) → confirm → `Contribution.create` → totals recomputed → dashboard refresh.
-- **OCR receipt**: `uploadData` to S3 → `parseReceipt` (Sonnet vision, Textract fallback) → confirm.
+- **OCR receipt**: `uploadData` to S3 → `parseReceipt` (Haiku vision, Textract fallback) → confirm.
 - **Reminders**: scheduler/“Nudge” → dedupe-guarded `Alert` → trust recompute → branded SES email (+SMS if opted in).
 - **Rotation**: deterministic heuristic + Haiku rationales; all-zero history → provisional lottery.
 - **Assistant**: intent pre-router (deterministic) → Bedrock tool `send_member_email` → alert + trust + SES; general Q&A via Haiku with platform-scoped prompt.

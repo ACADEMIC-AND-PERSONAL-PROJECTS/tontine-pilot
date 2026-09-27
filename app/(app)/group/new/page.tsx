@@ -71,6 +71,8 @@ export default function NewGroupPage() {
   const [done, setDone] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [saveErrorDetail, setSaveErrorDetail] = useState<string | null>(null);
+  const [createdGroupId, setCreatedGroupId] = useState<string | null>(null);
   const [form, setForm] = useState<Form>({
     name: "",
     description: "",
@@ -159,9 +161,13 @@ export default function NewGroupPage() {
     {
       setSaving(true);
       setSaveError(false);
+      setSaveErrorDetail(null);
       const amount = Number(form.amount) || 0;
+      // Reuse the same id across retries: a retry must resume the same
+      // group, never create a duplicate hollow one.
+      const gid = createdGroupId ?? `group-${Date.now()}`;
       const g: Group = {
-        id: `group-${Date.now()}`,
+        id: gid,
         name: form.name.trim(),
         description: form.description.trim() || (fr ? "Nouveau groupe de tontine" : "New tontine group"),
         descriptionEn: form.description.trim() || "New tontine group",
@@ -186,13 +192,29 @@ export default function NewGroupPage() {
         setSaveError(true);
         return;
       }
+      setCreatedGroupId(gid);
       if (isBackendEnabled()) {
         const trust = (late: number, cycles: number) =>
           Math.max(50, Math.min(99, 92 - late * 7 + Math.min(6, cycles)));
         const meNow = await getCurrentUser().catch(() => null);
-        Promise.all(
-          form.members.map((md, i) =>
-            client.models.Member.create({
+        // Resume-safe: skip members/cycle already persisted by a previous
+        // attempt, collect failures instead of swallowing them (a silent
+        // partial save is how hollow groups are born).
+        const have: Set<string> = new Set();
+        try {
+          const existing = await client.models.Member.list({
+            filter: { groupId: { eq: g.id } },
+          });
+          for (const m of (existing.data ?? []) as Array<{ email?: string | null }>) {
+            if (m.email) have.add(m.email.toLowerCase());
+          }
+        } catch {
+          // list failed — creation attempts below decide
+        }
+        const results = await Promise.all(
+          form.members.map(async (md, i) => {
+            if (have.has(md.email.trim().toLowerCase())) return true;
+            const r = await client.models.Member.create({
               id: `${g.id}-m${i}`,
               groupId: g.id,
               ownerId: meNow?.userId ?? undefined,
@@ -203,20 +225,42 @@ export default function NewGroupPage() {
               lateCount: md.lateCount,
               cyclesCompleted: md.cycles,
               notifySms: false,
-            }).catch(() => null)
-          )
-        ).then(() => {
-          client.models.Cycle.create({
-            id: `${g.id}-cycle-1`,
-            groupId: g.id,
-            cycleNumber: 1,
-            startDate: new Date().toISOString().slice(0, 10),
-            endDate: new Date().toISOString().slice(0, 10),
-            status: "OPEN",
-            totalExpected: amount * form.members.length,
-            totalCollected: 0,
-          }).catch(() => null);
-        });
+            }).catch(() => null);
+            return Boolean(r && !r.errors?.length && r.data);
+          })
+        );
+        let cycleOk = true;
+        try {
+          const existingCycle = await client.models.Cycle.get({ id: `${g.id}-cycle-1` }).catch(
+            () => null
+          );
+          if (!existingCycle?.data) {
+            const cr = await client.models.Cycle.create({
+              id: `${g.id}-cycle-1`,
+              groupId: g.id,
+              cycleNumber: 1,
+              startDate: new Date().toISOString().slice(0, 10),
+              endDate: new Date().toISOString().slice(0, 10),
+              status: "OPEN",
+              totalExpected: amount * form.members.length,
+              totalCollected: 0,
+            }).catch(() => null);
+            cycleOk = Boolean(cr && !cr.errors?.length && cr.data);
+          }
+        } catch {
+          cycleOk = false;
+        }
+        const failed = form.members.filter((_, i) => !results[i]).map((m) => m.name.trim() || m.email.trim());
+        if (failed.length > 0 || !cycleOk) {
+          setSaving(false);
+          setSaveError(true);
+          setSaveErrorDetail(
+            (fr
+              ? "Non enregistrés : "
+              : "Not saved: ") + (failed.length > 0 ? failed.join(", ") : fr ? "cycle initial" : "initial cycle")
+          );
+          return;
+        }
       }
       // Welcome emails to new members — fire and forget, never blocks creation.
       if (isBackendEnabled()) {
@@ -642,6 +686,7 @@ export default function NewGroupPage() {
                     {fr
                       ? "Échec d'enregistrement — vérifie ta connexion et réessaie."
                       : "Save failed — check your connection and retry."}
+                    {saveErrorDetail ? ` ${saveErrorDetail}` : ""}
                   </p>
                 )}
                 <Button onClick={next} disabled={!canNext || saving} className="gap-1.5">

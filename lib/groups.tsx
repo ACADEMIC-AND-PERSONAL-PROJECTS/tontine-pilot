@@ -33,6 +33,7 @@ export const EMPTY_GROUP: Group = {
 };
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toGroup } from "@/lib/remote";
+import { deleteGroupCascade } from "@/lib/catchup";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 /** getCurrentUser() throws UserUnAuthenticatedException when Amplify has not
@@ -247,7 +248,11 @@ export function GroupsProvider({ children }: { children: React.ReactNode }) {
         return next;
       });
       if (backendOn) {
-        client.models.Group.delete({ id }).catch(() => {});
+        // Cascade: children first so no orphan members/cycles/ledger rows
+        // survive the group (hollow-group bug class).
+        deleteGroupCascade(client.models, id).catch(() => {
+          client.models.Group.delete({ id }).catch(() => {});
+        });
       }
     },
     [activeId, backendOn]
