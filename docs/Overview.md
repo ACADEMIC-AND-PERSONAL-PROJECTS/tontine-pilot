@@ -48,4 +48,4 @@ admins who reconcile payments, members with low literacy (audio-first inclusive 
 - `tontine-pilot/amplify/` — Gen 2 backend: `auth/`, `data/resource.ts` (schema),
   `storage/`, `functions/` (8 Lambdas), `backend.ts` (wiring, IAM, scheduler).
 - `tontine-pilot/scripts/` — `seed.ts`, `verify*.ts` (live checks), `deploy-functions.sh`.
-- `tontine-pilot/docs/` — this documentation. `backend-plan/` (sibling) — agent build pack.
+- `tontine-pilot/docs/` — this documentation.

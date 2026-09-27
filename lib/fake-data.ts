@@ -38,6 +38,8 @@ export interface Cycle {
 
 export interface Alert {
   id: string;
+  groupId?: string;
+  cycleId?: string;
   memberId: string;
   memberName: string;
   type:
@@ -413,6 +415,8 @@ export const fakeContributions: Contribution[] = [
 export const fakeAlerts: Alert[] = [
   {
     id: "a1",
+    groupId: "group-1",
+    cycleId: "cycle-4",
     memberId: "m6",
     memberName: "Ibrahima Sow",
     type: "LATE_PAYMENT",
@@ -430,6 +434,8 @@ export const fakeAlerts: Alert[] = [
   },
   {
     id: "a2",
+    groupId: "group-1",
+    cycleId: "cycle-4",
     memberId: "m12",
     memberName: "Modou Gueye",
     type: "REMINDER",
@@ -442,6 +448,8 @@ export const fakeAlerts: Alert[] = [
   },
   {
     id: "a3",
+    groupId: "group-1",
+    cycleId: "cycle-4",
     memberId: "m6",
     memberName: "Ibrahima Sow",
     type: "ANOMALY",
@@ -454,6 +462,8 @@ export const fakeAlerts: Alert[] = [
   },
   {
     id: "a4",
+    groupId: "group-1",
+    cycleId: "cycle-4",
     memberId: "m6",
     memberName: "Ibrahima Sow",
     type: "SWAP_PROPOSAL",
@@ -472,6 +482,8 @@ export const fakeAlerts: Alert[] = [
   },
   {
     id: "a5",
+    groupId: "group-1",
+    cycleId: "cycle-4",
     memberId: "m6",
     memberName: "Ibrahima Sow",
     type: "EMERGENCY_DISPATCH",

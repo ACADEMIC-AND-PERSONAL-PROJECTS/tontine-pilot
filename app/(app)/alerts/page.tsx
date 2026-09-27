@@ -17,6 +17,7 @@ import { useGroups } from "@/lib/groups";
 import { useRemoteCycleData } from "@/lib/use-remote";
 import { client, isBackendEnabled } from "@/lib/backend";
 import { toAlert } from "@/lib/remote";
+import { installmentHalves, nextOpenCycleId } from "@/lib/catchup";
 import {
   Bell,
   AlertTriangle,
@@ -84,6 +85,7 @@ export default function AlertsPage() {
   const cycleLabel = remote.cycle ? ` du cycle ${remote.cycle.cycleNumber}` : "";
   const cycleLabelEn = remote.cycle ? ` of cycle ${remote.cycle.cycleNumber}` : "";
   const [nudging, setNudging] = useState<string | null>(null);
+  const [accepting, setAccepting] = useState<string | null>(null);
 
   useEffect(() => {
     if (!backendOn) return;
@@ -132,6 +134,98 @@ export default function AlertsPage() {
       } catch {
         // local state already updated
       }
+    }
+  }
+
+  /** Accepting a proposal really applies it (not just resolving):
+   *  - swap: exchange recipients between this cycle and the next OPEN one
+   *  - installment: split the due into two PENDING halves (sums stay exact)
+   *  - emergency: safety-net payout recorded as a DEBIT movement + the
+   *    contribution marked covered (first FundMovement writes in the app) */
+  async function acceptProposal(a: (typeof alerts)[number]) {
+    const kind = a.proposal?.kind;
+    if (!isBackendEnabled() || !kind) {
+      await resolve(a.id);
+      return;
+    }
+    setAccepting(a.id);
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const amount = active.contributionAmount;
+      const cycleId = a.cycleId ?? remote.cycle?.id;
+      if (kind === "swap") {
+        const cycles = await client.models.Cycle.list({
+          filter: { groupId: { eq: active.id } },
+        });
+        const rows = ((cycles.data ?? []) as Array<{ id: string; cycleNumber: number; status?: string | null; recipientMemberId?: string | null; recipientName?: string | null }>);
+        const open = rows
+          .filter((c) => c.status === "OPEN")
+          .sort((x, y) => x.cycleNumber - y.cycleNumber);
+        const targetId = nextOpenCycleId(rows, a.cycleId);
+        const cur = open.find((c) => c.id === a.cycleId) ?? open[0];
+        const nxt = open.find((c) => c.id === targetId);
+        if (cur && nxt && cur.id !== nxt.id) {
+          await client.models.Cycle.update({
+            id: cur.id,
+            recipientMemberId: nxt.recipientMemberId ?? undefined,
+            recipientName: nxt.recipientName ?? undefined,
+          });
+          await client.models.Cycle.update({
+            id: nxt.id,
+            recipientMemberId: cur.recipientMemberId ?? undefined,
+            recipientName: cur.recipientName ?? undefined,
+          });
+        }
+      } else if (cycleId && a.memberId) {
+        const prior = await client.models.Contribution.list({
+          filter: { cycleId: { eq: cycleId } },
+        });
+        const settled = (prior.data ?? []).find(
+          (c) => c.memberId === a.memberId && (c.status === "CONFIRMED" || c.status === "COVERED_BY_EMERGENCY_FUND")
+        );
+        if (!settled) {
+          if (kind === "installment") {
+            const [first, second] = installmentHalves(amount);
+            for (const [i, half] of [first, second].entries()) {
+              await client.models.Contribution.create({
+                groupId: active.id,
+                cycleId,
+                memberId: a.memberId as string,
+                memberName: a.memberName ?? "",
+                amount: half,
+                status: "PENDING",
+                dateDeclared: today,
+                rawText: `Installment ${i + 1}/2 agreed (${a.id.slice(0, 8)})`,
+                method: "MANUAL",
+              });
+            }
+          } else {
+            await client.models.FundMovement.create({
+              groupId: active.id,
+              cycleId,
+              kind: "DEBIT",
+              amount,
+              reason: `Safety-net payout for ${a.memberName ?? a.memberId} (${a.id.slice(0, 8)})`,
+              reasonEn: `Safety-net payout for ${a.memberName ?? a.memberId} (${a.id.slice(0, 8)})`,
+              createdAt: new Date().toISOString(),
+            });
+            await client.models.Contribution.create({
+              groupId: active.id,
+              cycleId,
+              memberId: a.memberId as string,
+              memberName: a.memberName ?? "",
+              amount,
+              status: "COVERED_BY_EMERGENCY_FUND",
+              dateDeclared: today,
+              rawText: `Covered by emergency fund (${a.id.slice(0, 8)})`,
+              method: "EMERGENCY_FUND",
+            });
+          }
+        }
+      }
+      await resolve(a.id);
+    } finally {
+      setAccepting(null);
     }
   }
 
@@ -461,10 +555,17 @@ export default function AlertsPage() {
                           <Button
                             size="sm"
                             className="gap-1.5"
-                            onClick={() => resolve(a.id)}
+                            disabled={accepting === a.id}
+                            onClick={() => acceptProposal(a)}
                           >
                             <Check className="h-3.5 w-3.5" />
-                            {fr ? "Accepter" : "Accept"}
+                            {accepting === a.id
+                              ? fr
+                                ? "Application…"
+                                : "Applying…"
+                              : fr
+                                ? "Accepter"
+                                : "Accept"}
                           </Button>
                         )}
                         <Button
@@ -489,8 +590,8 @@ export default function AlertsPage() {
                               ? "Envoi…"
                               : "Sending…"
                             : fr
-                              ? "Relancer (simulé)"
-                              : "Nudge (simulated)"}
+                              ? "Relancer"
+                              : "Nudge"}
                         </Button>
                       </div>
                     )}

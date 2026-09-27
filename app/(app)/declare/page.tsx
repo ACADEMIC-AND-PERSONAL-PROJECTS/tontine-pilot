@@ -504,7 +504,7 @@ export default function DeclarePage() {
         transition={{ duration: 0.55 }}
       >
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
-          Bedrock NLU · Vision OCR · {fr ? "démo" : "demo"}
+          Bedrock NLU · Vision OCR · {backendOn ? (fr ? "en direct" : "live") : (fr ? "démo" : "demo")}
         </p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
           {fr ? "Déclarer une cotisation" : "Declare a contribution"}

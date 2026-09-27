@@ -29,6 +29,29 @@ export function splitCycles(
   return { missed, open };
 }
 
+/** Split an amount into two installment halves (sums stay exact). */
+export function installmentHalves(amount: number): [number, number] {
+  const first = Math.floor(Math.max(0, amount) / 2);
+  return [first, Math.max(0, amount) - first];
+}
+
+export type OpenCycleLike = { id: string; cycleNumber: number; status?: string | null };
+
+/** Id of the OPEN cycle right after the given one (tour swap target), or
+ *  null when there is none. Pure and unit-tested. */
+export function nextOpenCycleId(
+  cycles: OpenCycleLike[],
+  currentId?: string | null
+): string | null {
+  const open = cycles
+    .filter((c) => c.status === "OPEN")
+    .sort((a, b) => a.cycleNumber - b.cycleNumber);
+  if (open.length === 0) return null;
+  const idx = currentId ? open.findIndex((c) => c.id === currentId) : 0;
+  if (idx < 0) return open[0]?.id ?? null;
+  return open[idx + 1]?.id ?? null;
+}
+
 export type AddMemberInput = {
   groupId: string;
   ownerId?: string;

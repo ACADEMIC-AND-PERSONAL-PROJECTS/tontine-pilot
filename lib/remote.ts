@@ -53,6 +53,8 @@ export function toAlert(r: Row): FakeAlert {
   const proposalKind = r.proposalKind as string | null;
   return {
     id: req<string>(r.id, "Alert.id"),
+    groupId: (r.groupId as string) ?? undefined,
+    cycleId: (r.cycleId as string) ?? undefined,
     memberId: (r.memberId as string) ?? "",
     memberName: (r.memberName as string) ?? "",
     type: type as FakeAlert["type"],

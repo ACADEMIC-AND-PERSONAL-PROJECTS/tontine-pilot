@@ -13,7 +13,7 @@ Password rule: 8+ chars, a lowercase letter and a number (e.g. `Tontine2026!`).
 ```bash
 git clone github.com:khadimmbaye0/tontine-pilot.git
 cd tontine-pilot
-npm install && npm run dev   # http://localhost:3000
+npm install && npm run dev   # http://localhost:3101
 ```
 Without backend outputs the app runs on the built-in demo dataset (Liberté group).
 With `amplify_outputs.json` (from `npx ampx sandbox`) + login, it talks to live AWS data.
