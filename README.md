@@ -75,8 +75,9 @@ Narrated 60-second cut with sound: [videos/tour.mp4](https://github.com/ACADEMIC
 
 | Area | Capability |
 |---|---|
-| Natural-language declarations | "I paid 20000 for Awa" → Bedrock extracts amount, member, recipient |
-| Mobile Money OCR | Wave / Orange Money / MTN screenshots → amount, transaction ID, date |
+| Natural-language declarations | "I paid 20000 for Awa" → Bedrock extracts amount, member, recipient; unknown names blocked, never assigned to someone else |
+| Mobile Money OCR | Wave / Orange Money / MTN screenshots → amount, transaction ID, date; unreadable receipts fail honestly with manual entry |
+| Managed prompt | The parser runs a versioned Bedrock prompt (few-shot, lab-tested in `notebooks/`) when configured, inline prompt otherwise |
 | Empathic mediation | Gentle nudges, installment plans, tour swaps, anomaly detection — auto-triggered every morning at 08:00 UTC |
 | Emergency fund | Tontine Flex reserve that unlocks the recipient on critical lates |
 | AI rotation order | Trust − lates + seniority; provisional lottery with no history |
@@ -309,11 +310,13 @@ npx tsx scripts/verify.ts               # 9 live checks
 
 ## Docs & quality
 
-Strict TypeScript across three configs (app, `amplify/`, functions), 33 Vitest tests
-(rotation, trust, parsers, intents, adapters), 9 live checks before every ship,
+Strict TypeScript across three configs (app, `amplify/`, functions), 63 Vitest tests
+(rotation, trust, parsers, intents, adapters, catch-up, rollover, auth), 9 live checks before every ship,
 secret scans on every push. Full write-up: [docs/](docs/README.md) — vision,
 architecture, backend, AI features, notifications, security, deployment — plus
-the [proof pack](proof/README.md) (agent connection, live backend, email delivery).
+the [proof pack](proof/README.md) (agent connection, live backend, email delivery)
+and the [prompt-engineering notebook](notebooks/tontine-fewshot.ipynb) (few-shot
+parser lab, executed with outputs).
 
 <div align="center">
 <img src="assets/brand/divider.svg" width="480" alt="Divider">
