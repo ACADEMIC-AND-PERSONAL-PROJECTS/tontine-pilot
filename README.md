@@ -3,18 +3,12 @@
 
 # TontinePilot
 
-[![Live Demo](https://img.shields.io/badge/LIVE_DEMO-8B5CF6?style=flat-square&logo=vercel&logoColor=white)](https://main.dhnfua5oyahpy.amplifyapp.com)
-[![Demo video](https://img.shields.io/badge/DEMO_VIDEO-FF0000?style=flat-square&logo=youtube&logoColor=white)](https://youtu.be/Uvtu5lHfShs)
-[![Docs](https://img.shields.io/badge/DOCS-14_pages-0EA5E9?style=flat-square&logo=gitbook&logoColor=white)](docs/README.md)
-[![CI](https://img.shields.io/github/actions/workflow/status/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/ci.yml?label=CI&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/ACADEMIC-AND-PERSONAL-PROJECTS/tontine-pilot/actions)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org)
-[![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Haiku_4.5-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/bedrock/)
-[![Amplify Gen 2](https://img.shields.io/badge/Amplify-Gen_2-DD344C?style=flat-square&logo=awsamplify&logoColor=white)](https://docs.amplify.aws)
+[![My Skills](https://skillicons.dev/icons?i=git,ts,nextjs,aws,github,githubactions,vite,vscode)](https://skillicons.dev)
 
 <img src="assets/hero-banner.jpg" width="100%" alt="TontinePilot — group dashboard, rotation order, contribution tracking, reminders and export registry">
 
 **The AI copilot for community rotating savings groups (tontines).**
-Built for AWS Zero to Shipped · Community lane · bilingual FR/EN · live in us-east-1.
+Built for AWS Zero to Shipped · Community lane · bilingual FR/EN 
 
 </div>
 
